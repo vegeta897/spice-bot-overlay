@@ -1,0 +1,14 @@
+:root {
+	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	background: #222226;
+	overflow: hidden;
+	color: rgb(239, 239, 241);
+	font-family: Inter, Roobert, Helvetica Neue, Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	/* background: (0, 0, 0, 0); */
+}
