@@ -9,10 +9,12 @@
 	let animation: ReturnType<typeof animate>
 
 	onMount(() => {
+		// TODO: Try to replace this with css animations
+		// This is kind of cpu-hungry
 		animation = animate({
 			from: '100%',
 			to: '-100%',
-			duration: 20 * 1000,
+			duration: 30 * 1000,
 			ease: linear,
 			repeat: Infinity,
 			onUpdate: (latest) => {

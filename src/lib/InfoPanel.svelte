@@ -63,7 +63,7 @@
 	section {
 		width: 640px;
 		height: 300px;
-		border: 1px solid white;
+		/* border: 1px solid white; */
 		position: absolute;
 		right: 0;
 		bottom: 0;
@@ -87,8 +87,7 @@
 	h1 {
 		font-size: 48px;
 		margin: 0;
-		filter: drop-shadow(-2px -2px 4px #0008) drop-shadow(2px -2px 4px #0008)
-			drop-shadow(-2px 2px 4px #0008) drop-shadow(2px 2px 4px #0008);
+		filter: drop-shadow(0 0 3px #000) drop-shadow(0 0 2px #000);
 		transform-origin: 50% 200%;
 		background: linear-gradient(
 			70deg,
@@ -121,14 +120,13 @@
 		justify-content: center;
 		align-items: baseline;
 		font-size: 64px;
-		text-shadow: -3px -3px 4px #000, 3px -3px 4px #000, -3px 3px 4px #000,
-			3px 3px 4px #000;
 	}
 
 	.digit {
 		width: 40px;
 		height: 64px;
 		position: relative;
+		text-shadow: 0 0 8px #000, 0 0 8px #000, 0 0 8px #000;
 	}
 
 	.digit span {
@@ -144,8 +142,7 @@
 		stroke-width: 30px;
 		stroke-linecap: round;
 		stroke: #fff;
-		filter: drop-shadow(-1px -1px 1.5px #000) drop-shadow(1px 1px 1.5px #000)
-			drop-shadow(1px -1px 1.5px #000) drop-shadow(-1px 1px 1.5px #000);
+		filter: drop-shadow(0 0 4px #000) drop-shadow(0 0 2px #000);
 		margin-left: 6px;
 		animation-name: rotate-90;
 		animation-duration: 300ms;
@@ -164,7 +161,6 @@
 
 	p {
 		font-size: 24px;
-		text-shadow: -1px -1px 2px #000, 1px -1px 2px #000, -1px 1px 2px #000,
-			1px 1px 2px #000;
+		text-shadow: 0 0 2px #000, 0 0 2px #000, 0 0 2px #000;
 	}
 </style>
