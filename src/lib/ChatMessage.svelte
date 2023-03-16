@@ -5,9 +5,9 @@
 	export let color: string
 	export let text: string
 	export let time: string
-	export let highlight: boolean
-	export let grace: boolean
-	export let redeem: boolean
+	export let highlight = false
+	export let grace = false
+	export let redeem = false
 </script>
 
 <div class:redeem>
@@ -39,8 +39,9 @@
 
 	p {
 		margin: 0;
-		padding: 3px 12px;
+		padding: 2px 12px;
 		font-size: 12px;
+		line-height: 16px;
 	}
 
 	.faded {

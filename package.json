@@ -17,6 +17,7 @@
 		"check": "svelte-check --tsconfig ./tsconfig.json"
 	},
 	"devDependencies": {
+		"@fontsource/nunito": "^4.5.12",
 		"@sveltejs/vite-plugin-svelte": "^2.0.2",
 		"@tsconfig/svelte": "^3.0.0",
 		"popmotion": "^11.0.5",

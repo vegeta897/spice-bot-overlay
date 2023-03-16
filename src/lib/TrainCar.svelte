@@ -21,7 +21,7 @@
 	// Or just variable width, height, skew, wheel size, wheel spacing, etc
 </script>
 
-<svg viewBox="0 0 200 150" width="200" height="150">
+<svg viewBox="0 0 200 150" width="100" height="75">
 	<circle cx="50" cy="130" r="20" fill="#777" />
 	<circle cx="150" cy="130" r="20" fill="#777" />
 	<rect x="10" y="110" width="180" height="15" fill="#475062" />

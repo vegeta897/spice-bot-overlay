@@ -23,10 +23,11 @@
 
 <style>
 	section {
-		width: 300px;
+		width: 280px;
+		background: #18181b;
 		border: 1px solid #0008;
 		position: relative;
-		padding-bottom: 43px;
+		padding-bottom: 38px;
 	}
 
 	.messages {
@@ -47,5 +48,6 @@
 		margin: 0.5rem;
 		border-radius: 0.4rem;
 		background: #3d3d40;
+		cursor: text;
 	}
 </style>

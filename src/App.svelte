@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { initChat } from './lib/chat'
+	import { initChat } from './lib/mock/chat'
 	import ChatPane from './lib/ChatPane.svelte'
 	import Train from './lib/Train.svelte'
 	import { initWebsocket } from './lib/websocket'
+	import InfoPanel from './lib/InfoPanel.svelte'
 
 	initWebsocket()
 	initChat()
@@ -11,6 +12,7 @@
 <main>
 	<div class="stream-container">
 		<div class="stream">
+			<InfoPanel />
 			<Train />
 		</div>
 	</div>
@@ -23,6 +25,7 @@
 		margin-top: 1rem;
 		display: flex;
 		height: calc(1080px / 2 + 2px);
+		width: calc(1920px / 2 + 280px + 4px);
 	}
 	.stream-container {
 		width: calc(1920px / 2);
