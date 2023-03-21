@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { graces } from './store'
+	import { graceTrains } from './store'
 	import TrainCar from './TrainCar.svelte'
 	// import { animate, linear } from 'popmotion'
 	// import { onMount, onDestroy } from 'svelte'
@@ -28,7 +28,7 @@
 </script>
 
 <div bind:this={trainContainer}>
-	{#each $graces as grace}
+	{#each $graceTrains as grace}
 		<TrainCar />
 	{/each}
 </div>

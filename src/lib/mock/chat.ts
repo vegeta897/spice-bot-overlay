@@ -19,8 +19,10 @@ type ChatMessage = {
 type GraceInfo = {
 	type: 'redeem' | 'highlight' | 'normal'
 	comboSize: number
+	comboPoints: number
 	comboScore: number
 	totalScore: number
+	delta: number
 }
 
 const POINTS = {
@@ -30,7 +32,6 @@ const POINTS = {
 }
 
 export function initChat() {
-	console.log('initChat()')
 	runChatLoop()
 }
 
@@ -38,30 +39,36 @@ export function planTrain() {
 	const trainSize = randomIntRange(8, 24)
 	const messages: { message: ChatMessage; delay: number; grace?: GraceInfo }[] =
 		[]
+	const trainUsers: Set<string> = new Set()
 	let totalScore = 0
-	let comboScore = 0
+	let comboPoints = 0
 	let comboSize = 0
+	let comboScore = 0
 	let lastGraceType: GraceInfo['type']
 	for (let i = 0; i < trainSize; i++) {
 		const graceMessage = createGraceMessage()
+		trainUsers.add(graceMessage.username)
 		const graceType = graceMessage.grace
 			? 'redeem'
 			: graceMessage.highlight
 			? 'highlight'
 			: 'normal'
+		const prevTotal = totalScore + comboScore
 		if (lastGraceType && graceType !== lastGraceType) {
-			const endedCombo = endCombo(comboScore, comboSize)
-			totalScore += endedCombo
-			comboScore = 0
+			totalScore += comboScore
+			comboPoints = 0
 			comboSize = 0
 		}
-		comboScore += POINTS[graceType]
+		comboPoints += POINTS[graceType]
 		comboSize++
+		comboScore = getComboScore(comboPoints, comboSize)
 		const graceInfo: GraceInfo = {
 			type: graceType,
 			comboSize,
+			comboPoints,
 			comboScore,
 			totalScore,
+			delta: totalScore + comboScore - prevTotal,
 		}
 		messages.push({
 			message: graceMessage,
@@ -70,13 +77,22 @@ export function planTrain() {
 		})
 		lastGraceType = graceType
 	}
-	const endedCombo = endCombo(comboScore, comboSize)
-	totalScore += endedCombo
 	const breakMessage = createTrainBreakingMessage()
+	totalScore += comboScore
+	const userCountBonus = Math.ceil(totalScore * ((trainUsers.size - 1) / 10))
+	totalScore += userCountBonus
+	totalScore = Math.ceil(totalScore)
 	messages.push({
 		message: breakMessage,
 		delay: randomIntRange(1, 30) * 100,
-		grace: { type: lastGraceType, comboSize, comboScore, totalScore },
+		grace: {
+			type: lastGraceType,
+			comboSize: 0,
+			comboPoints: 0,
+			comboScore: 0,
+			totalScore,
+			delta: comboScore + userCountBonus,
+		},
 	})
 	messages.push({
 		message: createSpiceBotMessage(breakMessage.username, trainSize),
@@ -145,7 +161,7 @@ function createAfterTrainMessage() {
 // 	})
 // }
 
-function endCombo(comboPoints: number, comboSize: number) {
+function getComboScore(comboPoints: number, comboSize: number) {
 	comboSize = Math.max(comboSize, 1)
 	const userCount = comboSize // For the sake of demonstration
 	return Math.ceil(

@@ -1,4 +1,4 @@
-import { graces } from './store'
+import { graceTrains } from './store'
 
 let ws: WebSocket
 let reloading = false
@@ -20,7 +20,7 @@ export function initWebsocket() {
 	})
 	ws.addEventListener('message', (event) => {
 		console.log('ws message:', event.data)
-		graces.update((_graces) => [..._graces, event.data])
+		graceTrains.update((_graces) => [..._graces, event.data])
 	})
 }
 

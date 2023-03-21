@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { graces } from './store'
+	import { graceTrains } from './store'
 	import { fly } from 'svelte/transition'
 	import { backOut } from 'svelte/easing'
 
@@ -8,9 +8,9 @@
 	let h1Element: HTMLHeadingElement
 	let sizeElement: HTMLDivElement
 
-	$: digits = $graces.length.toString().padStart(2, ' ')
+	$: digits = $graceTrains.length.toString().padStart(2, ' ')
 
-	$: lastGrace = $graces[$graces.length - 1] || lastGrace
+	$: lastGrace = $graceTrains[$graceTrains.length - 1] || lastGrace
 
 	$: if (digits && sizeElement && h1Element) {
 		h1Element.animate(
@@ -54,7 +54,7 @@
 				{/key}
 			</div>
 		{/each}
-		{#key $graces.length}
+		{#key $graceTrains.length}
 			<svg class="x" viewBox="0 0 100 100" width="38" height="38">
 				<path d="M20 20 L80 80 M80 20 L20 80" />
 			</svg>
@@ -62,22 +62,17 @@
 	</div>
 	{#if lastGrace}
 		<div class="score">
-			<div class="combo" class:shift-left={lastGrace.totalScore}>
-				<div class="count">
-					{lastGrace.comboSize}x <span>{lastGrace.type}</span>
-				</div>
-				<div class="points" style="--comboScore: {lastGrace.comboScore}">
-					<!-- {lastGrace.comboScore} pts -->
-				</div>
+			<!-- <div class="score-label">score</div> -->
+			<div class="total">
+				<span
+					class="points"
+					style="--totalScore: {lastGrace.totalScore +
+						lastGrace.comboScore}; transition: --totalScore {Math.min(
+						2000,
+						Math.max(300, lastGrace.delta * 10)
+					)}ms;"
+				/> pts
 			</div>
-			{#if lastGrace.totalScore}
-				<div class="total">
-					<div class="total-label">total</div>
-					<div class="points" style="--totalScore: {lastGrace.totalScore}">
-						<!-- {lastGrace.totalScore} pts -->
-					</div>
-				</div>
-			{/if}
 		</div>
 	{/if}
 </section>
@@ -154,7 +149,7 @@
 		width: 40px;
 		height: 64px;
 		position: relative;
-		text-shadow: 0 0 8px #000, 0 0 8px #000, 0 0 8px #000;
+		text-shadow: 0 0 5px #000, 0 0 5px #000, 0 0 5px #000;
 	}
 
 	.digit span {
@@ -170,7 +165,7 @@
 		stroke-width: 30px;
 		stroke-linecap: round;
 		stroke: #fff;
-		filter: drop-shadow(0 0 4px #000) drop-shadow(0 0 2px #000);
+		filter: drop-shadow(0 0 2px #000) drop-shadow(0 0 2px #000);
 		margin-left: 6px;
 		animation-name: rotate-90;
 		animation-duration: 300ms;
@@ -187,11 +182,6 @@
 		}
 	}
 
-	@property --comboScore {
-		syntax: '<integer>';
-		initial-value: 0;
-		inherits: false;
-	}
 	@property --totalScore {
 		syntax: '<integer>';
 		initial-value: 0;
@@ -201,41 +191,10 @@
 	.score {
 		position: relative;
 		margin-top: 18px;
-		text-shadow: 0 0 4px #000, 0 0 3px #000, 0 0 3px #000;
-	}
-	.score > div {
-		width: 100%;
-		height: 180px;
-		position: absolute;
-	}
-	.score .combo {
-		font-size: 36px;
-		line-height: 36px;
-		top: 1px;
-		left: 0%;
-		transition: left 500ms;
-	}
-	.score .combo.shift-left {
-		left: -20%;
-	}
-	.score .combo .count span {
-		font-size: 28px;
-		text-transform: uppercase;
-	}
-	.score .combo .points {
-		transition: --comboScore 700ms;
-		counter-reset: comboScore var(--comboScore);
-	}
-	.score .combo .points::after {
-		content: counter(comboScore) ' pts';
+		text-shadow: 0 0 3px #000, 0 0 3px #000, 0 0 3px #000;
 	}
 	.score .total {
-		left: 30%;
-		line-height: 44px;
-	}
-	.score .total .total-label {
-		font-size: 28px;
-		text-transform: uppercase;
+		font-size: 36px;
 	}
 	.score .total .points {
 		font-size: 56px;
@@ -243,6 +202,6 @@
 		counter-reset: totalScore var(--totalScore);
 	}
 	.score .total .points::after {
-		content: counter(totalScore) ' pts';
+		content: counter(totalScore);
 	}
 </style>

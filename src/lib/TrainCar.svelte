@@ -17,6 +17,9 @@
 	]
 	const color = colors[Math.floor(Math.random() * colors.length)]
 
+	// TODO: Listen for train updates, trigger an animation based on this car's
+	// distance from end, to simulate a diminishing "impulse" wave through the train
+
 	// Draw with path data, and give each vertex random XY variation seeded by user ID
 	// Or just variable width, height, skew, wheel size, wheel spacing, etc
 </script>
