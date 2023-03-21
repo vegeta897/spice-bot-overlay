@@ -1,55 +1,82 @@
-import { chat, graces } from '../store'
+import { runChatLoop } from './loop'
+import {
+	fakeUsers,
+	graceMessages,
+	trainBreakingMessages,
+	regretMessages,
+	afterTrainMessages,
+} from './strings'
 
 type ChatMessage = {
 	text: string
 	username: string
 	time: string
-	redeem: boolean
-	highlight: boolean
-	grace: boolean
+	redeem?: boolean
+	highlight?: boolean
+	grace?: boolean
 }
 
-let reloading = false
-let interval: number
+type GraceInfo = {
+	type: 'redeem' | 'highlight' | 'normal'
+	comboSize: number
+	comboScore: number
+	totalScore: number
+}
 
-const MAX_MESSAGES = 18
+const POINTS = {
+	redeem: 10,
+	highlight: 5,
+	normal: 1,
+}
 
 export function initChat() {
-	if (interval) clearInterval(interval)
-	reloading = false
-	runLoop()
+	console.log('initChat()')
+	runChatLoop()
 }
 
-async function runLoop() {
-	while (!reloading) {
-		// await sleep(randomIntRange(6, 12) * 1000)
-		graces.set([])
-		const { messages, trainSize } = planTrain()
-		console.log(`simulating train size ${trainSize}`)
-		for (const message of messages) {
-			if (reloading) break
-			await sleep(message.delay)
-			chat.update((_chat) => [..._chat.slice(-MAX_MESSAGES), message.message])
-			if (message.grace)
-				graces.update((_graces) => [..._graces, _graces.length + 1])
-		}
-	}
-}
-
-function planTrain() {
+export function planTrain() {
 	const trainSize = randomIntRange(8, 24)
-	const messages = []
+	const messages: { message: ChatMessage; delay: number; grace?: GraceInfo }[] =
+		[]
+	let totalScore = 0
+	let comboScore = 0
+	let comboSize = 0
+	let lastGraceType: GraceInfo['type']
 	for (let i = 0; i < trainSize; i++) {
+		const graceMessage = createGraceMessage()
+		const graceType = graceMessage.grace
+			? 'redeem'
+			: graceMessage.highlight
+			? 'highlight'
+			: 'normal'
+		if (lastGraceType && graceType !== lastGraceType) {
+			const endedCombo = endCombo(comboScore, comboSize)
+			totalScore += endedCombo
+			comboScore = 0
+			comboSize = 0
+		}
+		comboScore += POINTS[graceType]
+		comboSize++
+		const graceInfo: GraceInfo = {
+			type: graceType,
+			comboSize,
+			comboScore,
+			totalScore,
+		}
 		messages.push({
-			message: createGraceMessage(),
+			message: graceMessage,
 			delay: randomIntRange(1, 30) * 100,
-			grace: true,
+			grace: graceInfo,
 		})
+		lastGraceType = graceType
 	}
+	const endedCombo = endCombo(comboScore, comboSize)
+	totalScore += endedCombo
 	const breakMessage = createTrainBreakingMessage()
 	messages.push({
 		message: breakMessage,
 		delay: randomIntRange(1, 30) * 100,
+		grace: { type: lastGraceType, comboSize, comboScore, totalScore },
 	})
 	messages.push({
 		message: createSpiceBotMessage(breakMessage.username, trainSize),
@@ -112,70 +139,19 @@ function createAfterTrainMessage() {
 	return { username, color, text, time: getTimeString() }
 }
 
-if (import.meta.hot) {
-	import.meta.hot.on('vite:beforeUpdate', (payload) => {
-		reloading = true
-		clearInterval(interval)
-	})
+// if (import.meta.hot) {
+// 	import.meta.hot.on('vite:beforeUpdate', (payload) => {
+// 		reloading = true
+// 	})
+// }
+
+function endCombo(comboPoints: number, comboSize: number) {
+	comboSize = Math.max(comboSize, 1)
+	const userCount = comboSize // For the sake of demonstration
+	return Math.ceil(
+		comboPoints * (1 + (comboSize - 1) / 2) * (1 + (userCount - 1) / 5)
+	)
 }
-
-const fakeUsers = [
-	['goku798', '#c365b0'],
-	['dazzle_razzle', '#9ffbe2'],
-	['verysubsumed', '#ff4a5f'],
-	['dalybeet21', '#359bff'],
-	['JanyceMaria', '#5f9ea0'],
-	['jeesejeep', '#ff69b4'],
-	['UnusedSteer', '#e1762a'],
-	['kitsu_', '#359dd8'],
-	['suzki31', '#ff7f50'],
-	['trianglevigor', '#ff69b4'],
-	['pglad', '#00e700'],
-	['thesleepypiranha', '#aa64ea'],
-	['LookItsArcher', '#ff69b4'],
-	['pizzapoggers', '#e1762a'],
-	['hottopicgraduate', '#00ff7f'],
-	['ftarbl', '#00ff7f'],
-]
-
-const graceMessages = [
-	'grace',
-	'GRACE',
-	'G R A C E',
-	'grace!!!',
-	'GRACE!',
-	'GRACE TRAIN!',
-	'GrAcE',
-	'🙏',
-]
-const trainBreakingMessages = [
-	'c-c-c-combo breaker!',
-	'hello everyone!',
-	'lol',
-	'wow',
-	'woah',
-	"what's happening?",
-	"what's going on?",
-]
-const regretMessages = [
-	'LOL SORRY',
-	'oh oops',
-	'OH GOD',
-	'OH NO I BROKE IT',
-	'oops sorry',
-]
-const afterTrainMessages = [
-	'that was great',
-	'good grace train',
-	'very good grace train',
-	'very good',
-	'good work everyone',
-	'that was a long one',
-	'you broke it',
-	'lol',
-	'haha',
-	'nice',
-]
 
 const getTimeString = () => {
 	const now = new Date()
@@ -192,5 +168,3 @@ const randomIntRange = (minOrMax: number, max?: number) => {
 }
 
 const pickRandom = (arr: any[]) => arr[Math.floor(Math.random() * arr.length)]
-
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))

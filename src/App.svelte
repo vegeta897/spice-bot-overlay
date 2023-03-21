@@ -4,6 +4,7 @@
 	import Train from './lib/Train.svelte'
 	import { initWebsocket } from './lib/websocket'
 	import InfoPanel from './lib/InfoPanel.svelte'
+	import { graces } from './lib/store'
 
 	initWebsocket()
 	initChat()
@@ -12,8 +13,10 @@
 <main>
 	<div class="stream-container">
 		<div class="stream">
-			<InfoPanel />
-			<Train />
+			{#if $graces.length > 0}
+				<InfoPanel />
+				<Train />
+			{/if}
 		</div>
 	</div>
 	<ChatPane />
