@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { graceTrains } from './store'
 	import { fly } from 'svelte/transition'
 	import { backOut } from 'svelte/easing'
 
@@ -8,9 +7,14 @@
 	let h1Element: HTMLHeadingElement
 	let sizeElement: HTMLDivElement
 
-	$: digits = $graceTrains.length.toString().padStart(2, ' ')
+	export let train: any
 
-	$: lastGrace = $graceTrains[$graceTrains.length - 1] || lastGrace
+	$: digits = train.graces
+		.filter((g) => g.type !== 'end')
+		.length.toString()
+		.padStart(2, ' ')
+
+	$: lastGrace = train.graces[train.graces.length - 1] || lastGrace
 
 	$: if (digits && sizeElement && h1Element) {
 		h1Element.animate(
@@ -54,7 +58,7 @@
 				{/key}
 			</div>
 		{/each}
-		{#key $graceTrains.length}
+		{#key train.length}
 			<svg class="x" viewBox="0 0 100 100" width="38" height="38">
 				<path d="M20 20 L80 80 M80 20 L20 80" />
 			</svg>

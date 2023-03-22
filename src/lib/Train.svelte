@@ -1,10 +1,13 @@
 <script lang="ts">
-	import { graceTrains } from './store'
 	import TrainCar from './TrainCar.svelte'
 	// import { animate, linear } from 'popmotion'
 	// import { onMount, onDestroy } from 'svelte'
 
+	export let train: any
+
 	let trainContainer: HTMLDivElement
+
+	$: graces = train.graces.filter((g) => g.type !== 'end')
 
 	// let animation: ReturnType<typeof animate>
 
@@ -28,16 +31,16 @@
 </script>
 
 <div bind:this={trainContainer}>
-	{#each $graceTrains as grace}
+	{#each graces as grace}
 		<TrainCar />
 	{/each}
 </div>
 
 <style>
 	div {
-		display: flex;
-		height: 100%;
-		align-items: flex-end;
+		position: absolute;
+		width: 1920px;
+		white-space: nowrap;
 		animation: cross-screen 30s linear infinite;
 	}
 

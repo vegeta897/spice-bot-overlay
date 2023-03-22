@@ -17,7 +17,7 @@ type ChatMessage = {
 }
 
 type GraceInfo = {
-	type: 'redeem' | 'highlight' | 'normal'
+	type: 'redeem' | 'highlight' | 'normal' | 'end'
 	comboSize: number
 	comboPoints: number
 	comboScore: number
@@ -86,7 +86,7 @@ export function planTrain() {
 		message: breakMessage,
 		delay: randomIntRange(1, 30) * 100,
 		grace: {
-			type: lastGraceType,
+			type: 'end',
 			comboSize: 0,
 			comboPoints: 0,
 			comboScore: 0,

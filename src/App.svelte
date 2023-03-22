@@ -13,10 +13,14 @@
 <main>
 	<div class="stream-container">
 		<div class="stream">
-			{#if $graceTrains.length > 0}
-				<Train />
-				<InfoPanel />
-			{/if}
+			<div class="trains-container">
+				{#each $graceTrains as train, t}
+					<Train {train} />
+				{/each}
+			</div>
+			{#each $graceTrains as train, t}
+				{#if t === $graceTrains.length - 1}<InfoPanel {train} />{/if}
+			{/each}
 		</div>
 	</div>
 	<ChatPane />
@@ -43,5 +47,9 @@
 		transform-origin: top left;
 		background: url('/sample-stream.jpg');
 		background-repeat: no-repeat;
+	}
+	.trains-container {
+		position: absolute;
+		top: calc(100% - 80px);
 	}
 </style>
