@@ -19,6 +19,6 @@
 		fill: #adadb8;
 		position: relative;
 		top: 4px;
-		margin: -8px 3px 0 4px;
+		margin: -8px 1px 0 2px;
 	}
 </style>

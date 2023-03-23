@@ -23,7 +23,7 @@
 
 <style>
 	section {
-		width: 280px;
+		width: 290px;
 		background: #18181b;
 		border: 1px solid #0008;
 		position: relative;
