@@ -4,10 +4,11 @@
 
 	// TODO: Lose the shadows, create backgrounds?
 
+	export let train: any
+
 	let h1Element: HTMLHeadingElement
 	let sizeElement: HTMLDivElement
-
-	export let train: any
+	let scoreElement: HTMLDivElement
 
 	$: digits = train.graces
 		.filter((g) => g.type !== 'end')
@@ -15,31 +16,28 @@
 		.padStart(2, ' ')
 
 	$: lastGrace = train.graces[train.graces.length - 1]
+	$: totalScore = lastGrace?.totalScore + lastGrace?.comboScore || 0
+	$: scoreDelta = Math.max(300, (lastGrace?.delta || 0) * 10)
 
-	$: if (digits && sizeElement && h1Element) {
-		h1Element.animate(
+	function bounce(element: HTMLElement, force: number, delay = 0) {
+		element.animate(
 			[
 				{ transform: 'scale(100%)' },
-				{ transform: 'scale(105%)' },
+				{ transform: `scale(${100 + force}%)` },
 				{ transform: 'scale(100%)' },
 			],
 			{
-				delay: 80,
+				delay,
 				duration: 300,
 				easing: 'cubic-bezier(0.12, 0.365, 0.55, 1.65)',
 			}
 		)
-		sizeElement.animate(
-			[
-				{ transform: 'scale(100%)' },
-				{ transform: 'scale(110%)' },
-				{ transform: 'scale(100%)' },
-			],
-			{
-				duration: 300,
-				easing: 'cubic-bezier(0.12, 0.365, 0.55, 1.65)',
-			}
-		)
+	}
+
+	$: if (digits && sizeElement) {
+		bounce(h1Element, 5, 80)
+		bounce(sizeElement, 10)
+		bounce(scoreElement, 3, 120)
 	}
 </script>
 
@@ -64,21 +62,17 @@
 			</svg>
 		{/key}
 	</div>
-	{#if lastGrace}
-		<div class="score">
-			<!-- <div class="score-label">score</div> -->
-			<div class="total">
-				<span
-					class="points"
-					style="--totalScore: {lastGrace.totalScore +
-						lastGrace.comboScore}; transition: --totalScore {Math.min(
-						2000,
-						Math.max(300, lastGrace.delta * 10)
-					)}ms;"
-				/> pts
-			</div>
+	<div class="score" bind:this={scoreElement}>
+		<div class="total">
+			<span
+				class="points"
+				style="--totalScore: {totalScore}; transition: --totalScore {Math.min(
+					2000,
+					scoreDelta
+				)}ms;"
+			/> pts
 		</div>
-	{/if}
+	</div>
 </section>
 
 <style>
@@ -196,6 +190,7 @@
 		position: relative;
 		margin-top: 18px;
 		text-shadow: 0 0 3px #000, 0 0 3px #000, 0 0 3px #000;
+		transform-origin: 50% -100%;
 	}
 	.score .total {
 		font-size: 36px;
