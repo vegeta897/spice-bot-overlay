@@ -1,7 +1,7 @@
 export const fakeUsers = [
 	['goku798', '#c365b0'],
 	['dazzle_razzle', '#9ffbe2'],
-	['verysubsumed', '#ff4a5f'],
+	['reallysubverted', '#ff4a5f'],
 	['dalybeet21', '#359bff'],
 	['JanyceMaria', '#5f9ea0'],
 	['jeesejeep', '#ff69b4'],
@@ -15,6 +15,10 @@ export const fakeUsers = [
 	['pizzapoggers', '#e1762a'],
 	['hottopicgraduate', '#00ff7f'],
 	['ftarbl', '#00ff7f'],
+	['AlwaysBeClimbing', '#359bff'],
+	['General_Jackal', '#ff5858'],
+	['WackyBelly', '#aa64ea'],
+	['Prof_FickleKits', '#3db974'],
 ]
 
 export const graceMessages = [
@@ -56,4 +60,5 @@ export const afterTrainMessages = [
 	'nice',
 	'wow',
 	'wow what a train!',
+	'good stuff',
 ]
