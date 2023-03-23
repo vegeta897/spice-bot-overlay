@@ -62,7 +62,7 @@
 
 <div bind:this={trainContainer}>
 	{#each graces as grace}
-		<TrainCar />
+		<TrainCar color={grace.userColor} />
 	{/each}
 </div>
 

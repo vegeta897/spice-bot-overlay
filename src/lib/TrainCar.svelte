@@ -1,21 +1,5 @@
 <script lang="ts">
-	const colors = [
-		'#aa2233',
-		'#aa226d',
-		'#aa22a6',
-		'#6f22aa',
-		'#3622aa',
-		'#2246aa',
-		'#2271aa',
-		'#22aa9f',
-		'#22aa6d',
-		'#22aa30',
-		'#62aa22',
-		'#9aaa22',
-		'#aa7622',
-		'#aa3f22',
-	]
-	const color = colors[Math.floor(Math.random() * colors.length)]
+	export let color: string
 
 	// TODO: Listen for train updates, trigger an animation based on this car's
 	// distance from end, to simulate a diminishing "impulse" wave through the train

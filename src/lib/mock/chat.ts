@@ -10,6 +10,7 @@ import {
 type ChatMessage = {
 	text: string
 	username: string
+	color: string
 	time: string
 	redeem?: boolean
 	highlight?: boolean

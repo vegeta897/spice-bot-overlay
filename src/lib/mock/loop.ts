@@ -36,7 +36,7 @@ export async function runChatLoop() {
 					train.status = 'ended'
 					train.endTime = Date.now()
 				} else {
-					train.graces.push(grace)
+					train.graces.push({ ...grace, userColor: message.color })
 				}
 				graceTrains.update((_graces) => [..._graces])
 			}
