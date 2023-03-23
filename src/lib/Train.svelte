@@ -9,10 +9,22 @@
 	let trainContainer: HTMLDivElement
 
 	$: graces = train.graces.filter((g) => g.type !== 'end')
-	$: {
-		if (graces.length === 1 && !animation) {
-			runTrain()
+	$: if (graces.length === 1 && !animation) runTrain()
+
+	const maxHops = 8
+	let lastImpulse = 0
+	let cars: TrainCar[] = []
+	$: if (cars.length > 0) impulse()
+
+	function impulse() {
+		const now = Date.now()
+		if (now - lastImpulse < 400) return
+		for (let i = cars.length - 1; i >= 0; i--) {
+			const fromEnd = cars.length - i - 1
+			if (fromEnd >= maxHops) break
+			cars[i].hop(fromEnd * 100, (maxHops - fromEnd) / maxHops)
 		}
+		lastImpulse = now
 	}
 
 	let animation: Animation
@@ -54,15 +66,11 @@
 			}
 		}
 	}
-
-	// onDestroy(() => {
-	// 	if (animation) animation.stop()
-	// })
 </script>
 
 <div bind:this={trainContainer}>
-	{#each graces as grace}
-		<TrainCar color={grace.userColor} />
+	{#each graces as grace, g}
+		<TrainCar color={grace.userColor} bind:this={cars[g]} />
 	{/each}
 </div>
 
@@ -71,15 +79,5 @@
 		position: absolute;
 		width: 1920px;
 		white-space: nowrap;
-		/* animation: cross-screen 30s linear infinite; */
-	}
-
-	@keyframes cross-screen {
-		from {
-			transform: translateX(100%);
-		}
-		to {
-			transform: translateX(-100%);
-		}
 	}
 </style>
