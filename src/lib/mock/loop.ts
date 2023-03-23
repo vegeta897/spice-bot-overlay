@@ -17,11 +17,11 @@ export async function runChatLoop() {
 			status: 'running',
 			score: 0,
 			graces: [],
+			offScreen: false,
 		}
+		// Delete finished trains that are off screen
 		graceTrains.update((trains) => [
-			...trains.filter(
-				(t) => t.status !== 'ended' || startTime - t.endTime < 10 * 1000
-			),
+			...trains.filter((t) => t.status !== 'ended' || !t.offScreen),
 			train,
 		])
 		const { messages, trainSize } = planTrain()

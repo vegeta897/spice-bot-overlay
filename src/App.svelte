@@ -14,13 +14,14 @@
 	<div class="stream-container">
 		<div class="stream">
 			<div class="trains-container">
-				{#each $graceTrains as train, t}
+				{#each $graceTrains as train, t (train.startTime)}
 					<Train {train} />
 				{/each}
 			</div>
-			{#each $graceTrains as train, t}
-				{#if t === $graceTrains.length - 1}<InfoPanel {train} />{/if}
-			{/each}
+			{#if $graceTrains.length > 0}
+				{@const latestTrain = $graceTrains[$graceTrains.length - 1]}
+				{#key latestTrain.startTime}<InfoPanel train={latestTrain} />{/key}
+			{/if}
 		</div>
 	</div>
 	<ChatPane />
@@ -32,7 +33,7 @@
 		margin-top: 1rem;
 		display: flex;
 		height: calc(1080px / 2 + 2px);
-		width: calc(1920px / 2 + 280px + 4px);
+		width: calc(1920px / 2 + 290px + 4px);
 	}
 	.stream-container {
 		width: calc(1920px / 2);

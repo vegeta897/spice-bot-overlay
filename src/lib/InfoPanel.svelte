@@ -14,7 +14,7 @@
 		.length.toString()
 		.padStart(2, ' ')
 
-	$: lastGrace = train.graces[train.graces.length - 1] || lastGrace
+	$: lastGrace = train.graces[train.graces.length - 1]
 
 	$: if (digits && sizeElement && h1Element) {
 		h1Element.animate(
