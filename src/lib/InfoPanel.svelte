@@ -22,7 +22,8 @@
 				{ transform: 'scale(100%)', easing: 'ease-out' },
 				{
 					transform: `scale(${100 + force}%)`,
-					easing: 'cubic-bezier(0.12, 0.365, 0.55, 1.65)',
+					easing: 'cubic-bezier(0.5, 0, 0.55, 1.65)',
+					offset: 0.3,
 				},
 				{ transform: 'scale(100%)' },
 			],
