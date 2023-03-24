@@ -4,7 +4,7 @@
 	// Draw with path data, and give each vertex random XY variation seeded by user ID
 	// Or just variable width, height, skew, wheel size, wheel spacing, etc
 
-	const hopEasing = 'cubic-bezier(0.000, 0.500, 1.000, 0.500)'
+	const hopEasing = 'cubic-bezier(0, 0.5, 1, 0.5)'
 
 	export function hop(delay: number, force: number) {
 		const height = Math.round(force * 20)

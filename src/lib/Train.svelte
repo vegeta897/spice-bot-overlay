@@ -18,9 +18,9 @@
 
 	function impulse() {
 		const now = Date.now()
-		if (now - lastImpulse < 400) return
 		for (let i = cars.length - 1; i >= 0; i--) {
 			const fromEnd = cars.length - i - 1
+			if (fromEnd > 0 && now - lastImpulse < 400) return
 			if (fromEnd >= maxHops) break
 			cars[i].hop(fromEnd * 100, (maxHops - fromEnd) / maxHops)
 		}
