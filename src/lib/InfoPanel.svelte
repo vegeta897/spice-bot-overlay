@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition'
 	import { backOut } from 'svelte/easing'
+	import Score from './Score.svelte'
 
 	// TODO: Lose the shadows, create backgrounds?
 
@@ -14,10 +15,6 @@
 		.filter((g) => g.type !== 'end')
 		.length.toString()
 		.padStart(2, ' ')
-
-	$: lastGrace = train.graces[train.graces.length - 1]
-	$: totalScore = lastGrace?.totalScore + lastGrace?.comboScore || 0
-	$: scoreDelta = Math.max(300, (lastGrace?.delta || 0) * 10)
 
 	function bounce(element: HTMLElement, force: number, delay = 0) {
 		element.animate(
@@ -62,16 +59,8 @@
 			</svg>
 		{/key}
 	</div>
-	<div class="score" bind:this={scoreElement}>
-		<div class="total">
-			<span
-				class="points"
-				style="--totalScore: {totalScore}; transition: --totalScore {Math.min(
-					2000,
-					scoreDelta
-				)}ms;"
-			/> pts
-		</div>
+	<div class="score-container" bind:this={scoreElement}>
+		<Score {train} />
 	</div>
 </section>
 
@@ -89,16 +78,14 @@
 	}
 
 	h1,
-	.size,
-	.score {
+	.size {
 		font-weight: 900;
 		font-family: 'Nunito', sans-serif;
 	}
 
 	@supports (font-variation-settings: normal) {
 		h1,
-		.size,
-		.score {
+		.size {
 			font-family: 'NunitoVariable', sans-serif;
 			font-variation-settings: 'wght' 900;
 		}
@@ -180,27 +167,8 @@
 		}
 	}
 
-	@property --totalScore {
-		syntax: '<integer>';
-		initial-value: 0;
-		inherits: false;
-	}
-
-	.score {
-		position: relative;
+	.score-container {
 		margin-top: 18px;
-		text-shadow: 0 0 3px #000, 0 0 3px #000, 0 0 3px #000;
 		transform-origin: 50% -100%;
-	}
-	.score .total {
-		font-size: 36px;
-	}
-	.score .total .points {
-		font-size: 56px;
-		transition: --totalScore 1500ms;
-		counter-reset: totalScore var(--totalScore);
-	}
-	.score .total .points::after {
-		content: counter(totalScore);
 	}
 </style>
