@@ -19,14 +19,16 @@
 	function bounce(element: HTMLElement, force: number, delay = 0) {
 		element.animate(
 			[
-				{ transform: 'scale(100%)' },
-				{ transform: `scale(${100 + force}%)` },
+				{ transform: 'scale(100%)', easing: 'ease-out' },
+				{
+					transform: `scale(${100 + force}%)`,
+					easing: 'cubic-bezier(0.12, 0.365, 0.55, 1.65)',
+				},
 				{ transform: 'scale(100%)' },
 			],
 			{
 				delay,
 				duration: 300,
-				easing: 'cubic-bezier(0.12, 0.365, 0.55, 1.65)',
 			}
 		)
 	}
@@ -114,10 +116,10 @@
 	}
 
 	@keyframes gradient {
-		0% {
+		from {
 			background-position: 0 50%;
 		}
-		100% {
+		to {
 			background-position: 400px 50%;
 		}
 	}

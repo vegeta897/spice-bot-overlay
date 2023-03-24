@@ -51,6 +51,6 @@
 	}
 	.trains-container {
 		position: absolute;
-		top: calc(100% - 80px);
+		top: calc(100% - 65px);
 	}
 </style>

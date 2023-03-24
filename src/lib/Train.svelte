@@ -3,7 +3,7 @@
 
 	export let train: any
 
-	const TRAIN_CAR_SIZE = 100
+	const TRAIN_CAR_SIZE = 85 // TODO: Handle train engine size difference
 	const SCREEN_WIDTH = 1920
 
 	let trainContainer: HTMLDivElement
@@ -70,7 +70,11 @@
 
 <div bind:this={trainContainer}>
 	{#each graces as grace, g}
-		<TrainCar color={grace.userColor} bind:this={cars[g]} />
+		<TrainCar
+			color={grace.userColor}
+			type={g === 0 ? 'engine' : 'car'}
+			bind:this={cars[g]}
+		/>
 	{/each}
 </div>
 
