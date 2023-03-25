@@ -25,7 +25,6 @@ export async function runChatLoop() {
 			train,
 		])
 		const { messages, trainSize } = planTrain()
-		console.log(`simulating train size ${trainSize}`)
 		for (const { message, delay, grace } of messages) {
 			if (chatLoopStartTime !== runTime) break
 			await sleep(delay)
