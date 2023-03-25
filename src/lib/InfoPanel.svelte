@@ -40,8 +40,8 @@
 </script>
 
 <section>
-	<h1 bind:this={h1Element}>GRACE TRAIN!</h1>
-	<div class="size" bind:this={sizeElement}>
+	<h1 class="nunito" bind:this={h1Element}>GRACE TRAIN!</h1>
+	<div class="size nunito" bind:this={sizeElement}>
 		{#each digits as digit}
 			<div class="digit">
 				{#key digit}
@@ -75,20 +75,6 @@
 		right: 0;
 		bottom: 0;
 		text-align: center;
-	}
-
-	h1,
-	.size {
-		font-weight: 900;
-		font-family: 'Nunito', sans-serif;
-	}
-
-	@supports (font-variation-settings: normal) {
-		h1,
-		.size {
-			font-family: 'NunitoVariable', sans-serif;
-			font-variation-settings: 'wght' 900;
-		}
 	}
 
 	h1 {

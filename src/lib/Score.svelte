@@ -6,7 +6,7 @@
 	$: scoreDelta = Math.max(300, (lastGrace?.delta || 0) * 10)
 </script>
 
-<div class="score">
+<div class="score nunito">
 	<span
 		class="points"
 		style="--totalScore: {totalScore}; transition: --totalScore {Math.min(
@@ -17,13 +17,6 @@
 </div>
 
 <style>
-	@supports (font-variation-settings: normal) {
-		.score {
-			font-family: 'NunitoVariable', sans-serif;
-			font-variation-settings: 'wght' 900;
-		}
-	}
-
 	@property --totalScore {
 		syntax: '<integer>';
 		initial-value: 0;
@@ -32,8 +25,6 @@
 
 	.score {
 		font-size: 36px;
-		font-weight: 900;
-		font-family: 'Nunito', sans-serif;
 		position: relative;
 		text-shadow: 0 0 3px #000, 0 0 3px #000, 0 0 3px #000;
 	}
