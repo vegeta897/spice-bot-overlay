@@ -18,7 +18,7 @@
 	let lastImpulse = 0
 	let cars: TrainCar[] = []
 	$: if (cars.length > 0) impulse()
-	let showSmoke = true
+	let showSmoke = false
 
 	function impulse() {
 		const now = Date.now()
@@ -48,6 +48,7 @@
 	}
 
 	async function runTrain() {
+		showSmoke = true
 		let translation = 100
 		let translatingTo = -100
 		while (!train.offScreen) {
