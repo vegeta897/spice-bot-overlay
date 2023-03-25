@@ -3,8 +3,7 @@
 	import { randomIntRange } from './util'
 
 	const clouds: SVGElement[] = []
-	const cloudMaxDelay = 100
-	const cloudDuration = 3000 + cloudMaxDelay
+	const cloudDuration = 3000
 	const cloudRate = 200
 	const cloudCount = Math.ceil(cloudDuration / cloudRate)
 
@@ -54,7 +53,7 @@
 			],
 			{
 				duration: 3000,
-				delay: randomIntRange(0, cloudMaxDelay / 10) * 10,
+				delay: randomIntRange(0, 10) * 10,
 				fill: 'forwards',
 			}
 		)
