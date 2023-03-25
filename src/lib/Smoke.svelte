@@ -2,6 +2,8 @@
 	import { onDestroy, onMount } from 'svelte'
 	import { randomIntRange } from './util'
 
+	export let scrollSpeed: number
+
 	const clouds: SVGElement[] = []
 	const cloudDuration = 3000
 	const cloudRate = 200
@@ -31,7 +33,7 @@
 		nextCloudIndex = (nextCloudIndex + 1) % cloudCount
 		const fromScale = randomIntRange(5, 20) / 10
 		const toScale = randomIntRange(30, 50) / 10
-		const toX = 390 + randomIntRange(-50, 50)
+		const toX = scrollSpeed * 3 + randomIntRange(-50, 50)
 		const toY = -180 + randomIntRange(-20, 20)
 		cloud.animate(
 			[

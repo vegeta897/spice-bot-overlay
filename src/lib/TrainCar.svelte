@@ -1,6 +1,4 @@
 <script lang="ts">
-	import Smoke from './Smoke.svelte'
-
 	export let type: 'engine' | 'car' = 'car'
 	export let color: string
 
@@ -33,7 +31,6 @@
 </script>
 
 {#if type === 'engine'}
-	<Smoke />
 	<svg viewBox="0 0 104 72" width="104" height="72" bind:this={svgElement}>
 		<path
 			d="M98,58l-72,0l0,8l-24,0l16,-16l0,-16l8,0l0,-12l-4,0l0,-8l20,0l0,8l-4,0l0,12l20,0l0,-24l-4,0l0,-8l48,0l0,8l-4,0l0,48Zm-32,-44l0,20l24,0l0,-20l-24,0Z"

@@ -1,11 +1,13 @@
 <script lang="ts">
 	import TrainCar from './TrainCar.svelte'
+	import Smoke from './Smoke.svelte'
 
 	export let train: any
 
 	const TRAIN_CAR_SIZE = 85 // TODO: Handle train engine size difference
 	const SCREEN_WIDTH = 1920
 	const SPEED = 15 // Seconds per screen-width
+	const pixelsPerSecond = Math.round(SCREEN_WIDTH / SPEED)
 
 	let trainContainer: HTMLDivElement
 
@@ -16,6 +18,7 @@
 	let lastImpulse = 0
 	let cars: TrainCar[] = []
 	$: if (cars.length > 0) impulse()
+	let showSmoke = true
 
 	function impulse() {
 		const now = Date.now()
@@ -50,6 +53,7 @@
 		while (!train.offScreen) {
 			await slide(translation, translatingTo)
 			translation = translatingTo
+			if (translation === -100) showSmoke = false
 			if (train.status === 'ended') {
 				// If grace train finished, calculate how many more 100% needed to get off screen
 				const trainSize = graces.length * TRAIN_CAR_SIZE
@@ -77,6 +81,9 @@
 			bind:this={cars[g]}
 		/>
 	{/each}
+	{#if showSmoke}
+		<Smoke scrollSpeed={pixelsPerSecond} />
+	{/if}
 </div>
 
 <style>
