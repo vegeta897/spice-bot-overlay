@@ -5,6 +5,7 @@
 
 	const TRAIN_CAR_SIZE = 85 // TODO: Handle train engine size difference
 	const SCREEN_WIDTH = 1920
+	const SPEED = 15 // Seconds per screen-width
 
 	let trainContainer: HTMLDivElement
 
@@ -30,7 +31,7 @@
 	let animation: Animation
 
 	function slide(from: number, to: number) {
-		const duration = ((from - to) / 100) * 15 * 1000
+		const duration = ((from - to) / 100) * SPEED * 1000
 		return new Promise((resolve) => {
 			animation = trainContainer.animate(
 				[

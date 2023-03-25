@@ -11,10 +11,8 @@
 	let sizeElement: HTMLDivElement
 	let scoreElement: HTMLDivElement
 
-	$: digits = train.graces
-		.filter((g) => g.type !== 'end')
-		.length.toString()
-		.padStart(2, ' ')
+	$: combo = train.graces.filter((g) => g.type !== 'end').length
+	$: digits = combo.toString().padStart(2, ' ')
 
 	function bounce(element: HTMLElement, force: number, delay = 0) {
 		element.animate(
@@ -56,7 +54,7 @@
 				{/key}
 			</div>
 		{/each}
-		{#key train.length}
+		{#key combo}
 			<svg class="x" viewBox="0 0 100 100" width="38" height="38">
 				<path d="M20 20 L80 80 M80 20 L20 80" />
 			</svg>
@@ -73,7 +71,6 @@
 		height: 300px;
 		padding: 0 40px;
 		box-sizing: border-box;
-		/* border: 1px solid white; */
 		position: absolute;
 		right: 0;
 		bottom: 0;
@@ -155,9 +152,7 @@
 		stroke: #fff;
 		filter: drop-shadow(0 0 2px #000) drop-shadow(0 0 2px #000);
 		margin-left: 6px;
-		animation-name: rotate-90;
-		animation-duration: 300ms;
-		animation-timing-function: cubic-bezier(0.12, 0.365, 0.55, 1.65);
+		animation: 300ms cubic-bezier(0.12, 0.365, 0.55, 1.65) rotate-90;
 		display: inline-block;
 	}
 

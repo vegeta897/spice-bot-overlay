@@ -1,3 +1,4 @@
+import { randomIntRange } from '../util'
 import { runChatLoop } from './loop'
 import {
 	fakeUsers,
@@ -176,12 +177,6 @@ const getTimeString = () => {
 		.getMinutes()
 		.toString()
 		.padStart(2, '0')}`
-}
-
-const randomIntRange = (minOrMax: number, max?: number) => {
-	const min = max === undefined ? 0 : minOrMax
-	const range = max === undefined ? minOrMax : max - minOrMax
-	return Math.floor(min + Math.random() * range)
 }
 
 const pickRandom = (arr: any[]) => arr[Math.floor(Math.random() * arr.length)]

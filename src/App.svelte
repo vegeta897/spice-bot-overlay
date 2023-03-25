@@ -29,8 +29,8 @@
 
 <style>
 	main {
-		margin-left: 1rem;
-		margin-top: 1rem;
+		margin-left: 0.25rem;
+		margin-top: 0.25rem;
 		display: flex;
 		height: calc(1080px / 2 + 2px);
 		width: calc(1920px / 2 + 290px + 4px);
@@ -51,6 +51,6 @@
 	}
 	.trains-container {
 		position: absolute;
-		top: calc(100% - 65px);
+		top: calc(100% - 75px);
 	}
 </style>
