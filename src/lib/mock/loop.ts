@@ -69,7 +69,7 @@ export function createStaticTrain() {
 			status: 'running',
 			graces: fakeUsers.map((u) => ({
 				userColor: u[1],
-				totalScore: 234567,
+				totalScore: 1234567,
 				comboScore: 0,
 				delta: 0,
 			})),

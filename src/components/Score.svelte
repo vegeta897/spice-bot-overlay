@@ -9,6 +9,8 @@
 <div class="score nunito">
 	<span
 		class="points"
+		class:mini={totalScore.toString().length > 7}
+		class:micro={totalScore.toString().length > 8}
 		style="--totalScore: {totalScore}; transition: --totalScore {Math.min(
 			2000,
 			scoreDelta
@@ -27,6 +29,7 @@
 		font-size: 28px;
 		line-height: 52px;
 		text-align: right;
+		white-space: nowrap;
 		position: relative;
 		text-shadow: 0 0 3px #000, 0 0 3px #000, 0 0 3px #000;
 	}
@@ -37,5 +40,11 @@
 	}
 	.score .points::after {
 		content: counter(totalScore);
+	}
+	.score .points.mini {
+		font-size: 33px;
+	}
+	.score .points.micro {
+		font-size: 30px;
 	}
 </style>
