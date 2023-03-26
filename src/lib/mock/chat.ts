@@ -1,5 +1,5 @@
 import { randomIntRange } from '../util'
-import { runChatLoop } from './loop'
+import { createStaticTrain, runChatLoop } from './loop'
 import {
 	fakeUsers,
 	graceMessages,
@@ -35,6 +35,7 @@ const POINTS = {
 
 export function initChat() {
 	runChatLoop()
+	// createStaticTrain()
 }
 
 export function planTrain() {

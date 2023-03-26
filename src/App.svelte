@@ -16,9 +16,9 @@
 >
 	<div class="stream-container">
 		<div class="stream">
-			<video autoplay muted loop>
+			<!-- <video autoplay muted loop>
 				<source src="/sample-stream.mp4" type="video/mp4" />
-			</video>
+			</video> -->
 			<div class="trains-container">
 				{#each $graceTrains as train, t (train.startTime)}
 					<Train {train} />
@@ -26,7 +26,9 @@
 			</div>
 			{#if $graceTrains.length > 0}
 				{@const latestTrain = $graceTrains[$graceTrains.length - 1]}
-				{#key latestTrain.startTime}<InfoPanel train={latestTrain} />{/key}
+				{#if latestTrain.showInfo}
+					{#key latestTrain.startTime}<InfoPanel train={latestTrain} />{/key}
+				{/if}
 			{/if}
 		</div>
 	</div>

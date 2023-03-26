@@ -24,14 +24,14 @@
 	}
 
 	.score {
-		font-size: 36px;
+		font-size: 28px;
+		line-height: 52px;
 		text-align: right;
-		margin-right: 56px;
 		position: relative;
 		text-shadow: 0 0 3px #000, 0 0 3px #000, 0 0 3px #000;
 	}
 	.score .points {
-		font-size: 56px;
+		font-size: 40px;
 		transition: --totalScore 1500ms;
 		counter-reset: totalScore var(--totalScore);
 	}
