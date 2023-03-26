@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte'
-	import { randomIntRange } from './util'
-
-	export let scrollSpeed: number
+	import { TRAIN } from '../lib/constants'
+	import { randomIntRange } from '../lib/util'
 
 	const clouds: SVGElement[] = []
 	const cloudDuration = 3000
@@ -16,7 +15,7 @@
 	const newCloudPlaceholder = document.createElement('div')
 	newCloudPlaceholder.innerHTML = `<svg	width="20px" height="20px" viewBox="0 0 20 20"
     style="opacity: 0; transform-origin: 10px 10px; position: absolute; filter: blur(4px);">
-		<circle cx="10" cy="10" r="10"  fill="#9997" /></svg>`
+		<circle cx="10" cy="10" r="10"  fill="#999a" /></svg>`
 	const cloudElement = newCloudPlaceholder.firstElementChild
 
 	onMount(() => {
@@ -33,7 +32,9 @@
 		nextCloudIndex = (nextCloudIndex + 1) % cloudCount
 		const fromScale = randomIntRange(5, 20) / 10
 		const toScale = randomIntRange(30, 50) / 10
-		const toX = scrollSpeed * 3 + randomIntRange(-50, 50)
+		const toX = Math.round(
+			TRAIN.speed * (cloudDuration / 1000) + randomIntRange(-50, 50)
+		)
 		const toY = -180 + randomIntRange(-20, 20)
 		cloud.animate(
 			[
@@ -54,7 +55,7 @@
 				},
 			],
 			{
-				duration: 3000,
+				duration: cloudDuration,
 				delay: randomIntRange(0, 10) * 10,
 				fill: 'forwards',
 			}

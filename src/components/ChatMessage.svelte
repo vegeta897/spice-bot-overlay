@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Redeem from './Redeem.svelte'
-
 	export let username: string
 	export let color: string
 	export let text: string
@@ -20,7 +19,7 @@
 	{/if}
 	{#if !grace}
 		<p>
-			<span class="time faded">{time}</span><strong style="color:{color}"
+			<span class="time faded">{time}</span><strong style:color
 				>{username}</strong
 			><span>: </span><span class:highlight>{text}</span>
 		</p>

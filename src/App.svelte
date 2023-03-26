@@ -1,18 +1,24 @@
 <script lang="ts">
 	import { initChat } from './lib/mock/chat'
-	import ChatPane from './lib/ChatPane.svelte'
-	import Train from './lib/Train.svelte'
+	import ChatPane from './components/ChatPane.svelte'
+	import Train from './components/Train.svelte'
 	import { initWebsocket } from './lib/websocket'
-	import InfoPanel from './lib/InfoPanel.svelte'
+	import InfoPanel from './components/InfoPanel.svelte'
 	import { graceTrains } from './lib/store'
+	import { SCREEN } from './lib/constants'
 
 	initWebsocket()
 	initChat()
 </script>
 
-<main>
+<main
+	style="--screen-width: {SCREEN.width}px; --screen-height: {SCREEN.height}px;"
+>
 	<div class="stream-container">
 		<div class="stream">
+			<video autoplay muted loop>
+				<source src="/sample-stream.mp4" type="video/mp4" />
+			</video>
 			<div class="trains-container">
 				{#each $graceTrains as train, t (train.startTime)}
 					<Train {train} />
@@ -33,24 +39,28 @@
 		margin-top: 0.25rem;
 		display: flex;
 		height: calc(1080px / 2 + 2px);
-		width: calc(1920px / 2 + 290px + 4px);
+		width: calc(var(--screen-width) / 2 + 290px + 4px);
 	}
 	.stream-container {
-		width: calc(1920px / 2);
-		height: calc(1080px / 2);
+		width: calc(var(--screen-width) / 2);
+		height: calc(var(--screen-height) / 2);
 		border: 1px solid #0008;
 		overflow: hidden;
 	}
 	.stream {
-		width: 1920px;
-		height: 1080px;
+		width: var(--screen-width);
+		height: var(--screen-height);
 		transform: scale(0.5);
 		transform-origin: top left;
 		background: url('/sample-stream.jpg');
 		background-repeat: no-repeat;
 	}
+	video {
+		position: absolute;
+	}
 	.trains-container {
 		position: absolute;
 		top: calc(100% - 75px);
+		width: 100%;
 	}
 </style>

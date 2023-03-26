@@ -38,7 +38,7 @@ export function initChat() {
 }
 
 export function planTrain() {
-	const trainSize = randomIntRange(8, 24)
+	const trainSize = randomIntRange(6, 30)
 	const messages: { message: ChatMessage; delay: number; grace?: GraceInfo }[] =
 		[]
 	const trainUsers: Set<string> = new Set()

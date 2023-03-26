@@ -1,19 +1,28 @@
 import { chat, graceTrains } from '../store'
+import { randomIntRange } from '../util'
 import { planTrain } from './chat'
 
 const MAX_MESSAGES = 18
 
 let runTime: number
 
+type Train = {
+	startTime: number
+	endTime?: number
+	status: 'running' | 'ended'
+	score: number
+	graces: any[]
+	offScreen: boolean
+	endUser?: string
+}
+
 export async function runChatLoop() {
 	const chatLoopStartTime = Date.now()
 	runTime = chatLoopStartTime
 	while (chatLoopStartTime === runTime) {
-		// await sleep(randomIntRange(6, 12) * 1000)
 		const startTime = Date.now()
-		const train = {
+		const train: Train = {
 			startTime,
-			endTime: 0,
 			status: 'running',
 			score: 0,
 			graces: [],
@@ -34,12 +43,14 @@ export async function runChatLoop() {
 				if (grace.type === 'end') {
 					train.status = 'ended'
 					train.endTime = Date.now()
+					train.endUser = message.username
 				} else {
 					train.graces.push({ ...grace, userColor: message.color })
 				}
 				graceTrains.update((_graces) => [..._graces])
 			}
 		}
+		await sleep(randomIntRange(5, 10) * 1000)
 	}
 }
 

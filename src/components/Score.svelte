@@ -25,6 +25,8 @@
 
 	.score {
 		font-size: 36px;
+		text-align: right;
+		margin-right: 56px;
 		position: relative;
 		text-shadow: 0 0 3px #000, 0 0 3px #000, 0 0 3px #000;
 	}

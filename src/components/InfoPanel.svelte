@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition'
-	import { backOut } from 'svelte/easing'
+	import { backIn, backOut } from 'svelte/easing'
 	import Score from './Score.svelte'
 
 	// TODO: Lose the shadows, create backgrounds?
@@ -33,14 +33,17 @@
 	}
 
 	$: if (digits && sizeElement) {
-		bounce(h1Element, 5, 80)
+		bounce(h1Element, 5)
 		bounce(sizeElement, 10)
 		bounce(scoreElement, 3, 120)
 	}
 </script>
 
-<section>
-	<h1 class="nunito" bind:this={h1Element}>GRACE TRAIN!</h1>
+<section
+	in:fly={{ x: 600, duration: 500, easing: backOut }}
+	out:fly={{ x: 600, duration: 500, easing: backIn }}
+>
+	<h1 class="nunito" bind:this={h1Element}>GRACE<br />TRAIN!</h1>
 	<div class="size nunito" bind:this={sizeElement}>
 		{#each digits as digit}
 			<div class="digit">
@@ -55,7 +58,7 @@
 			</div>
 		{/each}
 		{#key combo}
-			<svg class="x" viewBox="0 0 100 100" width="38" height="38">
+			<svg class="x" viewBox="0 0 100 100" width="40" height="40">
 				<path d="M20 20 L80 80 M80 20 L20 80" />
 			</svg>
 		{/key}
@@ -63,6 +66,11 @@
 	<div class="score-container" bind:this={scoreElement}>
 		<Score {train} />
 	</div>
+	{#if train.endUser}
+		<div class="end nunito">
+			Ended by {train.endUser}!
+		</div>
+	{/if}
 </section>
 
 <style>
@@ -75,14 +83,20 @@
 		right: 0;
 		bottom: 0;
 		text-align: center;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-evenly;
+		align-content: flex-start;
 	}
 
 	h1 {
-		font-size: 48px;
-		line-height: 48px;
+		font-size: 56px;
+		line-height: 56px;
+		width: 240px;
+		height: 120px;
 		margin: 0;
 		filter: drop-shadow(0 0 3px #000) drop-shadow(0 0 2px #000);
-		transform-origin: 50% 200%;
+		transform-origin: 50% 50%;
 		background: linear-gradient(
 			70deg,
 			#fdb4bc 0%,
@@ -113,12 +127,14 @@
 		color: #fff;
 		justify-content: center;
 		align-items: baseline;
-		font-size: 64px;
+		font-size: 74px;
+		width: 200px;
+		height: 120px;
 	}
 
 	.digit {
-		width: 40px;
-		height: 64px;
+		width: 48px;
+		height: 74px;
 		position: relative;
 		text-shadow: 0 0 5px #000, 0 0 5px #000, 0 0 5px #000;
 	}
@@ -152,7 +168,12 @@
 	}
 
 	.score-container {
-		margin-top: 18px;
-		transform-origin: 50% -100%;
+		transform-origin: 80% -100%;
+		width: 100%;
+	}
+
+	.end {
+		font-size: 36px;
+		text-shadow: 0 0 3px #000, 0 0 4px #000, 0 0 5px #000;
 	}
 </style>
