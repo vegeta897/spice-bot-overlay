@@ -6,16 +6,21 @@
 
 	// TODO: Lose the shadows, create backgrounds?
 
+	// TODO: Put it all in a rectangular panel
+	// Expands when ended to show ending user
+
+	// Make the background a train! Don't use boring rectangular edges
+
 	export let train: Train
 
-	let h1Element: HTMLHeadingElement
+	let titleElement: SVGElement
 	let sizeElement: HTMLDivElement
 	let scoreElement: HTMLDivElement
 
 	$: combo = train.graces.filter((g) => g.type !== 'end').length
 	$: digits = combo.toString().padStart(2, ' ')
 
-	function bounce(element: HTMLElement, force: number, delay = 0) {
+	function bounce(element: HTMLElement | SVGElement, force: number, delay = 0) {
 		element.animate(
 			[
 				{ transform: 'scale(100%)', easing: 'ease-out' },
@@ -34,7 +39,7 @@
 	}
 
 	$: if (digits && sizeElement) {
-		bounce(h1Element, 5)
+		bounce(titleElement, 5)
 		bounce(sizeElement, 10)
 		bounce(scoreElement, 3, 120)
 	}
@@ -45,7 +50,36 @@
 	out:fly={{ x: 600, duration: 500, easing: backIn }}
 >
 	<div class="main">
-		<h1 class="nunito rainbow-text" bind:this={h1Element}>GRACE TRAIN!</h1>
+		<svg
+			bind:this={titleElement}
+			class="title"
+			viewBox="0 0 220 120"
+			width="220px"
+			height="120px"
+		>
+			<defs>
+				<linearGradient id="rainbowGradient" y2="-10%">
+					<stop offset="0%" stop-color="#fdb4bc" />
+					<stop offset="10%" stop-color="#d8d9ed" />
+					<stop offset="20%" stop-color="#c8fbbf" />
+					<stop offset="30%" stop-color="#a2efff" />
+					<stop offset="40%" stop-color="#d8d9ed" />
+					<stop offset="50%" stop-color="#fdb4bc" />
+					<stop offset="60%" stop-color="#d8d9ed" />
+					<stop offset="70%" stop-color="#c8fbbf" />
+					<stop offset="80%" stop-color="#a2efff" />
+					<stop offset="90%" stop-color="#d8d9ed" />
+					<stop offset="100%" stop-color="#fdb4bc" />
+				</linearGradient>
+			</defs>
+			<clipPath id="graceTrainClip">
+				<text x="0px" y="49px" class="nunito">GRACE</text>
+				<text x="2px" y="99px" class="nunito">TRAIN!</text>
+			</clipPath>
+			<g clip-path="url('#graceTrainClip')">
+				<rect width="440px" height="120px" fill="url('#rainbowGradient')" />
+			</g>
+		</svg>
 		<div class="stats">
 			<div class="size nunito" bind:this={sizeElement}>
 				{#each digits as digit}
@@ -81,14 +115,15 @@
 
 <style>
 	section {
-		width: 640px;
-		height: 300px;
-		padding: 0 40px;
+		width: 480px;
+		height: 220px;
+		padding: 12px;
 		box-sizing: border-box;
 		position: absolute;
-		right: 0;
-		bottom: 0;
+		right: 80px;
+		bottom: 80px;
 		text-align: center;
+		background: #222;
 	}
 
 	.main {
@@ -101,39 +136,22 @@
 		align-content: center;
 	}
 
-	h1 {
+	.title {
 		font-size: 56px;
-		line-height: 56px;
-		width: 220px;
-		height: 120px;
-		margin: 0;
 		filter: drop-shadow(0 0 3px #000) drop-shadow(0 0 2px #000);
 		transform-origin: 50% 50%;
 	}
 
-	.rainbow-text {
-		background: linear-gradient(
-			70deg,
-			#fdb4bc 0%,
-			#d8d9ed 18%,
-			#c8fbbf 36%,
-			#a2efff 64%,
-			#d8d9ed 72%,
-			#fdb4bc 100%
-		);
-		background-size: 400px;
-		background-clip: text;
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		animation: gradient 4s linear infinite;
+	.title rect {
+		animation: 3s linear title-gradient-slide infinite;
 	}
 
-	@keyframes gradient {
+	@keyframes title-gradient-slide {
 		from {
-			background-position: 0 50%;
+			transform: translateX(0);
 		}
 		to {
-			background-position: 400px 50%;
+			transform: translateX(-220px);
 		}
 	}
 
@@ -176,7 +194,6 @@
 		stroke-linecap: round;
 		stroke: #fff;
 		filter: drop-shadow(0 0 2px #000) drop-shadow(0 0 2px #000);
-		/* margin-left: 6px; */
 		animation: 300ms cubic-bezier(0.12, 0.365, 0.55, 1.65) rotate-90;
 		display: inline-block;
 	}
