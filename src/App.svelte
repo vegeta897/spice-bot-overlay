@@ -54,6 +54,7 @@
 		height: var(--screen-height);
 		transform: scale(0.5);
 		transform-origin: top left;
+		/* TODO: Cycle different backgrounds with a cross-fade */
 		background: url('/sample-stream.jpg');
 		background-repeat: no-repeat;
 	}

@@ -4,23 +4,20 @@
 	import Score from './Score.svelte'
 	import type { Train } from '../lib/mock/loop'
 
-	// TODO: Lose the shadows, create backgrounds?
-
-	// TODO: Put it all in a rectangular panel
-	// Expands when ended to show ending user
-
-	// Make the background a train! Don't use boring rectangular edges
+	// TODO: Show high scores after end
 
 	export let train: Train
 
-	let titleElement: SVGElement
+	let titleElement: HTMLHeadingElement
 	let sizeElement: HTMLDivElement
 	let scoreElement: HTMLDivElement
 
 	$: combo = train.graces.filter((g) => g.type !== 'end').length
 	$: digits = combo.toString().padStart(2, ' ')
 
-	function bounce(element: HTMLElement | SVGElement, force: number, delay = 0) {
+	const rainbow = ['#fdb4bc', '#d8d9ed', '#c8fbbf', '#a2efff', '#d8d9ed']
+
+	function bounce(element: HTMLElement, force: number, delay = 0) {
 		element.animate(
 			[
 				{ transform: 'scale(100%)', easing: 'ease-out' },
@@ -45,43 +42,48 @@
 	}
 </script>
 
-<section
-	in:fly={{ x: 600, duration: 500, easing: backOut }}
-	out:fly={{ x: 600, duration: 500, easing: backIn }}
->
-	<div class="main">
-		<svg
-			bind:this={titleElement}
-			class="title"
-			viewBox="0 0 220 120"
-			width="220px"
-			height="120px"
-		>
-			<defs>
-				<linearGradient id="rainbowGradient" y2="-10%">
-					<stop offset="0%" stop-color="#fdb4bc" />
-					<stop offset="10%" stop-color="#d8d9ed" />
-					<stop offset="20%" stop-color="#c8fbbf" />
-					<stop offset="30%" stop-color="#a2efff" />
-					<stop offset="40%" stop-color="#d8d9ed" />
-					<stop offset="50%" stop-color="#fdb4bc" />
-					<stop offset="60%" stop-color="#d8d9ed" />
-					<stop offset="70%" stop-color="#c8fbbf" />
-					<stop offset="80%" stop-color="#a2efff" />
-					<stop offset="90%" stop-color="#d8d9ed" />
-					<stop offset="100%" stop-color="#fdb4bc" />
-				</linearGradient>
-			</defs>
-			<clipPath id="graceTrainClip">
-				<text x="0px" y="49px" class="nunito">GRACE</text>
-				<text x="2px" y="99px" class="nunito">TRAIN!</text>
-			</clipPath>
-			<g clip-path="url('#graceTrainClip')">
-				<rect width="440px" height="120px" fill="url('#rainbowGradient')" />
-			</g>
-		</svg>
+<section out:fly={{ x: 600, duration: 500, easing: backIn }}>
+	<svg class="train-track" viewBox="0 0 560 160" width="560" height="160">
+		<defs>
+			<linearGradient id="rainbowGradient" y2="-5%">
+				{#each Array(11) as _, i}
+					<stop offset="{i * 10}%" stop-color={rainbow[i % rainbow.length]} />
+				{/each}
+			</linearGradient>
+		</defs>
+		<!-- <rect class="bg" width="590" height="160" fill="#0007" rx="30" /> -->
+		{#each Array(7) as _, i}
+			<rect
+				class="slat"
+				x={30 + i * 80}
+				y="8"
+				width="40"
+				height="140"
+				style="animation-delay: {(6 - i) * 280}ms; transform-origin: {50 +
+					i * 80}px 70px;"
+				fill={rainbow[i % rainbow.length] + '70'}
+				rx="12"
+			/>
+		{/each}
+		<clipPath id="trackRailsClip">
+			<rect class="rail" x="8" y="24" width="560" height="20" rx="10" />
+			<rect class="rail" x="8" y="114" width="560" height="20" rx="10" />
+		</clipPath>
+		<g clip-path="url('#trackRailsClip')">
+			<rect
+				class="rail-gradient"
+				x="-40"
+				y="24"
+				width="1200"
+				height="124"
+				fill="url('#rainbowGradient')"
+			/>
+		</g>
+	</svg>
+	<div class="main nunito">
+		<h1 bind:this={titleElement}>GRACE TRAIN!</h1>
 		<div class="stats">
-			<div class="size nunito" bind:this={sizeElement}>
+			<div class="size" bind:this={sizeElement}>
 				{#each digits as digit}
 					<div class="digit">
 						{#key digit}
@@ -106,7 +108,7 @@
 		</div>
 	</div>
 	{#if train.endUser}
-		<div class="end nunito" in:fly={{ y: 200, duration: 400, easing: backOut }}>
+		<div class="end" in:fly={{ y: 200, duration: 400, easing: backOut }}>
 			<h2>ENDED BY</h2>
 			<h2 class="pulse">{train.endUser} !</h2>
 		</div>
@@ -115,44 +117,82 @@
 
 <style>
 	section {
-		width: 480px;
-		height: 220px;
+		width: 560px;
+		height: 230px;
 		padding: 12px;
 		box-sizing: border-box;
 		position: absolute;
-		right: 80px;
+		right: 0;
 		bottom: 80px;
 		text-align: center;
-		background: #222;
+		border: 1px solid #fff4;
+	}
+
+	.train-track {
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+
+	.train-track .bg {
+		animation: 2s ease-out slide-in;
+	}
+
+	.train-track .rail {
+		animation: 1.8s 0.4s ease-out slide-in;
+	}
+
+	@keyframes slide-in {
+		from {
+			transform: translateX(100%);
+			opacity: 0.5;
+		}
+	}
+
+	.train-track .rail-gradient {
+		animation: 4s linear rail-gradient-slide infinite;
+	}
+
+	@keyframes rail-gradient-slide {
+		to {
+			transform: translateX(-600px);
+		}
+	}
+
+	.train-track .slat {
+		position: relative;
+		animation: 400ms cubic-bezier(0.16, 0.41, 0.56, 1.32) slat-appear;
+		animation-fill-mode: backwards;
+	}
+
+	@keyframes slat-appear {
+		from {
+			transform: scaleY(0.2);
+			opacity: 0;
+		}
 	}
 
 	.main {
 		width: 100%;
-		height: 120px;
+		height: 135px;
 		display: flex;
 		flex-wrap: wrap;
 		flex-direction: column;
 		justify-content: center;
-		align-content: center;
+		align-content: space-between;
 	}
 
-	.title {
-		font-size: 56px;
-		filter: drop-shadow(0 0 3px #000) drop-shadow(0 0 2px #000);
+	h1 {
+		font-size: 52px;
+		line-height: 45px;
+		margin: 0;
+		margin-left: 26px;
+		width: 210px;
+		padding: 5px 0 2px;
+		border-radius: 20px;
+		background: #0009;
 		transform-origin: 50% 50%;
-	}
-
-	.title rect {
-		animation: 3s linear title-gradient-slide infinite;
-	}
-
-	@keyframes title-gradient-slide {
-		from {
-			transform: translateX(0);
-		}
-		to {
-			transform: translateX(-220px);
-		}
+		position: relative;
 	}
 
 	.stats {
@@ -162,13 +202,15 @@
 
 	.size {
 		display: flex;
-		color: #fff;
+		position: relative;
+		background: #0009;
 		justify-content: flex-end;
 		align-items: flex-start;
 		font-size: 52px;
 		line-height: 52px;
 		margin-right: 19px;
 		height: 60px;
+		transform-origin: 75% 50%;
 	}
 
 	.digit {
@@ -176,7 +218,6 @@
 		height: 52px;
 		line-height: 52px;
 		position: relative;
-		text-shadow: 0 0 5px #000, 0 0 5px #000, 0 0 5px #000;
 	}
 
 	.digit span {
@@ -193,7 +234,6 @@
 		stroke-width: 30px;
 		stroke-linecap: round;
 		stroke: #fff;
-		filter: drop-shadow(0 0 2px #000) drop-shadow(0 0 2px #000);
 		animation: 300ms cubic-bezier(0.12, 0.365, 0.55, 1.65) rotate-90;
 		display: inline-block;
 	}
@@ -210,6 +250,8 @@
 	.score-container {
 		transform-origin: 80% -100%;
 		width: 100%;
+		position: relative;
+		background: #0009;
 	}
 
 	.end h2:first-child {

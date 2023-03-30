@@ -34,12 +34,12 @@ const POINTS = {
 }
 
 export function initChat() {
-	runChatLoop()
-	// createStaticTrain()
+	// runChatLoop()
+	createStaticTrain()
 }
 
 export function planTrain() {
-	const trainSize = randomIntRange(6, 30)
+	const trainSize = randomIntRange(9, 30)
 	const messages: { message: ChatMessage; delay: number; grace?: GraceInfo }[] =
 		[]
 	const trainUsers: Set<string> = new Set()
