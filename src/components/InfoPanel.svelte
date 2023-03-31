@@ -14,7 +14,7 @@
 	let comboElement: HTMLDivElement
 	let scoreElement: HTMLDivElement
 
-	$: combo = train.graces.filter((g) => g.type !== 'end').length
+	$: combo = train.graces.length
 
 	function bounce(element: HTMLElement, force: number, delay = 0) {
 		if (!readyToBounce || !element) return

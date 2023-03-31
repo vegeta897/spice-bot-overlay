@@ -1,7 +1,12 @@
 <script lang="ts">
+	import { randomIntRange } from '../lib/util'
+
 	export let type: 'engine' | 'car' = 'car'
 	export let color: string
 	export let symbol: 'heart' | 'star'
+
+	// const bumpAnimDuration = randomIntRange(150, 250) * 10
+	// const bumpAnimDelay = randomIntRange(1, 200) * 10
 
 	const symbolPaths = {
 		engine: {
@@ -112,6 +117,22 @@
 	</svg>
 {:else}
 	<svg viewBox="0 0 375 300" width="75" height="60" bind:this={svgElement}>
+		<circle
+			cx="87.5"
+			cy="262.5"
+			r="25"
+			style="fill:var(--train-base-color);stroke:var(--train-pop-color);"
+		/>
+		<circle
+			cx="287.5"
+			cy="262.5"
+			r="25"
+			style="fill:var(--train-base-color);stroke:var(--train-pop-color);"
+		/>
+		<!-- <g
+			class="train-car-non-wheels"
+			style="animation-duration: {bumpAnimDuration}ms; animation-delay: {bumpAnimDelay}ms"
+		> -->
 		<rect
 			x="162.5"
 			y="12.5"
@@ -126,18 +147,6 @@
 			height="25"
 			style="fill:var(--train-pop-color);stroke:var(--train-pop-color);"
 		/>
-		<circle
-			cx="87.5"
-			cy="262.5"
-			r="25"
-			style="fill:var(--train-base-color);stroke:var(--train-pop-color);"
-		/>
-		<circle
-			cx="287.5"
-			cy="262.5"
-			r="25"
-			style="fill:var(--train-base-color);stroke:var(--train-pop-color);"
-		/>
 		<path
 			d="M37.5,212.5l-25,-175l350,0l-25,175l-300,0Z"
 			style="fill:var(--train-base-color);stroke:var(--train-base-color);"
@@ -147,6 +156,7 @@
 			style="fill:none;stroke:var(--train-base-color);"
 		/>
 		<path d={symbolPaths[type][symbol]} style="fill:{color};stroke:{color};" />
+		<!-- </g> -->
 	</svg>
 {/if}
 
@@ -156,7 +166,22 @@
 		stroke-linecap: round;
 		stroke-linejoin: round;
 		stroke-width: 25px;
-		margin: 0 2.5px;
-		/* background-color: rgba(255, 255, 255, 0.1); */
+		margin: 0 4px;
 	}
+
+	/* .train-car-non-wheels {
+		animation-timing-function: linear;
+		animation-name: bump;
+		animation-iteration-count: infinite;
+	}
+
+	@keyframes bump {
+		0%,
+		10% {
+			transform: translateY(0);
+		}
+		5% {
+			transform: translateY(18px);
+		}
+	} */
 </style>

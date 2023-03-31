@@ -1,4 +1,5 @@
-import { chat, graceTrains } from '../store'
+import { SCREEN, TRAIN } from '../constants'
+import { chat, graceTrains, deleteTrain } from '../store'
 import { randomIntRange, sleep } from '../util'
 import { planTrain } from './chat'
 import { fakeUsers } from './strings'
@@ -29,13 +30,9 @@ export async function runChatLoop() {
 			offScreen: false,
 			showInfo: false,
 		}
-		// Delete finished trains that are off screen
-		// TODO: Calculate the time needed for an ended grace train to be off-screen
-		graceTrains.update((trains) => [
-			...trains.filter((t) => t.status !== 'ended' || !t.offScreen),
-			train,
-		])
+		graceTrains.update((trains) => [...trains, train])
 		const { messages, trainSize } = planTrain()
+		let trainAppearTime: number
 		for (const { message, delay, grace } of messages) {
 			if (chatLoopStartTime !== runTime) break
 			await sleep(delay)
@@ -45,12 +42,23 @@ export async function runChatLoop() {
 					train.status = 'ended'
 					train.endTime = Date.now()
 					train.endUser = message.username
-					setTimeout(() => {
-						train.showInfo = false
-						graceTrains.update((trains) => [...trains]) // Trigger refresh
-						// graceTrains.update(trains=>[...trains.filter(t=>t!==train)])
-					}, 5 * 1000)
+					const trainWidth =
+						TRAIN.engineWidth + TRAIN.carWidth * (train.graces.length - 1)
+					const secondsElapsed = (Date.now() - trainAppearTime) / 1000
+					const remainingWidth =
+						SCREEN.width + trainWidth - TRAIN.speed * secondsElapsed
+					const remainingSeconds = remainingWidth / TRAIN.speed
+					if (remainingSeconds > 5) {
+						setTimeout(() => {
+							train.showInfo = false
+							graceTrains.update((trains) => [...trains]) // Trigger refresh
+						}, 5 * 1000)
+						setTimeout(() => deleteTrain(train), remainingSeconds * 1000)
+					} else {
+						setTimeout(() => deleteTrain(train), 5 * 1000)
+					}
 				} else {
+					trainAppearTime ||= Date.now()
 					train.showInfo = true
 					train.graces.push({ ...grace, userColor: message.color })
 				}

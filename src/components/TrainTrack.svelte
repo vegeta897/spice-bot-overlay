@@ -22,7 +22,7 @@
 	{#each Array(6) as _, i}
 		<rect
 			class="slat"
-			x={30 + i * 80}
+			x={29 + i * 80}
 			y="8"
 			width="40"
 			height="145"

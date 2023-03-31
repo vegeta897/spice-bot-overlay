@@ -9,8 +9,7 @@
 
 	let trainContainer: HTMLDivElement
 
-	$: graces = train.graces.filter((g) => g.type !== 'end')
-	$: if (graces.length === 1 && !animation) runTrain()
+	$: if (train.graces.length === 1 && !animation) runTrain()
 
 	const maxHops = 8
 	let lastImpulse = 0
@@ -56,7 +55,7 @@
 			if (train.status === 'ended') {
 				// If grace train finished, calculate how many more 100% needed to get off screen
 				const trainSize =
-					TRAIN.engineWidth + (graces.length - 1) * TRAIN.carWidth
+					TRAIN.engineWidth + (train.graces.length - 1) * TRAIN.carWidth
 				const remainingPixels = (translation / 100) * SCREEN.width + trainSize
 				if (remainingPixels > 0) {
 					// Finish sliding
@@ -74,7 +73,7 @@
 </script>
 
 <div bind:this={trainContainer}>
-	{#each graces as grace, g (g)}
+	{#each train.graces as grace, g (g)}
 		<TrainCar
 			color={grace.userColor}
 			type={g === 0 ? 'engine' : 'car'}

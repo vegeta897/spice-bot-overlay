@@ -34,8 +34,8 @@ const POINTS = {
 }
 
 export function initChat() {
-	// runChatLoop()
-	createStaticTrain()
+	runChatLoop()
+	// createStaticTrain()
 }
 
 export function planTrain() {
@@ -75,7 +75,7 @@ export function planTrain() {
 		}
 		messages.push({
 			message: graceMessage,
-			delay: randomIntRange(1, 40) * 50,
+			delay: randomIntRange(1, 100) * 25,
 			grace: graceInfo,
 		})
 		lastGraceType = graceType
