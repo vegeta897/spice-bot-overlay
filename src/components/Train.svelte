@@ -74,10 +74,11 @@
 </script>
 
 <div bind:this={trainContainer}>
-	{#each graces as grace, g}
+	{#each graces as grace, g (g)}
 		<TrainCar
 			color={grace.userColor}
 			type={g === 0 ? 'engine' : 'car'}
+			symbol={grace.type === 'redeem' ? 'star' : 'heart'}
 			bind:this={cars[g]}
 		/>
 	{/each}
@@ -89,7 +90,10 @@
 <style>
 	div {
 		position: absolute;
+		bottom: 0;
 		width: 100%;
 		white-space: nowrap;
+		--train-base-color: #605de9;
+		--train-pop-color: #ff538f;
 	}
 </style>

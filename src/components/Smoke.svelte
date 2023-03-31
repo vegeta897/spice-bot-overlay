@@ -86,7 +86,7 @@
 <style>
 	.cloud-container {
 		position: absolute;
-		left: 20px;
-		top: -6px;
+		left: 12px;
+		top: -20px;
 	}
 </style>

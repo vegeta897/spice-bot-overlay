@@ -72,7 +72,7 @@
 	}
 	.trains-container {
 		position: absolute;
-		top: calc(100% - 75px);
+		top: 100%;
 		width: 100%;
 	}
 	section {

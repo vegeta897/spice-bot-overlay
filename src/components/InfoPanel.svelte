@@ -160,6 +160,7 @@
 		position: relative;
 		animation: 400ms cubic-bezier(0.16, 0.41, 0.56, 1.32) slat-appear;
 		animation-fill-mode: backwards;
+		opacity: 0.8;
 	}
 
 	@keyframes slat-appear {
