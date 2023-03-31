@@ -2,6 +2,7 @@
 	import TrainCar from './TrainCar.svelte'
 	import Smoke from './Smoke.svelte'
 	import { SCREEN, TRAIN } from '../lib/constants'
+	import { sleep } from '../lib/util'
 
 	export let train: any
 
@@ -9,13 +10,14 @@
 
 	let trainContainer: HTMLDivElement
 
-	$: if (train.graces.length === 1 && !animation) runTrain()
-
 	const maxHops = 8
 	let lastImpulse = 0
 	let cars: TrainCar[] = []
 	$: if (cars.length > 0) impulse()
+	let running = false
 	let showSmoke = false
+
+	$: if (!running && train.graces.length >= TRAIN.minLength) runTrain()
 
 	function impulse() {
 		const now = Date.now()
@@ -45,6 +47,8 @@
 	}
 
 	async function runTrain() {
+		running = true
+		await sleep(TRAIN.initialDelay)
 		showSmoke = true
 		let translation = 100
 		let translatingTo = -100
@@ -73,16 +77,18 @@
 </script>
 
 <div bind:this={trainContainer}>
-	{#each train.graces as grace, g (g)}
-		<TrainCar
-			color={grace.userColor}
-			type={g === 0 ? 'engine' : 'car'}
-			symbol={grace.type === 'redeem' ? 'star' : 'heart'}
-			bind:this={cars[g]}
-		/>
-	{/each}
-	{#if showSmoke}
-		<Smoke />
+	{#if train.graces.length >= TRAIN.minLength}
+		{#each train.graces as grace, g (g)}
+			<TrainCar
+				color={grace.userColor}
+				type={g === 0 ? 'engine' : 'car'}
+				symbol={grace.type === 'redeem' ? 'star' : 'heart'}
+				bind:this={cars[g]}
+			/>
+		{/each}
+		{#if showSmoke}
+			<Smoke />
+		{/if}
 	{/if}
 </div>
 
@@ -92,6 +98,7 @@
 		bottom: 0;
 		width: 100%;
 		white-space: nowrap;
+		transform: translateX(100%);
 		--train-base-color: #605de9;
 		--train-pop-color: #ff538f;
 	}

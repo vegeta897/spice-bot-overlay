@@ -58,15 +58,16 @@ export async function runChatLoop() {
 						setTimeout(() => deleteTrain(train), 5 * 1000)
 					}
 				} else {
-					trainAppearTime ||= Date.now()
-					train.showInfo = true
 					train.graces.push({ ...grace, userColor: message.color })
+					if (train.graces.length >= TRAIN.minLength) {
+						trainAppearTime ||= Date.now() + TRAIN.initialDelay
+						train.showInfo = true
+					}
 				}
 				graceTrains.update((trains) => [...trains]) // Trigger refresh
 			}
 		}
-
-		await sleep(randomIntRange(3, 9) * 1000)
+		await sleep(randomIntRange(2, 9) * 1000)
 	}
 }
 

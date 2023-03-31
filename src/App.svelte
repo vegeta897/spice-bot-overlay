@@ -14,6 +14,8 @@
 	function changeBackground() {
 		background = 1 + (background % 4)
 	}
+
+	$: infoTrains = $graceTrains.filter((g) => g.showInfo)
 </script>
 
 <main
@@ -32,11 +34,9 @@
 					<Train {train} />
 				{/each}
 			</div>
-			{#if $graceTrains.length > 0}
-				{@const latestTrain = $graceTrains[$graceTrains.length - 1]}
-				{#if latestTrain.showInfo}
-					{#key latestTrain.startTime}<InfoPanel train={latestTrain} />{/key}
-				{/if}
+			{#if infoTrains.length > 0}
+				{@const latestTrain = infoTrains[infoTrains.length - 1]}
+				{#key latestTrain.startTime}<InfoPanel train={latestTrain} />{/key}
 			{/if}
 		</div>
 	</div>

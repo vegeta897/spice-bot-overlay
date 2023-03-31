@@ -44,7 +44,7 @@
 	$: if (combo) {
 		bounce(titleElement, 2)
 		bounce(comboElement, 10)
-		bounce(scoreElement, 3, 120)
+		bounce(scoreElement, 3, 80)
 	}
 </script>
 
