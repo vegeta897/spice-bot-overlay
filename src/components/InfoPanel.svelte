@@ -186,7 +186,7 @@
 		width: 190px;
 		padding: 5px 0 2px;
 		border-radius: 20px;
-		background: #23145099;
+		background: #5029c4d0;
 		transform-origin: 50% 50%;
 		position: relative;
 		will-change: transform;
@@ -203,7 +203,7 @@
 	.size {
 		display: flex;
 		position: relative;
-		background: #45062199;
+		background: #8a1145c7;
 		justify-content: flex-end;
 		align-items: flex-start;
 		font-size: 44px;
