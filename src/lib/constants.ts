@@ -1,5 +1,5 @@
 export const TRAIN = {
-	engineWidth: 85, // Padding included
+	engineWidth: 95, // Padding included
 	carWidth: 80,
 	speed: 128, // Pixels per second
 }
