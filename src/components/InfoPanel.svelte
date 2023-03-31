@@ -41,8 +41,8 @@
 	}
 </script>
 
-<section class="nunito" out:fly={{ x: 500, duration: 500, easing: backIn }}>
-	<svg class="train-track" viewBox="0 0 500 160" width="500" height="160">
+<section class="nunito" out:fly={{ x: 400, duration: 500, easing: backIn }}>
+	<svg class="train-track" viewBox="0 0 540 160" width="540" height="160">
 		<defs>
 			<linearGradient id="rainbowGradient" y2="-5%">
 				{#each Array(11) as _, i}
@@ -56,16 +56,16 @@
 				x={30 + i * 80}
 				y="8"
 				width="40"
-				height="140"
-				style="animation-delay: {(6 - i) * 280}ms; transform-origin: {50 +
-					i * 80}px 70px;"
-				fill={rainbow[i % rainbow.length] + 'a0'}
-				rx="12"
+				height="145"
+				style="animation-delay: {(6 - i) * 150}ms; transform-origin: {50 +
+					i * 80}px 72.5px;"
+				fill={rainbow[i % rainbow.length]}
+				rx="8"
 			/>
 		{/each}
 		<clipPath id="trackRailsClip">
 			<rect class="rail" x="8" y="24" rx="10" />
-			<rect class="rail" x="8" y="114" rx="10" style="animation-delay: 0.5s" />
+			<rect class="rail" x="8" y="114" rx="10" style="animation-delay: 0.3s" />
 		</clipPath>
 		<g clip-path="url('#trackRailsClip')">
 			<rect
@@ -87,7 +87,7 @@
 						{#key digit}
 							<span
 								in:fly={{ y: 40, duration: 250, easing: backOut }}
-								out:fly={{ y: -40, duration: 250 }}
+								out:fly|local={{ y: -40, duration: 250 }}
 							>
 								{digit}
 							</span>
@@ -123,19 +123,19 @@
 		right: 0;
 		bottom: 80px;
 		text-align: center;
-		border: 1px solid #fff4;
 	}
 
 	.train-track {
 		position: absolute;
 		top: 0;
 		left: 0;
+		filter: drop-shadow(0 0 3px #000a);
 	}
 
 	.train-track .rail {
-		width: 500px;
+		width: 540px;
 		height: 20px;
-		animation: 1.8s 0.4s ease-out slide-in;
+		animation: 0.8s 0.2s ease-out slide-in;
 		animation-fill-mode: backwards;
 	}
 
@@ -189,6 +189,7 @@
 		background: #23145099;
 		transform-origin: 50% 50%;
 		position: relative;
+		will-change: transform;
 	}
 
 	.stats {
@@ -213,6 +214,7 @@
 		padding: 1px 9px;
 		border-radius: 16px;
 		transform-origin: 75% 50%;
+		will-change: transform;
 	}
 
 	.digit {
@@ -250,6 +252,7 @@
 
 	.score-container {
 		transform-origin: 80% -100%;
+		will-change: transform;
 		position: relative;
 	}
 
