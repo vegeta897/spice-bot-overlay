@@ -12,15 +12,31 @@
 	let interval: number
 	let nextCloudIndex = 0
 
+	const smokyRainbow = [
+		'#D6A4A9',
+		'#CEABB4',
+		'#C2B8C3',
+		'#BAC3C3',
+		'#B5CDB4',
+		'#ADD3B3',
+		'#A0CFC8',
+		'#9CCAD6',
+		'#ADC3D0',
+		'#BDBCCA',
+		'#C8B1BC',
+	]
+
 	const newCloudPlaceholder = document.createElement('div')
 	newCloudPlaceholder.innerHTML = `<svg	width="20px" height="20px" viewBox="0 0 20 20"
     style="opacity: 0; transform-origin: 10px 10px; position: absolute; filter: blur(4px);">
-		<circle cx="10" cy="10" r="10"  fill="#999a" /></svg>`
+		<circle cx="10" cy="10" r="10" /></svg>`
 	const cloudElement = newCloudPlaceholder.firstElementChild
 
 	onMount(() => {
 		for (let i = 0; i < cloudCount; i++) {
 			const newCloud = cloudElement.cloneNode(true) as SVGElement
+			const fill = `${smokyRainbow[i % smokyRainbow.length]}bb`
+			newCloud.children[0].setAttribute('fill', fill)
 			clouds.push(newCloud)
 			containerElement.appendChild(newCloud)
 		}
