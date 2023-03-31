@@ -26,15 +26,17 @@
 	}
 
 	.score {
-		font-size: 28px;
-		line-height: 52px;
+		font-size: 26px;
+		line-height: 37px;
 		text-align: right;
 		white-space: nowrap;
 		position: relative;
-		text-shadow: 0 0 3px #000, 0 0 3px #000, 0 0 3px #000;
+		background: #33083399;
+		border-radius: 12px;
+		padding: 4px 6px 0;
 	}
 	.score .points {
-		font-size: 40px;
+		font-size: 38px;
 		transition: --totalScore 1500ms;
 		counter-reset: totalScore var(--totalScore);
 	}
@@ -42,9 +44,9 @@
 		content: counter(totalScore);
 	}
 	.score .points.mini {
-		font-size: 33px;
+		font-size: 36px;
 	}
 	.score .points.micro {
-		font-size: 30px;
+		font-size: 32px;
 	}
 </style>

@@ -13,7 +13,6 @@
 	let scoreElement: HTMLDivElement
 
 	$: combo = train.graces.filter((g) => g.type !== 'end').length
-	$: digits = combo.toString().padStart(2, ' ')
 
 	const rainbow = ['#fdb4bc', '#d8d9ed', '#c8fbbf', '#a2efff', '#d8d9ed']
 
@@ -35,15 +34,15 @@
 		)
 	}
 
-	$: if (digits && sizeElement) {
+	$: if (combo && sizeElement) {
 		bounce(titleElement, 5)
 		bounce(sizeElement, 10)
 		bounce(scoreElement, 3, 120)
 	}
 </script>
 
-<section out:fly={{ x: 600, duration: 500, easing: backIn }}>
-	<svg class="train-track" viewBox="0 0 560 160" width="560" height="160">
+<section class="nunito" out:fly={{ x: 500, duration: 500, easing: backIn }}>
+	<svg class="train-track" viewBox="0 0 500 160" width="500" height="160">
 		<defs>
 			<linearGradient id="rainbowGradient" y2="-5%">
 				{#each Array(11) as _, i}
@@ -51,8 +50,7 @@
 				{/each}
 			</linearGradient>
 		</defs>
-		<!-- <rect class="bg" width="590" height="160" fill="#0007" rx="30" /> -->
-		{#each Array(7) as _, i}
+		{#each Array(6) as _, i}
 			<rect
 				class="slat"
 				x={30 + i * 80}
@@ -61,13 +59,13 @@
 				height="140"
 				style="animation-delay: {(6 - i) * 280}ms; transform-origin: {50 +
 					i * 80}px 70px;"
-				fill={rainbow[i % rainbow.length] + '70'}
+				fill={rainbow[i % rainbow.length] + 'a0'}
 				rx="12"
 			/>
 		{/each}
 		<clipPath id="trackRailsClip">
-			<rect class="rail" x="8" y="24" width="560" height="20" rx="10" />
-			<rect class="rail" x="8" y="114" width="560" height="20" rx="10" />
+			<rect class="rail" x="8" y="24" rx="10" />
+			<rect class="rail" x="8" y="114" rx="10" style="animation-delay: 0.5s" />
 		</clipPath>
 		<g clip-path="url('#trackRailsClip')">
 			<rect
@@ -80,11 +78,11 @@
 			/>
 		</g>
 	</svg>
-	<div class="main nunito">
+	<div class="rail-content">
 		<h1 bind:this={titleElement}>GRACE TRAIN!</h1>
 		<div class="stats">
 			<div class="size" bind:this={sizeElement}>
-				{#each digits as digit}
+				{#each combo.toString() as digit}
 					<div class="digit">
 						{#key digit}
 							<span
@@ -97,7 +95,7 @@
 					</div>
 				{/each}
 				{#key combo}
-					<svg class="x" viewBox="0 0 100 100" width="30" height="30">
+					<svg class="x" viewBox="0 0 100 100" width="26" height="26">
 						<path d="M20 20 L80 80 M80 20 L20 80" />
 					</svg>
 				{/key}
@@ -117,7 +115,7 @@
 
 <style>
 	section {
-		width: 560px;
+		width: 500px;
 		height: 230px;
 		padding: 12px;
 		box-sizing: border-box;
@@ -134,12 +132,11 @@
 		left: 0;
 	}
 
-	.train-track .bg {
-		animation: 2s ease-out slide-in;
-	}
-
 	.train-track .rail {
+		width: 500px;
+		height: 20px;
 		animation: 1.8s 0.4s ease-out slide-in;
+		animation-fill-mode: backwards;
 	}
 
 	@keyframes slide-in {
@@ -172,51 +169,56 @@
 		}
 	}
 
-	.main {
-		width: 100%;
-		height: 135px;
+	.rail-content {
+		margin-top: 18px;
+		height: 98px;
 		display: flex;
 		flex-wrap: wrap;
 		flex-direction: column;
 		justify-content: center;
-		align-content: space-between;
 	}
 
 	h1 {
-		font-size: 52px;
+		font-size: 48px;
 		line-height: 45px;
 		margin: 0;
-		margin-left: 26px;
-		width: 210px;
+		margin-left: 22px;
+		width: 190px;
 		padding: 5px 0 2px;
 		border-radius: 20px;
-		background: #0009;
+		background: #23145099;
 		transform-origin: 50% 50%;
 		position: relative;
 	}
 
 	.stats {
-		width: 220px;
-		margin-right: 20px;
+		width: 243px;
+		margin-right: 19px;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
 	}
 
 	.size {
 		display: flex;
 		position: relative;
-		background: #0009;
+		background: #45062199;
 		justify-content: flex-end;
 		align-items: flex-start;
-		font-size: 52px;
-		line-height: 52px;
-		margin-right: 19px;
-		height: 60px;
+		font-size: 44px;
+		line-height: 44px;
+		margin-right: 11px;
+		margin-bottom: 6px;
+		height: 45px;
+		padding: 1px 9px;
+		border-radius: 16px;
 		transform-origin: 75% 50%;
 	}
 
 	.digit {
-		width: 32px;
-		height: 52px;
-		line-height: 52px;
+		width: 28px;
+		height: 44px;
+		line-height: 44px;
 		position: relative;
 	}
 
@@ -228,9 +230,8 @@
 	}
 
 	.x {
-		position: relative;
-		top: 15px;
-		left: 6px;
+		margin-top: 12px;
+		margin-left: 4px;
 		stroke-width: 30px;
 		stroke-linecap: round;
 		stroke: #fff;
@@ -249,13 +250,12 @@
 
 	.score-container {
 		transform-origin: 80% -100%;
-		width: 100%;
 		position: relative;
-		background: #0009;
 	}
 
 	.end h2:first-child {
 		font-size: 30px;
+		margin-top: 24px;
 	}
 
 	.end h2 {
