@@ -44,9 +44,9 @@
 		content: counter(totalScore);
 	}
 	.score .points.mini {
-		font-size: 36px;
+		font-size: 35px;
 	}
 	.score .points.micro {
-		font-size: 32px;
+		font-size: 31px;
 	}
 </style>

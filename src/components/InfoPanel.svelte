@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { fly } from 'svelte/transition'
-	import { backIn, backOut } from 'svelte/easing'
+	import { fade, fly } from 'svelte/transition'
+	import { backOut, cubicIn, cubicOut } from 'svelte/easing'
 	import Score from './Score.svelte'
 	import type { Train } from '../lib/mock/loop'
 	import TrainTrack from './TrainTrack.svelte'
+	import { onMount } from 'svelte'
 
 	// TODO: Show high scores after end
 
@@ -16,6 +17,7 @@
 	$: combo = train.graces.filter((g) => g.type !== 'end').length
 
 	function bounce(element: HTMLElement, force: number, delay = 0) {
+		if (!readyToBounce || !element) return
 		element.animate(
 			[
 				{ transform: 'scale(100%)', easing: 'ease-out' },
@@ -33,19 +35,36 @@
 		)
 	}
 
-	$: if (combo && comboElement) {
-		bounce(titleElement, 5)
+	let readyToBounce = false
+
+	onMount(() => {
+		setTimeout(() => (readyToBounce = true), 1700)
+	})
+
+	$: if (combo) {
+		bounce(titleElement, 2)
 		bounce(comboElement, 10)
 		bounce(scoreElement, 3, 120)
 	}
 </script>
 
-<section class="nunito" out:fly={{ x: 400, duration: 500, easing: backIn }}>
+<section class="nunito">
 	<TrainTrack />
 	<div class="rail-content">
-		<h1 bind:this={titleElement}>GRACE TRAIN!</h1>
+		<h1
+			in:fly={{ x: 500, duration: 800, delay: 1000, easing: cubicOut }}
+			out:fade={{ duration: 300, easing: cubicIn }}
+			bind:this={titleElement}
+		>
+			GRACE TRAIN!
+		</h1>
 		<div class="stats">
-			<div class="combo" bind:this={comboElement}>
+			<div
+				class="combo"
+				in:fade={{ duration: 200, delay: 1200 }}
+				out:fade={{ duration: 200, delay: 200, easing: cubicIn }}
+				bind:this={comboElement}
+			>
 				{#each combo.toString() as digit}
 					<div class="digit">
 						{#key digit}
@@ -64,15 +83,24 @@
 					</svg>
 				{/key}
 			</div>
-			<div class="score-container" bind:this={scoreElement}>
+			<div
+				class="score-container"
+				in:fade={{ duration: 200, delay: 1300 }}
+				out:fade={{ duration: 150, delay: 250, easing: cubicIn }}
+				bind:this={scoreElement}
+			>
 				<Score {train} />
 			</div>
 		</div>
 	</div>
 	{#if train.endUser}
-		<div class="end" in:fly={{ y: 200, duration: 400, easing: backOut }}>
-			<h2>ENDED BY</h2>
-			<h2 class="pulse">{train.endUser} !</h2>
+		<div
+			class="end"
+			in:fly={{ x: 300, duration: 500, easing: backOut }}
+			out:fade={{ duration: 200, easing: cubicIn }}
+		>
+			<span>ENDED BY</span>
+			<span class="pulse">{train.endUser} !</span>
 		</div>
 	{/if}
 </section>
@@ -87,6 +115,8 @@
 		right: 0;
 		bottom: 80px;
 		text-align: center;
+		display: flex;
+		flex-direction: column;
 	}
 
 	.rail-content {
@@ -113,8 +143,8 @@
 	}
 
 	.stats {
-		width: 243px;
-		margin-right: 19px;
+		width: 233px;
+		margin-right: 29px;
 		display: flex;
 		flex-direction: column;
 		align-items: flex-end;
@@ -176,16 +206,23 @@
 		position: relative;
 	}
 
-	.end h2:first-child {
-		font-size: 30px;
-		margin-top: 24px;
+	.end {
+		background: #df256da3;
+		border-radius: 16px;
+		display: flex;
+		flex-direction: column;
+		position: relative;
+		margin: 14px auto 0;
+		padding: 6px 22px;
 	}
 
-	.end h2 {
-		margin: 0;
-		font-size: 36px;
-		line-height: 40px;
-		text-shadow: 0 0 3px #000, 0 0 4px #000, 0 0 5px #000;
+	.end span:first-child {
+		font-size: 24px;
+	}
+
+	.end span {
+		font-size: 28px;
+		line-height: 30px;
 	}
 
 	.pulse {

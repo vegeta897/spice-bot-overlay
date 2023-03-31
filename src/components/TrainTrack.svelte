@@ -1,8 +1,17 @@
 <script context="module" lang="ts">
+	import { fly } from 'svelte/transition'
+	import { backIn } from 'svelte/easing'
+
 	const rainbow = ['#fdb4bc', '#d8d9ed', '#c8fbbf', '#a2efff', '#d8d9ed']
 </script>
 
-<svg class="train-track" viewBox="0 0 540 160" width="540" height="160">
+<svg
+	class="train-track"
+	viewBox="0 0 540 160"
+	width="540"
+	height="160"
+	out:fly={{ x: 400, duration: 500, easing: backIn }}
+>
 	<defs>
 		<linearGradient id="rainbowGradient" y2="-5%">
 			{#each Array(11) as _, i}
@@ -24,10 +33,10 @@
 		/>
 	{/each}
 	<clipPath id="trackRailsClip">
-		<rect class="rail" x="8" y="24" rx="10" />
-		<rect class="rail" x="8" y="114" rx="10" style="animation-delay: 0.8s" />
+		<rect width="540" height="20" x="8" y="24" rx="10" />
+		<rect width="540" height="20" x="8" y="114" rx="10" />
 	</clipPath>
-	<g clip-path="url('#trackRailsClip')">
+	<g class="rail-group" clip-path="url('#trackRailsClip')">
 		<rect
 			class="rail-gradient"
 			x="-40"
@@ -47,11 +56,9 @@
 		filter: drop-shadow(0 0 3px #000a);
 	}
 
-	.train-track .rail {
-		width: 540px;
-		height: 20px;
+	.train-track .rail-group {
 		animation: 0.8s 0.6s ease-out slide-in;
-		animation-fill-mode: backwards;
+		animation-fill-mode: both;
 	}
 
 	@keyframes slide-in {
