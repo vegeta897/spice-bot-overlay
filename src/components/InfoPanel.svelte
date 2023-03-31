@@ -3,18 +3,17 @@
 	import { backIn, backOut } from 'svelte/easing'
 	import Score from './Score.svelte'
 	import type { Train } from '../lib/mock/loop'
+	import TrainTrack from './TrainTrack.svelte'
 
 	// TODO: Show high scores after end
 
 	export let train: Train
 
 	let titleElement: HTMLHeadingElement
-	let sizeElement: HTMLDivElement
+	let comboElement: HTMLDivElement
 	let scoreElement: HTMLDivElement
 
 	$: combo = train.graces.filter((g) => g.type !== 'end').length
-
-	const rainbow = ['#fdb4bc', '#d8d9ed', '#c8fbbf', '#a2efff', '#d8d9ed']
 
 	function bounce(element: HTMLElement, force: number, delay = 0) {
 		element.animate(
@@ -34,54 +33,19 @@
 		)
 	}
 
-	$: if (combo && sizeElement) {
+	$: if (combo && comboElement) {
 		bounce(titleElement, 5)
-		bounce(sizeElement, 10)
+		bounce(comboElement, 10)
 		bounce(scoreElement, 3, 120)
 	}
 </script>
 
 <section class="nunito" out:fly={{ x: 400, duration: 500, easing: backIn }}>
-	<svg class="train-track" viewBox="0 0 540 160" width="540" height="160">
-		<defs>
-			<linearGradient id="rainbowGradient" y2="-5%">
-				{#each Array(11) as _, i}
-					<stop offset="{i * 10}%" stop-color={rainbow[i % rainbow.length]} />
-				{/each}
-			</linearGradient>
-		</defs>
-		{#each Array(6) as _, i}
-			<rect
-				class="slat"
-				x={30 + i * 80}
-				y="8"
-				width="40"
-				height="145"
-				style="animation-delay: {(6 - i) * 150}ms; transform-origin: {50 +
-					i * 80}px 72.5px;"
-				fill={rainbow[i % rainbow.length]}
-				rx="8"
-			/>
-		{/each}
-		<clipPath id="trackRailsClip">
-			<rect class="rail" x="8" y="24" rx="10" />
-			<rect class="rail" x="8" y="114" rx="10" style="animation-delay: 0.3s" />
-		</clipPath>
-		<g clip-path="url('#trackRailsClip')">
-			<rect
-				class="rail-gradient"
-				x="-40"
-				y="24"
-				width="1200"
-				height="124"
-				fill="url('#rainbowGradient')"
-			/>
-		</g>
-	</svg>
+	<TrainTrack />
 	<div class="rail-content">
 		<h1 bind:this={titleElement}>GRACE TRAIN!</h1>
 		<div class="stats">
-			<div class="size" bind:this={sizeElement}>
+			<div class="combo" bind:this={comboElement}>
 				{#each combo.toString() as digit}
 					<div class="digit">
 						{#key digit}
@@ -125,51 +89,6 @@
 		text-align: center;
 	}
 
-	.train-track {
-		position: absolute;
-		top: 0;
-		left: 0;
-		filter: drop-shadow(0 0 3px #000a);
-	}
-
-	.train-track .rail {
-		width: 540px;
-		height: 20px;
-		animation: 0.8s 0.2s ease-out slide-in;
-		animation-fill-mode: backwards;
-	}
-
-	@keyframes slide-in {
-		from {
-			transform: translateX(100%);
-			opacity: 0.5;
-		}
-	}
-
-	.train-track .rail-gradient {
-		animation: 4s linear rail-gradient-slide infinite;
-	}
-
-	@keyframes rail-gradient-slide {
-		to {
-			transform: translateX(-600px);
-		}
-	}
-
-	.train-track .slat {
-		position: relative;
-		animation: 400ms cubic-bezier(0.16, 0.41, 0.56, 1.32) slat-appear;
-		animation-fill-mode: backwards;
-		opacity: 0.8;
-	}
-
-	@keyframes slat-appear {
-		from {
-			transform: scaleY(0.2);
-			opacity: 0;
-		}
-	}
-
 	.rail-content {
 		margin-top: 18px;
 		height: 98px;
@@ -201,7 +120,7 @@
 		align-items: flex-end;
 	}
 
-	.size {
+	.combo {
 		display: flex;
 		position: relative;
 		background: #8a1145c7;
