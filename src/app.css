@@ -7,10 +7,10 @@ body {
 	padding: 0;
 	background: #121214;
 	/* overflow: hidden; */ /* TODO: Re-enable this for real overlay */
+	/* background: (0, 0, 0, 0); */
 	color: rgb(239, 239, 241);
 	font-family: Inter, Roobert, Helvetica Neue, Helvetica, Arial, sans-serif;
 	font-size: 14px;
-	/* background: (0, 0, 0, 0); */
 }
 
 .nunito {
@@ -23,4 +23,26 @@ body {
 		font-family: 'NunitoVariable', sans-serif;
 		font-variation-settings: 'wght' 900;
 	}
+}
+
+button {
+	all: unset;
+}
+
+button {
+	display: inline-block;
+	color: #eef;
+	font-size: 1rem;
+	padding: 1rem;
+	background: #4b4753;
+	border-radius: 1rem;
+	font-weight: bold;
+	text-decoration: none;
+	transition: all 80ms ease-out;
+	cursor: pointer;
+}
+
+button:hover,
+button:active {
+	background: #696473;
 }

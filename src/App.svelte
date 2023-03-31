@@ -9,13 +9,21 @@
 
 	initWebsocket()
 	initChat()
+
+	let background = 1
+	function changeBackground() {
+		background = 1 + (background % 4)
+	}
 </script>
 
 <main
 	style="--screen-width: {SCREEN.width}px; --screen-height: {SCREEN.height}px;"
 >
 	<div class="stream-container">
-		<div class="stream">
+		<div
+			class="stream"
+			style="background: url('/sample-stream-{background}.jpg')"
+		>
 			<!-- <video autoplay muted loop>
 				<source src="/sample-stream.mp4" type="video/mp4" />
 			</video> -->
@@ -34,6 +42,9 @@
 	</div>
 	<ChatPane />
 </main>
+<section>
+	<button on:click={changeBackground}>Change Stream BG</button>
+</section>
 
 <style>
 	main {
@@ -54,8 +65,6 @@
 		height: var(--screen-height);
 		transform: scale(0.5);
 		transform-origin: top left;
-		/* TODO: Cycle different backgrounds with a cross-fade */
-		background: url('/sample-stream.jpg');
 		background-repeat: no-repeat;
 	}
 	video {
@@ -65,5 +74,8 @@
 		position: absolute;
 		top: calc(100% - 75px);
 		width: 100%;
+	}
+	section {
+		padding: 0.5rem;
 	}
 </style>
