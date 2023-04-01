@@ -8,19 +8,24 @@
 	// const bumpAnimDelay = randomIntRange(1, 200) * 10
 
 	export function hop(delay: number, force: number) {
-		const height = Math.round(force * 20)
-		const halfHeight = Math.round(force * 10)
+		const jump = Math.round(force * 20)
+		const halfJump = Math.round(force * 10)
+		const shimmy = Math.round(force * 8)
+		const halfShimmy = Math.round(force * 4)
 		const tilt = Math.round(force * 10)
 		svgElement.animate(
 			[
-				{ transform: 'translateY(0) rotate(0)', easing: 'linear' },
+				{ transform: 'translate(0,0) rotate(0)', easing: 'linear' },
 				{
-					transform: `translateY(-${halfHeight}px) rotate(-${tilt}deg)`,
+					transform: `translate(-${shimmy}px,-${halfJump}px) rotate(-${tilt}deg)`,
 					easing: 'ease-out',
 				},
-				{ transform: `translateY(-${height}px) rotate(0)`, easing: 'ease-in' },
 				{
-					transform: `translateY(-${halfHeight}px) rotate(${tilt}deg)`,
+					transform: `translate(-${halfShimmy}px,-${jump}px) rotate(0)`,
+					easing: 'ease-in',
+				},
+				{
+					transform: `translate(0,-${halfJump}px) rotate(${tilt}deg)`,
 					easing: 'linear',
 				},
 				{ transform: 'translateY(0) rotate(0)' },
