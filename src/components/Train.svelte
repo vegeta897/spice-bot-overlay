@@ -83,7 +83,6 @@
 			<TrainCar
 				color={grace.userColor}
 				type={g === 0 ? 'engine' : 'car'}
-				symbol={grace.type === 'redeem' ? 'star' : 'heart'}
 				bind:this={cars[g]}
 			/>
 		{/each}
