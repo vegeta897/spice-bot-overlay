@@ -2,12 +2,12 @@
 	import { initChat } from './lib/mock/chat'
 	import ChatPane from './components/ChatPane.svelte'
 	import Train from './components/Train.svelte'
-	import { initWebsocket } from './lib/websocket'
+	// import { initWebsocket } from './lib/websocket'
 	import InfoPanel from './components/InfoPanel.svelte'
 	import { graceTrains } from './lib/store'
 	import { SCREEN } from './lib/constants'
 
-	initWebsocket()
+	// initWebsocket()
 	initChat()
 
 	let background = 1
