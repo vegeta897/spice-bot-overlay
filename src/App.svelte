@@ -32,7 +32,7 @@
 			{#if browser}
 				<div
 					class="stream-background"
-					style="background: url('/sample-stream-{background}.jpg')"
+					style="background: url('sample-stream-{background}.jpg')"
 				/>
 			{/if}
 			<!-- <video autoplay muted loop style="position: absolute">
