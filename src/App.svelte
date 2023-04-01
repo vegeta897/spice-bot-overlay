@@ -16,17 +16,26 @@
 	}
 
 	$: infoTrains = $graceTrains.filter((g) => g.showInfo)
+
+	// https://github.com/obsproject/obs-browser
+	// TODO: Listen for obs stream events
+	// Show placeholder elements when not streaming
+	const browser = !window.obsstudio
 </script>
 
 <main
 	style="--screen-width: {SCREEN.width}px; --screen-height: {SCREEN.height}px;"
+	class:browser
 >
 	<div class="stream-container">
-		<div
-			class="stream"
-			style="background: url('/sample-stream-{background}.jpg')"
-		>
-			<!-- <video autoplay muted loop>
+		<div class="stream">
+			{#if browser}
+				<div
+					class="stream-background"
+					style="background: url('/sample-stream-{background}.jpg')"
+				/>
+			{/if}
+			<!-- <video autoplay muted loop style="position: absolute">
 				<source src="/sample-stream.mp4" type="video/mp4" />
 			</video> -->
 			<div class="trains-container">
@@ -40,35 +49,48 @@
 			{/if}
 		</div>
 	</div>
-	<ChatPane />
+	{#if browser}
+		<ChatPane />
+	{/if}
 </main>
-<section>
-	<button on:click={changeBackground}>Change Stream BG</button>
-</section>
+{#if browser}
+	<section>
+		<button on:click={changeBackground}>Change Stream BG</button>
+	</section>
+{/if}
 
 <style>
 	main {
+		display: flex;
+	}
+	main.browser {
 		margin-left: 0.25rem;
 		margin-top: 0.25rem;
-		display: flex;
-		height: calc(1080px / 2 + 2px);
+		height: calc(var(--screen-height) / 2 + 2px);
 		width: calc(var(--screen-width) / 2 + 290px + 4px);
 	}
 	.stream-container {
+		width: var(--screen-width);
+		height: var(--screen-height);
+		overflow: hidden;
+	}
+	.browser .stream-container {
 		width: calc(var(--screen-width) / 2);
 		height: calc(var(--screen-height) / 2);
 		border: 1px solid #0008;
-		overflow: hidden;
 	}
 	.stream {
 		width: var(--screen-width);
 		height: var(--screen-height);
-		transform: scale(0.5);
-		transform-origin: top left;
-		background-repeat: no-repeat;
 	}
-	video {
-		position: absolute;
+	.browser .stream {
+		transform-origin: top left;
+		transform: scale(0.5);
+	}
+	.stream-background {
+		width: 100%;
+		height: 100%;
+		background-repeat: no-repeat;
 	}
 	.trains-container {
 		position: absolute;

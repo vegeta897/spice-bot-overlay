@@ -33,6 +33,7 @@
 	let animation: Animation
 
 	function slide(from: number, to: number) {
+		if (!trainContainer) return
 		const duration = ((from - to) / 100) * secondsPerScreen * 1000
 		return new Promise((resolve) => {
 			animation = trainContainer.animate(
@@ -52,7 +53,7 @@
 		showSmoke = true
 		let translation = 100
 		let translatingTo = -100
-		while (!train.offScreen) {
+		while (trainContainer && !train.offScreen) {
 			await slide(translation, translatingTo)
 			translation = translatingTo
 			if (translation === -100) showSmoke = false
