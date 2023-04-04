@@ -69,7 +69,8 @@
 	}
 
 	.train-track .rail-gradient {
-		animation: 4s linear rail-gradient-slide infinite;
+		/* Delay until after rails stop moving to avoid flickering in OBS */
+		animation: 4s 1.4s linear rail-gradient-slide infinite;
 	}
 
 	@keyframes rail-gradient-slide {
