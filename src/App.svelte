@@ -17,9 +17,8 @@
 
 	$: infoTrains = $graceTrains.filter((g) => g.showInfo)
 
-	// https://github.com/obsproject/obs-browser
-	// TODO: Listen for obs stream events
-	// Show placeholder elements when not streaming
+	// Streamlabs attaches this global but none of the methods/events work
+	// I don't trust it, so only use this in dev
 	const browser = !window.obsstudio
 </script>
 
