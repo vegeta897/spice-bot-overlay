@@ -15,6 +15,7 @@ export type Train = {
 }
 
 export function createTrain(trainStartData: TrainStartData) {
+	endAllTrains(trainStartData.id) // End all trains except this one
 	const existingTrain = getTrain(trainStartData)
 	if (existingTrain && existingTrain.combo !== trainStartData.combo) {
 		// Update existing train
@@ -39,6 +40,7 @@ export function addToTrain(trainAddData: TrainAddData) {
 }
 
 export function endTrain(trainEndData: TrainEndData, hideNow = false) {
+	endAllTrains(trainEndData.id) // End all trains except this one
 	const existingTrain = getTrain(trainEndData)
 	if (!existingTrain) {
 		console.log('Ignoring end event for unknown train')
@@ -75,10 +77,10 @@ export function endTrain(trainEndData: TrainEndData, hideNow = false) {
 	}
 }
 
-export function endAllTrains() {
-	// End all trains still going
+export function endAllTrains(except?: number) {
+	// End all trains that are still going
 	get(graceTrains).forEach((train) => {
-		if (!train.endUser)
+		if (!train.endUser && train.id !== except)
 			endTrain(
 				{
 					id: train.id,
