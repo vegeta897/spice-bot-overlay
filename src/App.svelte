@@ -12,7 +12,7 @@
 
 	let background = 1
 	function changeBackground() {
-		background = 1 + (background % 4)
+		background = 1 + (background % 5)
 	}
 
 	$: infoTrains = $graceTrains.filter((g) => g.showInfo)
