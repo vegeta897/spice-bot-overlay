@@ -3,7 +3,8 @@ export const TRAIN = {
 	carWidth: 83,
 	speed: 100, // Pixels per second
 	minLength: 5,
-	initialDelay: 3 * 1000, // Milliseconds before train appears
+	departDelay: 3 * 1000, // Milliseconds before train departs
+	endInfoDuration: 5 * 1000, // Milliseconds until info panel disappears
 }
 
 export const SCREEN = {

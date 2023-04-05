@@ -1,4 +1,5 @@
-import { graceTrains, setAuthStatus } from './store'
+import { getTrain, setAuthStatus } from './store'
+import { createTrain, addToTrain, endTrain, endAllTrains } from './trains'
 
 const version = 1 // Should match version on server websocket.ts
 
@@ -13,7 +14,10 @@ export function initWebsocket(key: string) {
 		setAuthStatus('missing-key')
 		return
 	}
-	ws = new WebSocket(`ws://localhost:3005?key=${key}`)
+	const wsAddress = import.meta.env.DEV
+		? 'localhost:3005'
+		: window.location.hostname
+	ws = new WebSocket(`ws://${wsAddress}?key=${key}`)
 	ws.addEventListener('open', (event) => {
 		console.log('Websocket opened!')
 	})
@@ -26,7 +30,6 @@ export function initWebsocket(key: string) {
 		console.log('Websocket error!', event)
 	})
 	ws.addEventListener('message', (event) => {
-		// console.log('Websocket message:', event.data)
 		if (event.data === 'invalid-key') {
 			invalidKey = true
 			setAuthStatus('invalid-key')
@@ -39,40 +42,50 @@ export function initWebsocket(key: string) {
 			console.log('Websocket received non-JSON message:', event.data)
 		}
 		switch (message.type) {
-			case 'start':
-				console.log('train start!', message.data)
+			case 'train-start':
+				createTrain(message.data)
 				break
-			case 'add':
-				console.log('train add!', message.data)
+			case 'train-add':
+				if (!getTrain(message.data)) {
+					console.log('Requesting create event for unknown train')
+					ws.send(
+						JSON.stringify({
+							type: 'train-query',
+							data: { id: message.data.id },
+						})
+					)
+				} else {
+					addToTrain(message.data)
+				}
 				break
-			case 'end':
-				console.log('train end!', message.data)
+			case 'train-end':
+				endTrain(message.data)
 				break
-			case 'version':
+			case 'init':
 				if (message.data.version !== version) {
 					// Reload page after 15s
 					console.log('App out of date! Reloading page in 15 seconds...')
 					setTimeout(() => window.location.reload(), 15 * 1000)
 				}
+				if (message.data.noTrains) endAllTrains()
 				break
 			default:
-				console.log('Websocket unrecognized message:', message)
+				console.log('Websocket received unrecognized message:', message)
 				break
 		}
-		// graceTrains.update((_graces) => [..._graces, event.data])
 	})
 }
 
 // Should match types on server graceEvents.ts and websocket.ts
 type TrainEventBaseData = { id: number; combo: number; score: number }
-type TrainStartData = TrainEventBaseData & { colors: string[] }
-type TrainAddData = TrainEventBaseData & { color: string }
-type TrainEndData = TrainEventBaseData & { username: string }
+export type TrainStartData = TrainEventBaseData & { colors: string[] }
+export type TrainAddData = TrainEventBaseData & { color: string }
+export type TrainEndData = TrainEventBaseData & { username: string }
 type Message =
-	| { type: 'start'; data: TrainStartData }
-	| { type: 'add'; data: TrainAddData }
-	| { type: 'end'; data: TrainEndData }
-	| { type: 'version'; data: { version: number } }
+	| { type: 'init'; data: { version: number; noTrains: boolean } }
+	| { type: 'train-start'; data: TrainStartData }
+	| { type: 'train-add'; data: TrainAddData }
+	| { type: 'train-end'; data: TrainEndData }
 
 if (import.meta.hot) {
 	import.meta.hot.on('vite:beforeUpdate', (payload) => {

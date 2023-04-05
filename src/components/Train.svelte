@@ -3,12 +3,14 @@
 	import Smoke from './Smoke.svelte'
 	import { SCREEN, TRAIN } from '../lib/constants'
 	import { sleep } from '../lib/util'
+	import type { Train } from '../lib/trains'
+	import { onMount } from 'svelte'
 
 	// TODO: Allow mod command to move train to top of screen if necessary
 	// Maybe move the info panel to the top as well
 	// Resets on new streams
 
-	export let train: any
+	export let train: Train
 
 	const secondsPerScreen = Math.round(SCREEN.width / TRAIN.speed)
 
@@ -18,10 +20,7 @@
 	let lastImpulse = 0
 	let cars: TrainCar[] = []
 	$: if (cars.length > 0) impulse()
-	let running = false
 	let showSmoke = false
-
-	$: if (!running && train.graces.length >= TRAIN.minLength) runTrain()
 
 	function impulse() {
 		const now = Date.now()
@@ -35,6 +34,7 @@
 	}
 
 	let animation: Animation
+	let offScreen = false
 
 	function slide(from: number, to: number) {
 		if (!trainContainer) return
@@ -51,20 +51,19 @@
 		})
 	}
 
-	async function runTrain() {
-		running = true
-		await sleep(TRAIN.initialDelay)
+	onMount(async () => {
+		const wait = train.departTime - Date.now()
+		if (wait > 0) await sleep(wait)
 		showSmoke = true
 		let translation = 100
 		let translatingTo = -100
-		while (trainContainer && !train.offScreen) {
+		while (trainContainer && !offScreen) {
 			await slide(translation, translatingTo)
 			translation = translatingTo
 			if (translation === -100) showSmoke = false
-			if (train.status === 'ended') {
+			if (train.endUser) {
 				// If grace train finished, calculate how many more 100% needed to get off screen
-				const trainSize =
-					TRAIN.engineWidth + (train.graces.length - 1) * TRAIN.carWidth
+				const trainSize = TRAIN.engineWidth + (train.combo - 1) * TRAIN.carWidth
 				const remainingPixels = (translation / 100) * SCREEN.width + trainSize
 				if (remainingPixels > 0) {
 					// Finish sliding
@@ -72,27 +71,21 @@
 					translatingTo = Math.round(translation - remainingPercent * 100)
 					await slide(translation, translatingTo)
 				}
-				train.offScreen = true
+				offScreen = true
 			} else {
 				// If not finished, animate another 100%
 				translatingTo = translation - 100
 			}
 		}
-	}
+	})
 </script>
 
 <div bind:this={trainContainer}>
-	{#if train.graces.length >= TRAIN.minLength}
-		{#each train.graces as grace, g (g)}
-			<TrainCar
-				color={grace.userColor}
-				type={g === 0 ? 'engine' : 'car'}
-				bind:this={cars[g]}
-			/>
-		{/each}
-		{#if showSmoke}
-			<Smoke />
-		{/if}
+	{#each train.colors as color, c (c)}
+		<TrainCar {color} type={c === 0 ? 'engine' : 'car'} bind:this={cars[c]} />
+	{/each}
+	{#if showSmoke}
+		<Smoke />
 	{/if}
 </div>
 

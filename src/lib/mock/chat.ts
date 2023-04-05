@@ -24,7 +24,6 @@ type GraceInfo = {
 	comboPoints: number
 	comboScore: number
 	totalScore: number
-	delta: number
 }
 
 const POINTS = {
@@ -39,7 +38,6 @@ export function initChat() {
 }
 
 export function planTrain() {
-	const trainSize = randomIntRange(9, 30)
 	const messages: { message: ChatMessage; delay: number; grace?: GraceInfo }[] =
 		[]
 	const trainUsers: Set<string> = new Set()
@@ -48,6 +46,7 @@ export function planTrain() {
 	let comboSize = 0
 	let comboScore = 0
 	let lastGraceType: GraceInfo['type']
+	const trainSize = randomIntRange(9, 30)
 	for (let i = 0; i < trainSize; i++) {
 		const graceMessage = createGraceMessage()
 		trainUsers.add(graceMessage.username)
@@ -71,7 +70,6 @@ export function planTrain() {
 			comboPoints,
 			comboScore,
 			totalScore,
-			delta: totalScore + comboScore - prevTotal,
 		}
 		messages.push({
 			message: graceMessage,
@@ -94,7 +92,6 @@ export function planTrain() {
 			comboPoints: 0,
 			comboScore: 0,
 			totalScore,
-			delta: comboScore + userCountBonus,
 		},
 	})
 	messages.push({
@@ -114,7 +111,7 @@ export function planTrain() {
 			delay: randomIntRange(3, 10) * 100,
 		})
 	}
-	return { messages, trainSize }
+	return { messages }
 }
 
 function createGraceMessage() {
@@ -157,12 +154,6 @@ function createAfterTrainMessage() {
 	const text = pickRandom(afterTrainMessages)
 	return { username, color, text, time: getTimeString() }
 }
-
-// if (import.meta.hot) {
-// 	import.meta.hot.on('vite:beforeUpdate', (payload) => {
-// 		reloading = true
-// 	})
-// }
 
 function getComboScore(comboPoints: number, comboSize: number) {
 	comboSize = Math.max(comboSize, 1)

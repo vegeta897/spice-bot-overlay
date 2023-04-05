@@ -2,9 +2,9 @@
 	import { fade, fly } from 'svelte/transition'
 	import { backOut, cubicIn, cubicOut } from 'svelte/easing'
 	import Score from './Score.svelte'
-	import type { Train } from '../lib/mock/loop'
+	import type { Train } from '../lib/trains'
 	import TrainTrack from './TrainTrack.svelte'
-	import { onMount } from 'svelte'
+	import { onDestroy, onMount } from 'svelte'
 
 	// TODO: Show high scores after end
 
@@ -13,8 +13,6 @@
 	let titleElement: HTMLHeadingElement
 	let comboElement: HTMLDivElement
 	let scoreElement: HTMLDivElement
-
-	$: combo = train.graces.length
 
 	function bounce(element: HTMLElement, force: number, delay = 0) {
 		if (!readyToBounce || !element) return
@@ -41,7 +39,7 @@
 		setTimeout(() => (readyToBounce = true), 1700)
 	})
 
-	$: if (combo) {
+	$: if (train.combo) {
 		bounce(titleElement, 2)
 		bounce(comboElement, 10)
 		bounce(scoreElement, 3, 80)
@@ -65,7 +63,7 @@
 				out:fade={{ duration: 200, delay: 200, easing: cubicIn }}
 				bind:this={comboElement}
 			>
-				{#each combo.toString() as digit}
+				{#each train.combo.toString() as digit}
 					<div class="digit">
 						{#key digit}
 							<span
@@ -77,7 +75,7 @@
 						{/key}
 					</div>
 				{/each}
-				{#key combo}
+				{#key train.combo}
 					<svg class="x" viewBox="0 0 100 100" width="26" height="26">
 						<path d="M20 20 L80 80 M80 20 L20 80" />
 					</svg>

@@ -26,7 +26,7 @@
 		background = 1 + (background % 5)
 	}
 
-	$: infoTrains = $graceTrains.filter((g) => g.showInfo)
+	$: infoTrains = $graceTrains.filter((g) => !g.hideInfo)
 </script>
 
 <Status />
@@ -46,13 +46,13 @@
 				<source src="/sample-stream.mp4" type="video/mp4" />
 			</video> -->
 			<div class="trains-container">
-				{#each $graceTrains as train, t (train.startTime)}
+				{#each $graceTrains as train (train.id)}
 					<Train {train} />
 				{/each}
 			</div>
 			{#if infoTrains.length > 0}
-				{@const latestTrain = infoTrains[infoTrains.length - 1]}
-				{#key latestTrain.startTime}<InfoPanel train={latestTrain} />{/key}
+				{@const latestInfoTrain = infoTrains[infoTrains.length - 1]}
+				{#key latestInfoTrain.id}<InfoPanel train={latestInfoTrain} />{/key}
 			{/if}
 		</div>
 	</div>
@@ -86,6 +86,7 @@
 		width: var(--screen-width);
 		height: var(--screen-height);
 		overflow: hidden;
+		position: relative;
 	}
 	.demo .stream-container {
 		width: calc(var(--screen-width) / 2);

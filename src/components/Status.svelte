@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { status } from '../lib/store'
+	import { overlayStatus } from '../lib/store'
 </script>
 
-{#if $status.auth !== 'init' && $status.auth !== 'success'}
+{#if $overlayStatus.auth !== 'init' && $overlayStatus.auth !== 'success'}
 	<section>
-		Grace Train Overlay error: <code>{$status.auth}</code>
+		Grace Train Overlay error: <code>{$overlayStatus.auth}</code>
 	</section>
 {/if}
 
