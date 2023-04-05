@@ -4,6 +4,10 @@
 	import { SCREEN, TRAIN } from '../lib/constants'
 	import { sleep } from '../lib/util'
 
+	// TODO: Allow mod command to move train to top of screen if necessary
+	// Maybe move the info panel to the top as well
+	// Resets on new streams
+
 	export let train: any
 
 	const secondsPerScreen = Math.round(SCREEN.width / TRAIN.speed)

@@ -1,11 +1,11 @@
 <script lang="ts">
-	// import { randomIntRange } from '../lib/util'
-
 	export let type: 'engine' | 'car' = 'car'
-	export let color: string
+	export let color: string | null
 
-	// const bumpAnimDuration = randomIntRange(150, 250) * 10
-	// const bumpAnimDelay = randomIntRange(1, 200) * 10
+	$: _color = color ? `${color}cc` : 'var(--train-pop-color)'
+
+	// TODO: Allow users to pick their own decorations/colors?
+	// Make a page with twitch oauth where they can customize it?!
 
 	export function hop(delay: number, force: number) {
 		const jump = Math.round(force * 20)
@@ -75,7 +75,7 @@
 			y="124.934"
 			width="374.98"
 			height="89.345"
-			style="fill:{color}cc"
+			style="fill:{_color}"
 		/>
 		<path
 			d="M249.451,100.323l0,62.177"
@@ -126,10 +126,6 @@
 			r="25"
 			style="fill:var(--train-base-color);stroke:var(--train-pop-color);"
 		/>
-		<!-- <g
-			class="train-car-non-wheels"
-			style="animation-duration: {bumpAnimDuration}ms; animation-delay: {bumpAnimDelay}ms"
-		> -->
 		<rect
 			x="162.5"
 			y="12.5"
@@ -154,9 +150,8 @@
 		/>
 		<path
 			d="M366.143,99.934l-357.286,0l8.144,56.945l340.998,0l8.144,-56.945Z"
-			style="fill:{color}cc"
+			style="fill:{_color}"
 		/>
-		<!-- </g> -->
 	</svg>
 {/if}
 
@@ -168,20 +163,4 @@
 		stroke-width: 25px;
 		margin: 0 4px;
 	}
-
-	/* .train-car-non-wheels {
-		animation-timing-function: linear;
-		animation-name: bump;
-		animation-iteration-count: infinite;
-	}
-
-	@keyframes bump {
-		0%,
-		10% {
-			transform: translateY(0);
-		}
-		5% {
-			transform: translateY(18px);
-		}
-	} */
 </style>
