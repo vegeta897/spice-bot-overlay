@@ -115,6 +115,7 @@
 		text-align: center;
 		display: flex;
 		flex-direction: column;
+		color: #fff;
 	}
 
 	.rail-content {

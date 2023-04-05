@@ -19,6 +19,7 @@
 		bottom: 80px;
 		text-align: center;
 		opacity: 0.8;
+		color: #fff;
 	}
 
 	.rail-content {
