@@ -1,5 +1,7 @@
 import { graceTrains, setAuthStatus } from './store'
 
+const version = 1 // Should match version on server websocket.ts
+
 let ws: WebSocket
 let reloading = false
 let invalidKey = false
@@ -46,6 +48,13 @@ export function initWebsocket(key: string) {
 			case 'end':
 				console.log('train end!', message.data)
 				break
+			case 'version':
+				if (message.data.version !== version) {
+					// Reload page after 15s
+					console.log('App out of date! Reloading page in 15 seconds...')
+					setTimeout(() => window.location.reload(), 15 * 1000)
+				}
+				break
 			default:
 				console.log('Websocket unrecognized message:', message)
 				break
@@ -54,6 +63,7 @@ export function initWebsocket(key: string) {
 	})
 }
 
+// Should match types on server graceEvents.ts and websocket.ts
 type TrainEventBaseData = { id: number; combo: number; score: number }
 type TrainStartData = TrainEventBaseData & { colors: string[] }
 type TrainAddData = TrainEventBaseData & { color: string }
@@ -62,6 +72,7 @@ type Message =
 	| { type: 'start'; data: TrainStartData }
 	| { type: 'add'; data: TrainAddData }
 	| { type: 'end'; data: TrainEndData }
+	| { type: 'version'; data: { version: number } }
 
 if (import.meta.hot) {
 	import.meta.hot.on('vite:beforeUpdate', (payload) => {
