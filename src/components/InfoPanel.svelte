@@ -9,6 +9,7 @@
 	// TODO: Show high scores after end
 
 	export let train: Train
+	export let top = false
 
 	let titleElement: HTMLHeadingElement
 	let comboElement: HTMLDivElement
@@ -46,7 +47,7 @@
 	}
 </script>
 
-<section class="nunito">
+<section class="nunito" class:top>
 	<TrainTrack />
 	<div class="rail-content">
 		<h1
@@ -116,6 +117,10 @@
 		display: flex;
 		flex-direction: column;
 		color: #fff;
+	}
+
+	section.top {
+		bottom: calc(var(--screen-height) - 320px);
 	}
 
 	.rail-content {

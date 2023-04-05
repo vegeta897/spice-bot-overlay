@@ -1,4 +1,9 @@
-import { getTrain, setAuthStatus } from './store'
+import {
+	getTrain,
+	setAuthStatus,
+	setOverlayPosition,
+	type OverlayPosition,
+} from './store'
 import { createTrain, addToTrain, endTrain, endAllTrains } from './trains'
 
 const version = 1 // Should match version on server websocket.ts
@@ -42,6 +47,15 @@ export function initWebsocket(key: string) {
 			console.log('Websocket received non-JSON message:', event.data)
 		}
 		switch (message.type) {
+			case 'init':
+				if (message.data.version !== version) {
+					// Reload page after 15s
+					console.log('App out of date! Reloading page in 15 seconds...')
+					setTimeout(() => window.location.reload(), 15 * 1000)
+				}
+				if (message.data.noTrains) endAllTrains()
+				setOverlayPosition(message.data.position)
+				break
 			case 'train-start':
 				createTrain(message.data)
 				break
@@ -61,13 +75,8 @@ export function initWebsocket(key: string) {
 			case 'train-end':
 				endTrain(message.data)
 				break
-			case 'init':
-				if (message.data.version !== version) {
-					// Reload page after 15s
-					console.log('App out of date! Reloading page in 15 seconds...')
-					setTimeout(() => window.location.reload(), 15 * 1000)
-				}
-				if (message.data.noTrains) endAllTrains()
+			case 'overlay':
+				setOverlayPosition(message.data.position)
 				break
 			default:
 				console.log('Websocket received unrecognized message:', message)
@@ -82,10 +91,14 @@ export type TrainStartData = TrainEventBaseData & { colors: string[] }
 export type TrainAddData = TrainEventBaseData & { color: string }
 export type TrainEndData = TrainEventBaseData & { username: string }
 type Message =
-	| { type: 'init'; data: { version: number; noTrains: boolean } }
+	| {
+			type: 'init'
+			data: { version: number; noTrains: boolean; position: OverlayPosition }
+	  }
 	| { type: 'train-start'; data: TrainStartData }
 	| { type: 'train-add'; data: TrainAddData }
 	| { type: 'train-end'; data: TrainEndData }
+	| { type: 'overlay'; data: { position: OverlayPosition } }
 
 if (import.meta.hot) {
 	import.meta.hot.on('vite:beforeUpdate', (payload) => {

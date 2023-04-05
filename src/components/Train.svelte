@@ -6,11 +6,8 @@
 	import type { Train } from '../lib/trains'
 	import { onMount } from 'svelte'
 
-	// TODO: Allow mod command to move train to top of screen if necessary
-	// Maybe move the info panel to the top as well
-	// Resets on new streams
-
 	export let train: Train
+	export let top = false
 
 	const secondsPerScreen = Math.round(SCREEN.width / TRAIN.speed)
 
@@ -80,11 +77,11 @@
 	})
 </script>
 
-<div bind:this={trainContainer}>
+<div bind:this={trainContainer} class:top>
 	{#each train.colors as color, c (c)}
 		<TrainCar {color} type={c === 0 ? 'engine' : 'car'} bind:this={cars[c]} />
 	{/each}
-	{#if showSmoke}
+	{#if showSmoke && !top}
 		<Smoke />
 	{/if}
 </div>
@@ -98,5 +95,9 @@
 		transform: translateX(100%);
 		--train-base-color: #605de9;
 		--train-pop-color: #ff538f;
+	}
+	div.top {
+		bottom: auto;
+		top: 4px;
 	}
 </style>

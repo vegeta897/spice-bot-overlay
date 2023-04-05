@@ -6,7 +6,7 @@
 	import { initWebsocket } from './lib/websocket'
 	import InfoPanel from './components/InfoPanel.svelte'
 	import PlanInfoPanel from './components/PlanInfoPanel.svelte'
-	import { graceTrains } from './lib/store'
+	import { graceTrains, overlayStatus } from './lib/store'
 	import { SCREEN } from './lib/constants'
 	import Status from './components/Status.svelte'
 
@@ -30,12 +30,14 @@
 	}
 
 	$: infoTrains = $graceTrains.filter((g) => !g.hideInfo)
+	$: top = $overlayStatus.position === 'top'
 </script>
 
 <Status />
 <main
 	style="--screen-width: {SCREEN.width}px; --screen-height: {SCREEN.height}px;"
 	class:demo={demoMode}
+	class:top
 >
 	<div class="stream-container">
 		<div class="stream">
@@ -53,7 +55,7 @@
 					<PlanTrain />
 				{/if}
 				{#each $graceTrains as train (train.id)}
-					<Train {train} />
+					<Train {train} {top} />
 				{/each}
 			</div>
 			{#if planMode}
@@ -61,7 +63,10 @@
 			{/if}
 			{#if infoTrains.length > 0}
 				{@const latestInfoTrain = infoTrains[infoTrains.length - 1]}
-				{#key latestInfoTrain.id}<InfoPanel train={latestInfoTrain} />{/key}
+				{#key latestInfoTrain.id}<InfoPanel
+						train={latestInfoTrain}
+						{top}
+					/>{/key}
 			{/if}
 		</div>
 	</div>
@@ -119,6 +124,9 @@
 		position: absolute;
 		top: 100%;
 		width: 100%;
+	}
+	.top .trains-container {
+		top: 0;
 	}
 	section {
 		padding: 0.5rem;

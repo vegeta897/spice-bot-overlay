@@ -2,13 +2,18 @@ import { get, writable, type Writable } from 'svelte/store'
 import type { Train } from './trains'
 
 type AuthStatus = 'init' | 'missing-key' | 'invalid-key' | 'success'
+export type OverlayPosition = 'top' | 'bottom'
 
 export const overlayStatus: Writable<{
 	auth: AuthStatus
-}> = writable({ auth: 'init' })
+	position: OverlayPosition
+}> = writable({ auth: 'init', position: 'bottom' })
 
 export function setAuthStatus(authStatus: AuthStatus) {
 	overlayStatus.update((status) => ({ ...status, auth: authStatus }))
+}
+export function setOverlayPosition(position: OverlayPosition) {
+	overlayStatus.update((status) => ({ ...status, position }))
 }
 
 export const graceTrains: Writable<Train[]> = writable([])
