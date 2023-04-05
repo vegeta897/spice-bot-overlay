@@ -2,8 +2,10 @@
 	import { initChat } from './lib/mock/chat'
 	import ChatPane from './components/ChatPane.svelte'
 	import Train from './components/Train.svelte'
+	import PlanTrain from './components/PlanTrain.svelte'
 	import { initWebsocket } from './lib/websocket'
 	import InfoPanel from './components/InfoPanel.svelte'
+	import PlanInfoPanel from './components/PlanInfoPanel.svelte'
 	import { graceTrains } from './lib/store'
 	import { SCREEN } from './lib/constants'
 	import Status from './components/Status.svelte'
@@ -14,6 +16,7 @@
 	const heightOverride = parseInt(urlParams.get('h'))
 	if (widthOverride > 0) SCREEN.width = widthOverride
 	if (heightOverride > 0) SCREEN.height = heightOverride
+	const planMode = urlParams.has('plan')
 
 	if (demoMode) {
 		initChat()
@@ -46,10 +49,16 @@
 				<source src="/sample-stream.mp4" type="video/mp4" />
 			</video> -->
 			<div class="trains-container">
+				{#if planMode}
+					<PlanTrain />
+				{/if}
 				{#each $graceTrains as train (train.id)}
 					<Train {train} />
 				{/each}
 			</div>
+			{#if planMode}
+				<PlanInfoPanel />
+			{/if}
 			{#if infoTrains.length > 0}
 				{@const latestInfoTrain = infoTrains[infoTrains.length - 1]}
 				{#key latestInfoTrain.id}<InfoPanel train={latestInfoTrain} />{/key}

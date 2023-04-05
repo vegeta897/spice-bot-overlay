@@ -4,7 +4,7 @@
 	import Score from './Score.svelte'
 	import type { Train } from '../lib/trains'
 	import TrainTrack from './TrainTrack.svelte'
-	import { onDestroy, onMount } from 'svelte'
+	import { onMount } from 'svelte'
 
 	// TODO: Show high scores after end
 
