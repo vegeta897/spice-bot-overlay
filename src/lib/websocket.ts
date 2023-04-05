@@ -15,9 +15,9 @@ export function initWebsocket(key: string) {
 		return
 	}
 	const wsAddress = import.meta.env.DEV
-		? 'localhost:3005'
-		: window.location.hostname
-	ws = new WebSocket(`ws://${wsAddress}?key=${key}`)
+		? 'ws://localhost:3005'
+		: 'wss://' + window.location.hostname
+	ws = new WebSocket(`${wsAddress}?key=${key}`)
 	ws.addEventListener('open', (event) => {
 		console.log('Websocket opened!')
 	})
