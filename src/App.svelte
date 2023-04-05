@@ -2,13 +2,24 @@
 	import { initChat } from './lib/mock/chat'
 	import ChatPane from './components/ChatPane.svelte'
 	import Train from './components/Train.svelte'
-	// import { initWebsocket } from './lib/websocket'
+	import { initWebsocket } from './lib/websocket'
 	import InfoPanel from './components/InfoPanel.svelte'
 	import { graceTrains } from './lib/store'
 	import { SCREEN } from './lib/constants'
+	import Status from './components/Status.svelte'
 
-	// initWebsocket()
-	initChat()
+	const urlParams = new URLSearchParams(window.location.search)
+	const demoMode = urlParams.has('demo')
+	const widthOverride = parseInt(urlParams.get('w'))
+	const heightOverride = parseInt(urlParams.get('h'))
+	if (widthOverride > 0) SCREEN.width = widthOverride
+	if (heightOverride > 0) SCREEN.height = heightOverride
+
+	if (demoMode) {
+		initChat()
+	} else {
+		initWebsocket(urlParams.get('key'))
+	}
 
 	let background = 1
 	function changeBackground() {
@@ -16,19 +27,16 @@
 	}
 
 	$: infoTrains = $graceTrains.filter((g) => g.showInfo)
-
-	// Streamlabs attaches this global but none of the methods/events work
-	// I don't trust it, so only use this in dev
-	const browser = !window.obsstudio
 </script>
 
+<Status />
 <main
 	style="--screen-width: {SCREEN.width}px; --screen-height: {SCREEN.height}px;"
-	class:browser
+	class:demo={demoMode}
 >
 	<div class="stream-container">
 		<div class="stream">
-			{#if browser}
+			{#if demoMode}
 				<div
 					class="stream-background"
 					style="background: url('sample-stream-{background}.jpg')"
@@ -48,21 +56,27 @@
 			{/if}
 		</div>
 	</div>
-	{#if browser}
+	{#if demoMode}
 		<ChatPane />
 	{/if}
 </main>
-{#if browser}
+{#if demoMode}
 	<section>
 		<button on:click={changeBackground}>Change Stream BG</button>
 	</section>
+	<style>
+		body {
+			background: #121214;
+			overflow: visible;
+		}
+	</style>
 {/if}
 
 <style>
 	main {
 		display: flex;
 	}
-	main.browser {
+	main.demo {
 		margin-left: 0.25rem;
 		margin-top: 0.25rem;
 		height: calc(var(--screen-height) / 2 + 2px);
@@ -73,7 +87,7 @@
 		height: var(--screen-height);
 		overflow: hidden;
 	}
-	.browser .stream-container {
+	.demo .stream-container {
 		width: calc(var(--screen-width) / 2);
 		height: calc(var(--screen-height) / 2);
 		border: 1px solid #0008;
@@ -82,7 +96,7 @@
 		width: var(--screen-width);
 		height: var(--screen-height);
 	}
-	.browser .stream {
+	.demo .stream {
 		transform-origin: top left;
 		transform: scale(0.5);
 	}

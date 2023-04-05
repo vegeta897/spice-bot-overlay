@@ -5,9 +5,8 @@
 body {
 	margin: 0;
 	padding: 0;
-	background: #121214;
-	/* overflow: hidden; */ /* TODO: Re-enable this for real overlay */
-	/* background: (0, 0, 0, 0); */
+	overflow: hidden;
+	background: (0, 0, 0, 0);
 	color: rgb(239, 239, 241);
 	font-family: Inter, Roobert, Helvetica Neue, Helvetica, Arial, sans-serif;
 	font-size: 14px;
