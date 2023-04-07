@@ -31,6 +31,10 @@ export function createTrain(trainStartData: TrainStartData) {
 
 export function addToTrain(trainAddData: TrainAddData) {
 	const existingTrain = getTrain(trainAddData)
+	if (existingTrain.endTime) {
+		console.log('Ignoring add event for ended train')
+		return
+	}
 	updateTrain({
 		id: trainAddData.id,
 		combo: trainAddData.combo,
