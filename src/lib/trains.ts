@@ -66,17 +66,20 @@ export function endTrain(trainEndData: TrainEndData, hideInfoNow = false) {
 		SCREEN.width + trainWidth - TRAIN.speed * secondsElapsed
 	const remainingTime = (remainingWidth / TRAIN.speed) * 1000
 	if (hideInfoNow) updateTrain({ id: train.id, hideInfo: true })
-	if (remainingTime > TRAIN.endInfoDuration) {
+	const endInfoDuration =
+		TRAIN.endInfoDuration +
+		Math.floor(train.combo / TRAIN.endInfoLengthPerSecond)
+	if (remainingTime > endInfoDuration) {
 		// Hide info panel after endInfoDuration
 		if (!hideInfoNow)
 			setTimeout(() => {
 				updateTrain({ id: train.id, hideInfo: true })
-			}, TRAIN.endInfoDuration)
+			}, endInfoDuration)
 		// Then delete the train
 		setTimeout(() => deleteTrain(train), remainingTime)
 	} else {
 		// Delete train after endInfoDuration
-		setTimeout(() => deleteTrain(train), TRAIN.endInfoDuration)
+		setTimeout(() => deleteTrain(train), endInfoDuration)
 	}
 }
 

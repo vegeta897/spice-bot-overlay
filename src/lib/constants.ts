@@ -5,6 +5,7 @@ export const TRAIN = {
 	minLength: 5,
 	departDelay: 3 * 1000, // Milliseconds before train departs
 	endInfoDuration: 5 * 1000, // Milliseconds until info panel disappears
+	endInfoLengthPerSecond: 30, // 1 second added to end info panel per this train length
 }
 
 export const SCREEN = {
