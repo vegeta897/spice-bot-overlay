@@ -31,6 +31,7 @@
 		<circle cx="10" cy="10" r="10" /></svg>`
 	const cloudElement = newCloudPlaceholder.firstElementChild
 
+	onInterval(animateCloud, cloudRate)
 	onMount(() => {
 		for (let i = 0; i < cloudCount; i++) {
 			const newCloud = cloudElement.cloneNode(true) as SVGElement
@@ -39,11 +40,11 @@
 			clouds.push(newCloud)
 			containerElement.appendChild(newCloud)
 		}
-		onInterval(animateCloud, cloudRate)
 	})
 
 	function animateCloud() {
 		const cloud = clouds[nextCloudIndex]
+		if (!cloud) return
 		nextCloudIndex = (nextCloudIndex + 1) % cloudCount
 		const fromScale = randomIntRange(5, 20) / 10
 		const toScale = randomIntRange(30, 50) / 10
