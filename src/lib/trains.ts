@@ -43,7 +43,7 @@ export function addToTrain(trainAddData: TrainAddData) {
 	})
 }
 
-export function endTrain(trainEndData: TrainEndData, hideNow = false) {
+export function endTrain(trainEndData: TrainEndData, hideInfoNow = false) {
 	endAllTrains(trainEndData.id) // End all trains except this one
 	const existingTrain = getTrain(trainEndData)
 	if (!existingTrain) {
@@ -60,16 +60,15 @@ export function endTrain(trainEndData: TrainEndData, hideNow = false) {
 		endTime: now,
 	})
 	// Determine when to hide the info panel and delete the train
-	const trainWidth =
-		TRAIN.engineWidth + TRAIN.carWidth * (trainEndData.combo - 1)
+	const trainWidth = getTrainWidth(trainEndData.combo)
 	const secondsElapsed = (now - train.departTime) / 1000
 	const remainingWidth =
 		SCREEN.width + trainWidth - TRAIN.speed * secondsElapsed
 	const remainingTime = (remainingWidth / TRAIN.speed) * 1000
-	if (hideNow) updateTrain({ id: train.id, hideInfo: true })
+	if (hideInfoNow) updateTrain({ id: train.id, hideInfo: true })
 	if (remainingTime > TRAIN.endInfoDuration) {
 		// Hide info panel after endInfoDuration
-		if (!hideNow)
+		if (!hideInfoNow)
 			setTimeout(() => {
 				updateTrain({ id: train.id, hideInfo: true })
 			}, TRAIN.endInfoDuration)
@@ -96,3 +95,6 @@ export function endAllTrains(except?: number) {
 			)
 	})
 }
+
+export const getTrainWidth = (combo: number) =>
+	TRAIN.engineWidth + TRAIN.carWidth * (combo - 1)

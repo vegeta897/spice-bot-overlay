@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte'
+	import { onMount } from 'svelte'
 	import { TRAIN } from '../lib/constants'
-	import { randomIntRange } from '../lib/util'
+	import { onInterval, randomIntRange } from '../lib/util'
 
 	const clouds: SVGElement[] = []
 	const cloudDuration = 3000
@@ -9,7 +9,6 @@
 	const cloudCount = Math.ceil(cloudDuration / cloudRate)
 
 	let containerElement: HTMLDivElement
-	let interval: number
 	let nextCloudIndex = 0
 
 	const smokyRainbow = [
@@ -40,7 +39,7 @@
 			clouds.push(newCloud)
 			containerElement.appendChild(newCloud)
 		}
-		interval = setInterval(animateCloud, cloudRate)
+		onInterval(animateCloud, cloudRate)
 	})
 
 	function animateCloud() {
@@ -77,8 +76,6 @@
 			}
 		)
 	}
-
-	onDestroy(() => clearInterval(interval))
 </script>
 
 <div class="cloud-container" bind:this={containerElement} />

@@ -3,7 +3,7 @@
 	import Smoke from './Smoke.svelte'
 	import { SCREEN, TRAIN } from '../lib/constants'
 	import { sleep } from '../lib/util'
-	import type { Train } from '../lib/trains'
+	import { getTrainWidth, type Train } from '../lib/trains'
 	import { onMount } from 'svelte'
 
 	export let train: Train
@@ -60,8 +60,8 @@
 			if (translation === -100) showSmoke = false
 			if (train.endUser) {
 				// If grace train finished, calculate how many more 100% needed to get off screen
-				const trainSize = TRAIN.engineWidth + (train.combo - 1) * TRAIN.carWidth
-				const remainingPixels = (translation / 100) * SCREEN.width + trainSize
+				const trainWidth = getTrainWidth(train.combo)
+				const remainingPixels = (translation / 100) * SCREEN.width + trainWidth
 				if (remainingPixels > 0) {
 					// Finish sliding
 					const remainingPercent = remainingPixels / SCREEN.width
