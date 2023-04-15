@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import { TRAIN } from '../lib/constants'
 	import { onInterval, randomIntRange } from '../lib/util'
+
+	export let reverse = false
+	export let speed: number // Pixels per ms
 
 	const clouds: SVGElement[] = []
 	const cloudDuration = 3000
@@ -49,8 +51,9 @@
 		const fromScale = randomIntRange(5, 20) / 10
 		const toScale = randomIntRange(30, 50) / 10
 		const toX = Math.round(
-			TRAIN.speed * (cloudDuration / 1000) + randomIntRange(-50, 50)
+			speed * 1000 * (cloudDuration / 1000) + randomIntRange(-50, 50)
 		)
+		const toXBegin = Math.round(toX / 10)
 		const toY = -180 + randomIntRange(-20, 20)
 		cloud.animate(
 			[
@@ -61,7 +64,7 @@
 				},
 				{
 					opacity: 1,
-					transform: `translate(40px, -40px) scale(${toScale / 2})`,
+					transform: `translate(${toXBegin}px, -40px) scale(${toScale / 2})`,
 					offset: 0.1,
 					easing: 'linear',
 				},
@@ -79,12 +82,17 @@
 	}
 </script>
 
-<div class="cloud-container" bind:this={containerElement} />
+<div class="cloud-container" class:reverse bind:this={containerElement} />
 
 <style>
 	.cloud-container {
 		position: absolute;
 		left: 12px;
 		top: -18px;
+	}
+	.cloud-container.reverse {
+		left: auto;
+		right: 16px;
+		transform: scaleX(-1);
 	}
 </style>

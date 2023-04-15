@@ -1,5 +1,5 @@
 import { get } from 'svelte/store'
-import { SCREEN, TRAIN } from './constants'
+import { TRAIN } from './constants'
 import { deleteTrain, getTrain, graceTrains, updateTrain } from './store'
 import type { TrainAddData, TrainEndData, TrainStartData } from './websocket'
 
@@ -12,6 +12,7 @@ export type Train = {
 	endUser?: string
 	endTime?: number
 	hideInfo?: boolean
+	offScreen?: boolean
 }
 
 export function createTrain(trainStartData: TrainStartData) {
@@ -59,28 +60,13 @@ export function endTrain(trainEndData: TrainEndData, hideInfoNow = false) {
 		endUser: trainEndData.username,
 		endTime: now,
 	})
-	// Determine when to hide the info panel and delete the train
-	const trainWidth = getTrainWidth(trainEndData.combo)
-	const secondsElapsed = (now - train.departTime) / 1000
-	const remainingWidth =
-		SCREEN.width + trainWidth - TRAIN.speed * secondsElapsed
-	const remainingTime = (remainingWidth / TRAIN.speed) * 1000
-	if (hideInfoNow) updateTrain({ id: train.id, hideInfo: true })
 	const endInfoDuration =
 		TRAIN.endInfoDuration +
 		Math.floor(train.combo / TRAIN.endInfoLengthPerSecond)
-	if (remainingTime > endInfoDuration) {
-		// Hide info panel after endInfoDuration
-		if (!hideInfoNow)
-			setTimeout(() => {
-				updateTrain({ id: train.id, hideInfo: true })
-			}, endInfoDuration)
-		// Then delete the train
-		setTimeout(() => deleteTrain(train), remainingTime)
-	} else {
-		// Delete train after endInfoDuration
-		setTimeout(() => deleteTrain(train), endInfoDuration)
-	}
+	setTimeout(() => {
+		train.hideInfo = true
+		if (train.offScreen) deleteTrain(train)
+	}, endInfoDuration)
 }
 
 export function endAllTrains(except?: number) {

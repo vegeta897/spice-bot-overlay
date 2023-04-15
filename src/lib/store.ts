@@ -36,6 +36,7 @@ export function updateTrain(train: Pick<Train, 'id'> & Partial<Train>) {
 }
 
 export function deleteTrain(train: Train) {
+	if (!getTrain(train)) return
 	graceTrains.update((trains) => [...trains.filter((t) => t.id !== train.id)])
 }
 
