@@ -37,6 +37,8 @@
 	let reversalTimeout: number
 	$: if (train.endUser) clearTimeout(reversalTimeout)
 
+	$: opacity = 2 / (fade + 2)
+
 	function onCarAdd() {
 		doImpulse()
 		if (animation) scheduleReversal()
@@ -134,12 +136,7 @@
 	})
 </script>
 
-<div
-	bind:this={trainContainer}
-	class:top
-	class:reverse
-	style={`opacity: ${2 / (fade + 2)}`}
->
+<div bind:this={trainContainer} class:top class:reverse style:opacity>
 	{#each train.colors as color, c (c)}
 		<TrainCar
 			{reverse}
