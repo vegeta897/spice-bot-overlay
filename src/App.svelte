@@ -54,8 +54,8 @@
 				{#if planMode}
 					<PlanTrain />
 				{/if}
-				{#each $graceTrains as train (train.id)}
-					<Train {train} {top} />
+				{#each $graceTrains as train, t (train.id)}
+					<Train {train} {top} fade={$graceTrains.length - 1 - t} />
 				{/each}
 			</div>
 			{#if planMode}

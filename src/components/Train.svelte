@@ -5,10 +5,11 @@
 	import { sleep } from '../lib/util'
 	import { getTrainWidth, type Train } from '../lib/trains'
 	import { onMount } from 'svelte'
-	import { deleteTrain } from '../lib/store'
+	import { deleteTrain, updateTrain } from '../lib/store'
 
 	export let train: Train
 	export let top = false
+	export let fade = 0
 
 	let pixelsPerMs: number
 	let durationPerScreen: number
@@ -55,7 +56,6 @@
 		)
 		if (reversalTimeout) clearTimeout(reversalTimeout)
 		reversalTimeout = setTimeout(() => {
-			console.log('reverse!')
 			reversalEvents.dispatchEvent(new Event('reverse'))
 		}, timeUntilReversal)
 	}
@@ -93,7 +93,7 @@
 			translateDelta = Math.round(remainingScreens * (reverse ? 100 : -100))
 			await slide(translation, translateDelta)
 		}
-		train.offScreen = true
+		updateTrain({ id: train.id, offScreen: true })
 		if (train.hideInfo) deleteTrain(train)
 	}
 
@@ -101,16 +101,16 @@
 		const departWait = train.departTime - Date.now()
 		if (departWait > 0) await sleep(departWait)
 		showSmoke = true
-		scheduleReversal()
 		while (trainContainer) {
+			const slideComplete = slide(translation, translateDelta)
+			scheduleReversal()
 			const nextAction = await Promise.race([
-				slide(translation, translateDelta),
+				slideComplete,
 				new Promise((resolve) => {
 					reversalEvents.addEventListener('reverse', () => resolve('reverse'))
 				}),
 			])
 			if (nextAction !== 'reverse') {
-				console.log('not reversing')
 				translation += translateDelta
 				if (
 					(reverse && translation >= 100) ||
@@ -124,19 +124,22 @@
 				finalSlide()
 				break
 			} else if (nextAction === 'reverse') {
-				console.log('reversing')
-				updateTrainSpeed(TRAIN.speed + train.combo)
+				updateTrainSpeed(TRAIN.speed + train.combo * TRAIN.speedAddPerCombo)
 				showSmoke = true
 				reverse = !reverse
 				translation = reverse ? -100 : 100
 				translateDelta = reverse ? 100 : -100
-				scheduleReversal()
 			}
 		}
 	})
 </script>
 
-<div bind:this={trainContainer} class:top class:reverse>
+<div
+	bind:this={trainContainer}
+	class:top
+	class:reverse
+	style={`opacity: ${2 / (fade + 2)}`}
+>
 	{#each train.colors as color, c (c)}
 		<TrainCar
 			{reverse}
@@ -161,6 +164,7 @@
 		transform: translateX(100%);
 		--train-base-color: #605de9;
 		--train-pop-color: #ff538f;
+		transition: opacity 8s ease;
 	}
 	div.top {
 		bottom: auto;

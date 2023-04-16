@@ -64,7 +64,7 @@ export function endTrain(trainEndData: TrainEndData, hideInfoNow = false) {
 		TRAIN.endInfoDuration +
 		Math.floor(train.combo / TRAIN.endInfoLengthPerSecond)
 	setTimeout(() => {
-		train.hideInfo = true
+		updateTrain({ id: train.id, hideInfo: true })
 		if (train.offScreen) deleteTrain(train)
 	}, endInfoDuration)
 }
