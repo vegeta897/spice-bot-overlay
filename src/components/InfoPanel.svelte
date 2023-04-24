@@ -55,7 +55,7 @@
 			out:fade={{ duration: 300, easing: cubicIn }}
 			bind:this={titleElement}
 		>
-			GRACE TRAIN!
+			<span style="font-size: 60px; line-height: 58px;">HYPE</span> TRAIN!
 		</h1>
 		<div class="stats">
 			<div

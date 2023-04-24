@@ -46,7 +46,7 @@ export function planTrain() {
 	let comboSize = 0
 	let comboScore = 0
 	let lastGraceType: GraceInfo['type']
-	const trainSize = randomIntRange(9, 30)
+	const trainSize = randomIntRange(30, 80)
 	for (let i = 0; i < trainSize; i++) {
 		const graceMessage = createGraceMessage()
 		trainUsers.add(graceMessage.username)
@@ -73,7 +73,7 @@ export function planTrain() {
 		}
 		messages.push({
 			message: graceMessage,
-			delay: randomIntRange(1, 100) * 25,
+			delay: randomIntRange(1, 100) * 40,
 			grace: graceInfo,
 		})
 		lastGraceType = graceType

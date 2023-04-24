@@ -29,7 +29,7 @@
 
 	const newCloudPlaceholder = document.createElement('div')
 	newCloudPlaceholder.innerHTML = `<svg	width="20px" height="20px" viewBox="0 0 20 20"
-    style="opacity: 0; transform-origin: 10px 10px; position: absolute; filter: blur(4px);">
+    style="opacity: 0; transform-origin: 10px 10px; position: absolute; filter: blur(4px); will-change: transform, opacity;">
 		<circle cx="10" cy="10" r="10" /></svg>`
 	const cloudElement = newCloudPlaceholder.firstElementChild
 

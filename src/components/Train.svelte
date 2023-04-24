@@ -6,10 +6,12 @@
 	import { getTrainWidth, type Train } from '../lib/trains'
 	import { onMount } from 'svelte'
 	import { deleteTrain, updateTrain } from '../lib/store'
+	import CoinSpout from './CoinSpout.svelte'
 
 	export let train: Train
 	export let top = false
 	export let fade = 0
+	export let hype = true
 
 	let pixelsPerMs: number
 	let durationPerScreen: number
@@ -66,6 +68,7 @@
 		const now = Date.now()
 		for (let i = cars.length - 1; i >= 0; i--) {
 			const fromEnd = cars.length - i - 1
+			// TODO: Use lastImpulse to pass a delta value for hopping cars mid-hop
 			if (fromEnd > 0 && now - lastImpulse < 400) return
 			if (fromEnd >= maxHopDistance) break
 			cars[i].hop(fromEnd * 100, (maxHopDistance - fromEnd) / maxHopDistance)
@@ -100,6 +103,9 @@
 	}
 
 	onMount(async () => {
+		// trainContainer.style.transform = 'translateX(60%)'
+		// showSmoke = true
+		// return
 		const departWait = train.departTime - Date.now()
 		if (departWait > 0) await sleep(departWait)
 		showSmoke = true
@@ -141,12 +147,17 @@
 		<TrainCar
 			{reverse}
 			{color}
+			gold={hype}
 			type={c === 0 ? 'engine' : 'car'}
 			bind:this={cars[c]}
 		/>
 	{/each}
 	{#if showSmoke && !top}
-		<Smoke {reverse} speed={pixelsPerMs} />
+		{#if hype}
+			<CoinSpout {reverse} speed={pixelsPerMs} />
+		{:else}
+			<Smoke {reverse} speed={pixelsPerMs} />
+		{/if}
 	{/if}
 </div>
 

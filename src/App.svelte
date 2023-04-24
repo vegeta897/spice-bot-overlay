@@ -50,6 +50,12 @@
 			<!-- <video autoplay muted loop style="position: absolute">
 				<source src="/sample-stream.mp4" type="video/mp4" />
 			</video> -->
+			{#if infoTrains.length > 0}
+				{@const latestInfoTrain = infoTrains[infoTrains.length - 1]}
+				{#key latestInfoTrain.id}
+					<InfoPanel train={latestInfoTrain} {top} />
+				{/key}
+			{/if}
 			<div class="trains-container">
 				{#if planMode}
 					<PlanTrain />
@@ -60,13 +66,6 @@
 			</div>
 			{#if planMode}
 				<PlanInfoPanel />
-			{/if}
-			{#if infoTrains.length > 0}
-				{@const latestInfoTrain = infoTrains[infoTrains.length - 1]}
-				{#key latestInfoTrain.id}<InfoPanel
-						train={latestInfoTrain}
-						{top}
-					/>{/key}
 			{/if}
 		</div>
 	</div>
