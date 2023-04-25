@@ -16,11 +16,12 @@
 	let pixelsPerMs: number
 	let durationPerScreen: number
 
-	function updateTrainSpeed(speed: number) {
+	function updateTrainSpeed() {
+		const speed = TRAIN.speed + train.combo * TRAIN.speedAddPerCombo
 		pixelsPerMs = speed / 1000
 		durationPerScreen = Math.round(SCREEN.width / pixelsPerMs)
 	}
-	updateTrainSpeed(TRAIN.speed)
+	updateTrainSpeed()
 
 	let trainContainer: HTMLDivElement
 	let animation: Animation
@@ -76,7 +77,7 @@
 		lastImpulse = now
 	}
 
-	function slide(start: number, delta: number) {
+	function slide(start: number, delta: number, easing = 'linear') {
 		if (!trainContainer) return
 		animationDuration = Math.round((Math.abs(delta) / 100) * durationPerScreen)
 		return new Promise((resolve) => {
@@ -85,7 +86,7 @@
 					{ transform: `translateX(${start}%)` },
 					{ transform: `translateX(${start + delta}%)` },
 				],
-				{ duration: animationDuration, easing: 'linear', fill: 'forwards' }
+				{ duration: animationDuration, easing, fill: 'forwards' }
 			)
 			animation.onfinish = resolve
 		})
@@ -110,7 +111,14 @@
 		if (departWait > 0) await sleep(departWait)
 		showSmoke = true
 		while (trainContainer) {
-			const slideComplete = slide(translation, translateDelta)
+			const prevTrainSpeed = pixelsPerMs
+			updateTrainSpeed()
+			const speedRatio = prevTrainSpeed / pixelsPerMs
+			const easing =
+				speedRatio === 1
+					? 'linear'
+					: `cubic-bezier(0.5, ${0.5 * speedRatio}, 0.7, 0.7)`
+			const slideComplete = slide(translation, translateDelta, easing)
 			scheduleReversal()
 			const nextAction = await Promise.race([
 				slideComplete,
@@ -132,7 +140,6 @@
 				finalSlide()
 				break
 			} else if (nextAction === 'reverse') {
-				updateTrainSpeed(TRAIN.speed + train.combo * TRAIN.speedAddPerCombo)
 				showSmoke = true
 				reverse = !reverse
 				translation = reverse ? -100 : 100
