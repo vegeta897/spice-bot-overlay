@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import Coin from './Coin.svelte'
-	import { onInterval } from '../lib/util'
+	import { onInterval } from '../../lib/util'
 
 	export let reverse = false
 	export let speed: number // Pixels per ms
 
 	const coins: Coin[] = []
 	const coinDuration = 2500
-	const coinRate = 150
+	const coinRate = 100
 	const coinCount = Math.ceil(coinDuration / coinRate)
 
 	let containerElement: HTMLDivElement

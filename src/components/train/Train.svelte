@@ -1,11 +1,11 @@
 <script lang="ts">
 	import TrainCar from './TrainCar.svelte'
 	import Smoke from './Smoke.svelte'
-	import { SCREEN, TRAIN } from '../lib/constants'
-	import { sleep } from '../lib/util'
-	import { getTrainWidth, type Train } from '../lib/trains'
+	import { SCREEN, TRAIN } from '../../lib/constants'
+	import { sleep } from '../../lib/util'
+	import { getTrainWidth, type Train } from '../../lib/trains'
 	import { onMount } from 'svelte'
-	import { deleteTrain, updateTrain } from '../lib/store'
+	import { deleteTrain, updateTrain } from '../../lib/store'
 	import CoinSpout from './CoinSpout.svelte'
 
 	export let train: Train
@@ -53,8 +53,7 @@
 		const animationProgress = (animation?.currentTime || 0) / animationDuration
 		let currentTranslation = translation + translateDelta * animationProgress
 		if (reverse) currentTranslation *= -1 // Trust me it works
-		const remainingScreens =
-			currentTranslation / 100 + trainWidth / SCREEN.width
+		const remainingScreens = currentTranslation / 100 + trainWidth / SCREEN.width
 		const timeUntilReversal = Math.max(
 			0,
 			remainingScreens * durationPerScreen + TRAIN.departDelay
@@ -104,9 +103,9 @@
 	}
 
 	onMount(async () => {
-		// trainContainer.style.transform = 'translateX(60%)'
-		// showSmoke = true
-		// return
+		trainContainer.style.transform = 'translateX(0%)'
+		showSmoke = true
+		return
 		const departWait = train.departTime - Date.now()
 		if (departWait > 0) await sleep(departWait)
 		showSmoke = true
@@ -115,9 +114,7 @@
 			updateTrainSpeed()
 			const speedRatio = prevTrainSpeed / pixelsPerMs
 			const easing =
-				speedRatio === 1
-					? 'linear'
-					: `cubic-bezier(0.5, ${0.5 * speedRatio}, 0.7, 0.7)`
+				speedRatio === 1 ? 'linear' : `cubic-bezier(0.5, ${0.5 * speedRatio}, 0.7, 0.7)`
 			const slideComplete = slide(translation, translateDelta, easing)
 			scheduleReversal()
 			const nextAction = await Promise.race([
@@ -128,10 +125,7 @@
 			])
 			if (nextAction !== 'reverse') {
 				translation += translateDelta
-				if (
-					(reverse && translation >= 100) ||
-					(!reverse && translation <= -100)
-				) {
+				if ((reverse && translation >= 100) || (!reverse && translation <= -100)) {
 					showSmoke = false
 				}
 			}

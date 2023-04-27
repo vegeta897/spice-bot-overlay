@@ -16,15 +16,15 @@ export function setOverlayPosition(position: OverlayPosition) {
 	overlayStatus.update((status) => ({ ...status, position }))
 }
 
-export const graceTrains: Writable<Train[]> = writable([])
+export const trains: Writable<Train[]> = writable([])
 
 export const getTrain = (train: Pick<Train, 'id'>) =>
-	get(graceTrains).find((t) => t.id === train.id)
+	get(trains).find((t) => t.id === train.id)
 
 export function updateTrain(train: Pick<Train, 'id'> & Partial<Train>) {
 	const existingTrain = getTrain(train)
 	const updatedTrain = { ...existingTrain, ...train }
-	graceTrains.update((gt) => {
+	trains.update((gt) => {
 		gt.splice(
 			gt.findIndex((t) => t.id === train.id),
 			1,
@@ -37,7 +37,7 @@ export function updateTrain(train: Pick<Train, 'id'> & Partial<Train>) {
 
 export function deleteTrain(train: Train) {
 	if (!getTrain(train)) return
-	graceTrains.update((trains) => [...trains.filter((t) => t.id !== train.id)])
+	trains.update((trains) => [...trains.filter((t) => t.id !== train.id)])
 }
 
 // Mock only

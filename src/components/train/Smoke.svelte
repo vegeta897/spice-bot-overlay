@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import { onInterval, randomIntRange } from '../lib/util'
+	import { onInterval, randomIntRange } from '../../lib/util'
 
 	export let reverse = false
 	export let speed: number // Pixels per ms

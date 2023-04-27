@@ -1,5 +1,5 @@
 import { TRAIN } from '../constants'
-import { chat, graceTrains } from '../store'
+import { chat, trains } from '../store'
 import { addToTrain, createTrain, endTrain } from '../trains'
 import { randomIntRange, sleep } from '../util'
 import { planTrain } from './chat'
@@ -44,14 +44,16 @@ export async function runChatLoop() {
 }
 
 export function createStaticTrain() {
-	graceTrains.set([
+	trains.set([
 		{
 			id: Date.now(),
+			departTime: Date.now(),
+			// grace: {
 			colors: fakeUsers.map((u) => u[1]),
 			score: 1234567,
 			combo: fakeUsers.length,
-			departTime: Date.now(),
 			endUser: 'General_Jackal',
+			// },
 		},
 	])
 }

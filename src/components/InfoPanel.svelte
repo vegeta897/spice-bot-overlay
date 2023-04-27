@@ -8,6 +8,9 @@
 
 	// TODO: Show high scores after end
 
+	// TODO: For subs, make displayed number increment one at a time
+	// Use an async function that loops w/ sleep until displayed number reaches actual
+
 	export let train: Train
 	export let top = false
 
@@ -27,10 +30,7 @@
 				},
 				{ transform: 'scale(100%)' },
 			],
-			{
-				delay,
-				duration: 300,
-			}
+			{ delay, duration: 300 }
 		)
 	}
 
@@ -140,7 +140,7 @@
 		width: 190px;
 		padding: 5px 0 2px;
 		border-radius: 20px;
-		background: #5029c4d0;
+		background: #5029c4e0;
 		transform-origin: 50% 50%;
 		position: relative;
 		will-change: transform;
@@ -157,7 +157,7 @@
 	.combo {
 		display: flex;
 		position: relative;
-		background: #8a1145c7;
+		background: #8a1145d7;
 		justify-content: flex-end;
 		align-items: flex-start;
 		font-size: 44px;
@@ -211,7 +211,7 @@
 	}
 
 	.end {
-		background: #df256da3;
+		background: #df256dc3;
 		border-radius: 16px;
 		display: flex;
 		flex-direction: column;

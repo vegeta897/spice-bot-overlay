@@ -19,7 +19,7 @@
 
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import { randomIntRange } from '../lib/util'
+	import { randomIntRange } from '../../lib/util'
 
 	let translateXdiv: HTMLDivElement
 	let translateYdiv: HTMLDivElement
@@ -29,7 +29,7 @@
 	let circleBackElement: SVGCircleElement
 	let rectElement: SVGRectElement
 
-	const spinDuration = randomIntRange(300, 1000)
+	const spinDuration = randomIntRange(100, 1500)
 	const degreesPerSecond = randomIntRange(-300, 300)
 	const rotateTo = degreesPerSecond < 0 ? '-360deg' : '360deg'
 	const rotateDuration = Math.abs(Math.round((360 / degreesPerSecond) * 1000))
@@ -41,25 +41,21 @@
 		)
 		frontGroupElement.animate(
 			[
-				{ transform: 'translateX(1px) scaleX(0)', easing: easeOut },
+				{ transform: 'translateX(4px) scaleX(0)', easing: easeOut },
 				{ transform: 'translateX(0) scaleX(1)', easing: easeIn },
-				{ transform: 'translateX(-1px) scaleX(0)' },
+				{ transform: 'translateX(-4px) scaleX(0)' },
 			],
 			{ duration: spinDuration, iterations: Infinity }
 		)
 		shineCircleElement.animate(
-			[
-				{ opacity: 0.5, easing: easeOut },
-				{ opacity: 0, easing: easeIn },
-				{ opacity: 1 },
-			],
+			[{ opacity: 0.5, easing: easeOut }, { opacity: 0, easing: easeIn }, { opacity: 1 }],
 			{ duration: spinDuration, iterations: Infinity }
 		)
 		circleBackElement.animate(
 			[
-				{ transform: 'translateX(-1px) scaleX(0)', easing: easeOut },
+				{ transform: 'translateX(-4px) scaleX(0)', easing: easeOut },
 				{ transform: 'translateX(0) scaleX(1)', easing: easeIn },
-				{ transform: 'translateX(1px) scaleX(0)' },
+				{ transform: 'translateX(4px) scaleX(0)' },
 			],
 			{ duration: spinDuration, iterations: Infinity }
 		)
@@ -115,35 +111,35 @@
 		<svg
 			class="will-transform"
 			bind:this={svgElement}
-			viewBox="0 0 10 10"
+			viewBox="0 0 30 30"
 			width="30px"
 			height="30px"
 		>
 			<rect
 				class="will-transform"
 				bind:this={rectElement}
-				x="4"
-				width="2"
-				height="10"
+				x="11"
+				width="8"
+				height="30"
 				fill="url(#coin_edge)"
 			/>
 			<circle
 				class="back will-transform"
 				bind:this={circleBackElement}
-				cx="5"
-				cy="5"
-				r="5"
+				cx="15"
+				cy="15"
+				r="15"
 				fill="url(#coin_edge)"
 			/>
 			<g bind:this={frontGroupElement} class="front will-transform">
-				<circle fill="url(#coin_face)" cx="5" cy="5" r="5" />
-				<circle fill="url(#coin_face_inset)" cx="5" cy="5" r="3.5" />
+				<circle fill="url(#coin_face)" cx="15" cy="15" r="15" />
+				<circle fill="url(#coin_face_inset)" cx="15" cy="15" r="10" />
 				<circle
 					class="shine will-opacity"
 					bind:this={shineCircleElement}
-					cx="5"
-					cy="5"
-					r="5"
+					cx="15"
+					cy="15"
+					r="15"
 				/>
 			</g>
 			<defs>

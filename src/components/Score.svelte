@@ -35,7 +35,7 @@
 		text-align: right;
 		white-space: nowrap;
 		position: relative;
-		background: #841784cf;
+		background: #841784df;
 		border-radius: 12px;
 		padding: 4px 6px 0;
 	}

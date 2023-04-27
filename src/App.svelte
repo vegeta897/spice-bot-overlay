@@ -1,17 +1,18 @@
 <script lang="ts">
 	import { initChat } from './lib/mock/chat'
 	import ChatPane from './components/ChatPane.svelte'
-	import Train from './components/Train.svelte'
+	import Train from './components/train/Train.svelte'
 	import PlanTrain from './components/PlanTrain.svelte'
 	import { initWebsocket } from './lib/websocket'
 	import InfoPanel from './components/InfoPanel.svelte'
 	import PlanInfoPanel from './components/PlanInfoPanel.svelte'
-	import { graceTrains, overlayStatus } from './lib/store'
+	import { trains, overlayStatus } from './lib/store'
 	import { SCREEN } from './lib/constants'
 	import Status from './components/Status.svelte'
 
 	const urlParams = new URLSearchParams(window.location.search)
 	const demoMode = urlParams.has('demo')
+	const hypeMode = urlParams.has('hype')
 	const widthOverride = parseInt(urlParams.get('w'))
 	const heightOverride = parseInt(urlParams.get('h'))
 	if (widthOverride > 0) SCREEN.width = widthOverride
@@ -29,7 +30,7 @@
 		background = 1 + (background % 5)
 	}
 
-	$: infoTrains = $graceTrains.filter((g) => !g.hideInfo)
+	$: infoTrains = $trains.filter((g) => !g.hideInfo)
 	$: top = $overlayStatus.position === 'top'
 </script>
 
@@ -60,8 +61,8 @@
 				{#if planMode}
 					<PlanTrain />
 				{/if}
-				{#each $graceTrains as train, t (train.id)}
-					<Train {train} {top} fade={$graceTrains.length - 1 - t} />
+				{#each $trains as train, t (train.id)}
+					<Train {train} {top} fade={$trains.length - 1 - t} hype={hypeMode} />
 				{/each}
 			</div>
 			{#if planMode}

@@ -33,13 +33,12 @@ const POINTS = {
 }
 
 export function initChat() {
-	runChatLoop()
-	// createStaticTrain()
+	// runChatLoop()
+	createStaticTrain()
 }
 
 export function planTrain() {
-	const messages: { message: ChatMessage; delay: number; grace?: GraceInfo }[] =
-		[]
+	const messages: { message: ChatMessage; delay: number; grace?: GraceInfo }[] = []
 	const trainUsers: Set<string> = new Set()
 	let totalScore = 0
 	let comboPoints = 0
@@ -158,17 +157,12 @@ function createAfterTrainMessage() {
 function getComboScore(comboPoints: number, comboSize: number) {
 	comboSize = Math.max(comboSize, 1)
 	const userCount = comboSize // For the sake of demonstration
-	return Math.ceil(
-		comboPoints * (1 + (comboSize - 1) / 2) * (1 + (userCount - 1) / 5)
-	)
+	return Math.ceil(comboPoints * (1 + (comboSize - 1) / 2) * (1 + (userCount - 1) / 5))
 }
 
 const getTimeString = () => {
 	const now = new Date()
-	return `${now.getHours() % 12 || 12}:${now
-		.getMinutes()
-		.toString()
-		.padStart(2, '0')}`
+	return `${now.getHours() % 12 || 12}:${now.getMinutes().toString().padStart(2, '0')}`
 }
 
 const pickRandom = (arr: any[]) => arr[Math.floor(Math.random() * arr.length)]

@@ -62,12 +62,7 @@ export function initWebsocket(key: string) {
 			case 'train-add':
 				if (!getTrain(message.data)) {
 					console.log('Requesting create event for unknown train')
-					ws.send(
-						JSON.stringify({
-							type: 'train-query',
-							data: { id: message.data.id },
-						})
-					)
+					ws.send(JSON.stringify({ type: 'train-query', data: { id: message.data.id } }))
 				} else {
 					addToTrain(message.data)
 				}
