@@ -64,6 +64,7 @@
 		}, timeUntilReversal)
 	}
 
+	const timeScale = 1
 	function doImpulse() {
 		const now = Date.now()
 		for (let i = cars.length - 1; i >= 0; i--) {
@@ -71,7 +72,7 @@
 			// TODO: Use lastImpulse to pass a delta value for hopping cars mid-hop
 			if (fromEnd > 0 && now - lastImpulse < 400) return
 			if (fromEnd >= maxHopDistance) break
-			cars[i].hop(fromEnd * 100, (maxHopDistance - fromEnd) / maxHopDistance)
+			cars[i].hop(fromEnd * 100 * timeScale, (maxHopDistance - fromEnd) / maxHopDistance)
 		}
 		lastImpulse = now
 	}
@@ -103,7 +104,7 @@
 	}
 
 	onMount(async () => {
-		trainContainer.style.transform = 'translateX(30%)'
+		trainContainer.style.transform = 'translateX(0%)'
 		showSmoke = true
 		return
 		const departWait = train.departTime - Date.now()
@@ -168,7 +169,7 @@
 		display: flex;
 		align-items: flex-end;
 		position: absolute;
-		bottom: 3px;
+		bottom: 0;
 		width: 100%;
 		white-space: nowrap;
 		transform: translateX(100%);
