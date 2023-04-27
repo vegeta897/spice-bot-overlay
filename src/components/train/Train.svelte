@@ -103,7 +103,7 @@
 	}
 
 	onMount(async () => {
-		trainContainer.style.transform = 'translateX(0%)'
+		trainContainer.style.transform = 'translateX(30%)'
 		showSmoke = true
 		return
 		const departWait = train.departTime - Date.now()
@@ -149,6 +149,7 @@
 			{reverse}
 			{color}
 			gold={hype}
+			number={c}
 			type={c === 0 ? 'engine' : 'car'}
 			bind:this={cars[c]}
 		/>

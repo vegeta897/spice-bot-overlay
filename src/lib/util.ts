@@ -6,8 +6,9 @@ export const randomIntRange = (minOrMax: number, max?: number) => {
 	return Math.floor(min + Math.random() * range)
 }
 
-export const sleep = (ms: number) =>
-	new Promise((resolve) => setTimeout(resolve, ms))
+export const randomElement = <T>(arr: T[]): T => arr[randomIntRange(0, arr.length - 1)]
+
+export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 // https://svelte.dev/tutorial/ondestroy
 // Must be called during component initialization, not in onMount
@@ -15,6 +16,9 @@ export const onInterval = (callback: () => void, ms: number) => {
 	const interval = setInterval(callback, ms)
 	onDestroy(() => clearInterval(interval))
 }
+
+export const clamp = (val: number, min: number, max: number) =>
+	Math.min(Math.max(val, min), max)
 
 // https://learn.microsoft.com/en-us/javascript/api/@azure/keyvault-certificates/requireatleastone?view=azure-node-latest
 export type RequireAtLeastOne<T> = {

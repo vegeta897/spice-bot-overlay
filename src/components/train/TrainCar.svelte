@@ -1,33 +1,39 @@
 <script lang="ts">
-	import { GRADIENTS } from '../../lib/constants'
+	import { GRADIENTS, SPARKLE_COORDS } from '../../lib/constants'
 	import Color from 'color'
+	import { clamp, onInterval } from '../../lib/util'
+	import Sparkle from './Sparkle.svelte'
 
 	export let type: 'engine' | 'car' = 'car'
 	export let color: string | null
 	export let reverse = false
 	export let gold = false
+	export let number: number
 
 	$: _color = color ? `${color}cc` : 'var(--train-pop-color)'
 
 	$: colorObject = Color(color || '#ff538f')
-	$: baseColor = colorObject.hex()
+	$: baseColor = colorObject.lightness(clamp(colorObject.lightness(), 40, 85)).hex()
 	$: brighterColor = colorObject.lightness(80).rotate(10).hex()
 	$: brightestColor = colorObject.lightness(92).rotate(20).hex()
 	$: darkerColor = colorObject.lightness(50).rotate(-10).hex()
 	$: darkestColor = colorObject.lightness(30).rotate(-20).hex()
 
-	let svgElement: SVGElement
+	let carSVGelement: SVGElement
 
 	// TODO: Round all svg coords to 1 or 2 decimals, 3 is overkill
+
+	// Hop test
+	// onInterval(() => hop(Math.max(0, 13 - number) * 100, number / 12), 3000)
 
 	export function hop(delay: number, force: number) {
 		const flipX = reverse ? -1 : 1
 		const jump = Math.round(force * -20)
 		const halfJump = Math.round(jump / 2)
 		const shimmy = Math.round(force * -8) * flipX
-		const halfShimmy = Math.round(shimmy / 2)
 		const tilt = Math.round(force * 10) * flipX
-		svgElement.animate(
+		const halfTilt = Math.round(tilt / 1.5)
+		carSVGelement.animate(
 			[
 				{ transform: 'translate(0,0) rotate(0)', easing: 'linear' },
 				{
@@ -35,23 +41,23 @@
 					easing: 'ease-out',
 				},
 				{
-					transform: `translate(${halfShimmy}px,${jump}px) rotate(0)`,
+					transform: `translate(0,${jump}px) rotate(0)`,
 					easing: 'ease-in',
 				},
 				{
-					transform: `translate(0,${halfJump}px) rotate(${tilt}deg)`,
+					transform: `translate(0,${halfJump}px) rotate(${halfTilt}deg)`,
 					easing: 'linear',
 				},
 				{ transform: 'translateY(0) rotate(0)' },
 			],
-			{ delay, duration: 200 + force * 200 }
+			{ delay, duration: 200 + force * 250 }
 		)
 	}
 </script>
 
 {#if type === 'engine'}
 	{#if gold}
-		<svg viewBox="0 0 500 367" width="100" height="73" bind:this={svgElement}>
+		<svg viewBox="0 0 500 367" width="100" height="73" bind:this={carSVGelement}>
 			<g class:reverse>
 				<path
 					id="Underside"
@@ -170,6 +176,7 @@
 					d="M134.801,178.814l-22.569,22.569l-22.372,-22.594l22.372,-22.377l22.569,22.402Z"
 					style="fill:{baseColor};"
 				/>
+				<Sparkle coords={SPARKLE_COORDS.engine} />
 			</g>
 			<defs>
 				<linearGradient
@@ -212,7 +219,7 @@
 			</defs>
 		</svg>
 	{:else}
-		<svg viewBox="0 0 450 325" width="90" height="65" bind:this={svgElement}>
+		<svg viewBox="0 0 450 325" width="90" height="65" bind:this={carSVGelement}>
 			<g class:reverse>
 				<path
 					d="M86.933,287.5l-0,-50l325,0l-0,25l-100,0l-75,25l-150,0Z"
@@ -290,7 +297,7 @@
 		</svg>
 	{/if}
 {:else if gold}
-	<svg viewBox="0 0 425 276" width="85" height="55" bind:this={svgElement}>
+	<svg viewBox="0 0 425 276" width="85" height="55" bind:this={carSVGelement}>
 		<g class:reverse>
 			<rect
 				id="Underside"
@@ -387,6 +394,7 @@
 				d="M110.014,87.251l-22.569,22.569l-22.372,-22.595l22.372,-22.377l22.569,22.403Z"
 				style="fill:{baseColor};"
 			/>
+			<Sparkle coords={SPARKLE_COORDS.car} />
 		</g>
 		<defs>
 			<linearGradient
@@ -403,7 +411,7 @@
 		</defs>
 	</svg>
 {:else}
-	<svg viewBox="0 0 375 300" width="75" height="60" bind:this={svgElement}>
+	<svg viewBox="0 0 375 300" width="75" height="60" bind:this={carSVGelement}>
 		<circle
 			cx="87.5"
 			cy="262.5"
@@ -444,12 +452,11 @@
 
 <style>
 	svg {
-		display: inline-block;
 		stroke-linecap: round;
 		stroke-linejoin: round;
 		stroke-width: 25px;
-		margin: 0 3px;
 		flex-shrink: 0;
+		margin: 0 3px;
 		will-change: transform;
 	}
 	g.reverse {

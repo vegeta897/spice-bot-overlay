@@ -49,9 +49,9 @@ export function createStaticTrain() {
 			id: Date.now(),
 			departTime: Date.now(),
 			// grace: {
-			colors: fakeUsers.map((u) => u[1]),
+			colors: fakeUsers.slice(0, 12).map((u) => u[1]),
 			score: 1234567,
-			combo: fakeUsers.length,
+			combo: 13,
 			endUser: 'General_Jackal',
 			// },
 		},

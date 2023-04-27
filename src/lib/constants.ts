@@ -19,3 +19,22 @@ export const SCREEN = {
 export const GRADIENTS = {
 	gold: '<stop offset="0" stop-color="#fef9b5" /><stop offset="0.28" stop-color="#be9c38" /><stop offset="0.48" stop-color="#eace50" /><stop offset="0.67" stop-color="#fef9b5" /><stop offset="0.85" stop-color="#be9c38" /><stop offset="1" stop-color="#eace50" />',
 }
+
+export const SPARKLE_COORDS: Record<string, [number, number][]> = {
+	engine: [
+		[80, 130],
+		[80, 180],
+		[190, 130],
+		[190, 180],
+		[340, 110],
+		[340, 190],
+	],
+	car: [
+		[55, 40],
+		[55, 85],
+		[305, 40],
+		[305, 85],
+		[180, 20],
+		[180, 105],
+	],
+}
