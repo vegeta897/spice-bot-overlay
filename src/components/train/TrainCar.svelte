@@ -19,6 +19,10 @@
 	$: brightestColor = colorObject.lightness(92).rotate(20).hex()
 	$: darkerColor = colorObject.lightness(55).rotate(-10).hex()
 	$: darkestColor = colorObject.lightness(30).rotate(-20).hex()
+	$: gemTopLeftColor = reverse ? brighterColor : brightestColor
+	$: gemTopRightColor = reverse ? brightestColor : brighterColor
+	$: gemBottomLeftColor = reverse ? darkestColor : darkerColor
+	$: gemBottomRightColor = reverse ? darkerColor : darkestColor
 
 	let carSVGelement: SVGElement
 
@@ -117,22 +121,22 @@
 					<path
 						id="Big-Gem-Top-Left"
 						d="M380.772,116.421l-0,25l-37.32,37.319l-25.145,0.181l62.465,-62.5Z"
-						style="fill:{reverse ? brighterColor : brightestColor};"
+						style="fill:{gemTopLeftColor};"
 					/>
 					<path
 						id="Big-Gem-Bottom-Left"
 						d="M318.307,178.921l25.145,-0.181l37.32,37.681l-0,24.883l-62.465,-62.383Z"
-						style="fill:{reverse ? darkestColor : darkerColor};"
+						style="fill:{gemBottomLeftColor};"
 					/>
 					<path
 						id="Big-Gem-Bottom-Right"
 						d="M380.772,216.421l37.639,-37.639l24.826,0.139l-62.465,62.383l-0,-24.883Z"
-						style="fill:{reverse ? darkerColor : darkestColor};"
+						style="fill:{gemBottomRightColor};"
 					/>
 					<path
 						id="Big-Gem-Top-Right"
 						d="M380.772,141.421l37.639,37.361l24.826,0.139l-62.465,-62.5l-0,25Z"
-						style="fill:{reverse ? brightestColor : brighterColor};"
+						style="fill:{gemTopRightColor};"
 					/>
 					<path
 						id="Big-Gem-Center"
@@ -142,42 +146,42 @@
 					<path
 						id="Rear-Gem-Top-Left"
 						d="M220.904,141.421l-0,14.991l-22.378,22.377l-15.078,0.108l37.456,-37.476Z"
-						style="fill:{reverse ? brighterColor : brightestColor};"
+						style="fill:{gemTopLeftColor};"
 					/>
 					<path
 						id="Front-Gem-Top-Left"
 						d="M112.232,141.421l0,14.991l-22.377,22.377l-15.078,0.108l37.455,-37.476Z"
-						style="fill:{reverse ? brighterColor : brightestColor};"
+						style="fill:{gemTopLeftColor};"
 					/>
 					<path
 						id="Rear-Gem-Bottom-Left"
 						d="M183.448,178.897l15.078,-0.108l22.378,22.594l-0,14.921l-37.456,-37.407Z"
-						style="fill:{reverse ? darkestColor : darkerColor};"
+						style="fill:{gemBottomLeftColor};"
 					/>
 					<path
 						id="Front-Gem-Bottom-Left"
 						d="M74.777,178.897l15.078,-0.108l22.377,22.594l0,14.921l-37.455,-37.407Z"
-						style="fill:{reverse ? darkestColor : darkerColor};"
+						style="fill:{gemBottomLeftColor};"
 					/>
 					<path
 						id="Rear-Gem-Bottom-Right"
 						d="M220.904,201.383l22.569,-22.569l14.886,0.083l-37.455,37.407l-0,-14.921Z"
-						style="fill:{reverse ? darkerColor : darkestColor};"
+						style="fill:{gemBottomRightColor};"
 					/>
 					<path
 						id="Front-Gem-Bottom-Right"
 						d="M112.232,201.383l22.569,-22.569l14.887,0.083l-37.456,37.407l0,-14.921Z"
-						style="fill:{reverse ? darkerColor : darkestColor};"
+						style="fill:{gemBottomRightColor};"
 					/>
 					<path
 						id="Rear-Gem-Top-Right"
 						d="M220.904,156.412l22.569,22.402l14.886,0.083l-37.455,-37.476l-0,14.991Z"
-						style="fill:{reverse ? brightestColor : brighterColor};"
+						style="fill:{gemTopRightColor};"
 					/>
 					<path
 						id="Front-Gem-Top-Right"
 						d="M112.232,156.412l22.569,22.402l14.887,0.083l-37.456,-37.476l0,14.991Z"
-						style="fill:{reverse ? brightestColor : brighterColor};"
+						style="fill:{gemTopRightColor};"
 					/>
 					<path
 						id="Rear-Gem-Center"
@@ -336,22 +340,22 @@
 				<path
 					id="Big-Gem-Top-Left"
 					d="M212.493,24.857l-0,25l-37.32,37.32l-25.145,0.18l62.465,-62.5Z"
-					style="fill:{reverse ? brighterColor : brightestColor};"
+					style="fill:{gemTopLeftColor};"
 				/>
 				<path
 					id="Big-Gem-Bottom-Left"
 					d="M150.028,87.357l25.145,-0.18l37.32,37.68l-0,24.883l-62.465,-62.383Z"
-					style="fill:{reverse ? darkestColor : darkerColor};"
+					style="fill:{gemBottomLeftColor};"
 				/>
 				<path
 					id="Big-Gem-Bottom-Right"
 					d="M212.493,124.857l37.638,-37.638l24.826,0.138l-62.464,62.383l-0,-24.883Z"
-					style="fill:{reverse ? darkerColor : darkestColor};"
+					style="fill:{gemBottomRightColor};"
 				/>
 				<path
 					id="Big-Gem-Top-Right"
 					d="M212.493,49.857l37.638,37.362l24.826,0.138l-62.464,-62.5l-0,25Z"
-					style="fill:{reverse ? brightestColor : brighterColor};"
+					style="fill:{gemTopRightColor};"
 				/>
 				<path
 					id="Big-Gem-Center"
@@ -361,42 +365,42 @@
 				<path
 					id="Rear-Gem-Top-Left"
 					d="M335.478,49.857l-0,14.991l-22.378,22.377l-15.078,0.109l37.456,-37.477Z"
-					style="fill:{reverse ? brighterColor : brightestColor};"
+					style="fill:{gemTopLeftColor};"
 				/>
 				<path
 					id="Front-Gem-Top-Left"
 					d="M87.445,49.857l0,14.991l-22.378,22.377l-15.077,0.109l37.455,-37.477Z"
-					style="fill:{reverse ? brighterColor : brightestColor};"
+					style="fill:{gemTopLeftColor};"
 				/>
 				<path
 					id="Rear-Gem-Bottom-Left"
 					d="M298.022,87.334l15.078,-0.109l22.378,22.595l-0,14.92l-37.456,-37.406Z"
-					style="fill:{reverse ? darkestColor : darkerColor};"
+					style="fill:{gemBottomLeftColor};"
 				/>
 				<path
 					id="Front-Gem-Bottom-Left"
 					d="M49.99,87.334l15.077,-0.109l22.378,22.595l0,14.92l-37.455,-37.406Z"
-					style="fill:{reverse ? darkestColor : darkerColor};"
+					style="fill:{gemBottomLeftColor};"
 				/>
 				<path
 					id="Rear-Gem-Bottom-Right"
 					d="M335.478,109.82l22.569,-22.569l14.886,0.083l-37.455,37.406l-0,-14.92Z"
-					style="fill:{reverse ? darkerColor : darkestColor};"
+					style="fill:{gemBottomRightColor};"
 				/>
 				<path
 					id="Front-Gem-Bottom-Right"
 					d="M87.445,109.82l22.569,-22.569l14.886,0.083l-37.455,37.406l0,-14.92Z"
-					style="fill:{reverse ? darkerColor : darkestColor};"
+					style="fill:{gemBottomRightColor};"
 				/>
 				<path
 					id="Rear-Gem-Top-Right"
 					d="M335.478,64.848l22.569,22.403l14.886,0.083l-37.455,-37.477l-0,14.991Z"
-					style="fill:{reverse ? brightestColor : brighterColor};"
+					style="fill:{gemTopRightColor};"
 				/>
 				<path
 					id="Front-Gem-Top-Right"
 					d="M87.445,64.848l22.569,22.403l14.886,0.083l-37.455,-37.477l0,14.991Z"
-					style="fill:{reverse ? brightestColor : brighterColor};"
+					style="fill:{gemTopRightColor};"
 				/>
 				<path
 					id="Rear-Gem-Center"
