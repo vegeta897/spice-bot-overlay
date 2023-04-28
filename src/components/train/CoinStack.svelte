@@ -15,16 +15,20 @@
 		const minX = randomIntRange(8, 12)
 		let maxX = 0
 		let x = minX
-		let prevHeight: number
+		const prevHeights = [0, 0]
 		const xLimit = 100 - coinWidth - 8
+		let zIndex = Math.random() > 0.5 ? 1 : -1
 		while (x <= xLimit) {
 			maxX = x
 			const central = 1 - Math.abs(x - centerX) / centerX
 			const minHeight = Math.round(4 + central * 3)
 			const maxHeight = Math.round(5 + central * 4)
 			let height = randomIntRange(minHeight, maxHeight)
-			if (height === prevHeight) height++
-			prevHeight = height
+			while (prevHeights.includes(height)) {
+				height++
+			}
+			prevHeights[1] = prevHeights[0]
+			prevHeights[0] = height
 			const splitSegments = randomIntRange(
 				Math.max(0, height - 5),
 				Math.round(height / 2)
@@ -32,13 +36,14 @@
 			const segments = new Array(splitSegments + 1)
 			segments.fill(1)
 			segments[0] = height - splitSegments
-			stacks.push({
-				x,
-				baseY: Math.round(central * coinThick),
-				segments,
-			})
-			x += randomIntRange(12, Math.round(25 - central * 5))
+			const baseY = Math.round(central * coinThick)
+			stacks.push({ x, baseY, segments, zIndex })
+			zIndex *= -1
+			x += randomIntRange(Math.round(12 - central * 5), Math.round(25 - central * 5))
 		}
+		stacks[0].zIndex = 2
+		stacks.at(-1).zIndex = 2
+		stacks.sort((a, b) => b.zIndex - a.zIndex)
 		const xAdjust = Math.round((xLimit - maxX - (minX - 8)) / 2)
 		return stacks.map(({ x, baseY, segments }) => {
 			const segmentXs = []
@@ -129,7 +134,7 @@
 					y={100 - segmentYs[sg] * coinThick - baseY}
 					width={coinWidth}
 					height={segment * coinThick + 0.3}
-					fill="url(#coin-stack)"
+					fill="url(#coin-stack{reverse ? '-reverse' : ''})"
 				/>
 			{/each}
 		</g>
@@ -141,6 +146,13 @@
 			<stop offset="0.37" stop-color="#f4ce34" />
 			<stop offset="0.7" stop-color="#e5ba0b" />
 			<stop offset="1" stop-color="#ba9400" />
+		</linearGradient>
+		<linearGradient id="coin-stack-reverse" x1="0" y1="0" x2="1" y2="0">
+			<stop offset="0" stop-color="#ba9400" />
+			<stop offset="0.19" stop-color="#e5ba0b" />
+			<stop offset="0.37" stop-color="#f4ce34" />
+			<stop offset="0.7" stop-color="#ffefb0" />
+			<stop offset="1" stop-color="#f4ce34" />
 		</linearGradient>
 	</defs>
 </svg>
@@ -160,7 +172,7 @@
 		will-change: transform;
 	}
 	rect {
-		transform-origin: 50% 50%;
+		transform-origin: center;
 		will-change: transform;
 	}
 </style>
