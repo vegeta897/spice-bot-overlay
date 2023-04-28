@@ -1,15 +1,14 @@
 <script lang="ts">
 	import { GRADIENTS, SPARKLE_COORDS } from '../../lib/constants'
 	import Color from 'color'
-	import { clamp, onInterval } from '../../lib/util'
+	import { clamp } from '../../lib/util'
 	import Sparkle from './Sparkle.svelte'
-	import CoinStack from './CoinStack.svelte'
+	import CoinStacks from './CoinStacks.svelte'
 
 	export let type: 'engine' | 'car' = 'car'
 	export let color: string | null
 	export let reverse = false
 	export let gold = false
-	export let number: number
 
 	$: _color = color ? `${color}cc` : 'var(--train-pop-color)'
 
@@ -26,12 +25,9 @@
 
 	let carSVGelement: SVGElement
 
-	let coinStackComponent: CoinStack
+	let coinStacksComponent: CoinStacks
 
 	// TODO: Round all svg coords to 1 or 2 decimals, 3 is overkill
-
-	// Hop test
-	onInterval(() => hop(Math.max(0, 13 - number) * 100, number / 12), 2000)
 
 	const timeScale = 1
 
@@ -42,6 +38,7 @@
 		const shimmy = Math.round(force * -8) * flipX
 		const tilt = Math.round(force * 10) * flipX
 		const halfTilt = Math.round(tilt / 1.5)
+		delay *= timeScale
 		carSVGelement.animate(
 			[
 				{ transform: 'translate(0,0) rotate(0)', easing: 'linear' },
@@ -61,7 +58,7 @@
 			],
 			{ delay, duration: (200 + force * 250) * timeScale }
 		)
-		if (coinStackComponent) setTimeout(() => coinStackComponent.jumble(force), delay)
+		if (coinStacksComponent) setTimeout(() => coinStacksComponent.jostle(force), delay)
 	}
 </script>
 
@@ -316,7 +313,7 @@
 			</svg>
 		{/if}
 	{:else if gold}
-		<CoinStack bind:this={coinStackComponent} {reverse} />
+		<CoinStacks bind:this={coinStacksComponent} {reverse} />
 		<svg viewBox="0 0 425 276" width="85" height="55" bind:this={carSVGelement}>
 			<g class:reverse>
 				<rect

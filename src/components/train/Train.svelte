@@ -2,11 +2,12 @@
 	import TrainCar from './TrainCar.svelte'
 	import Smoke from './Smoke.svelte'
 	import { SCREEN, TRAIN } from '../../lib/constants'
-	import { sleep } from '../../lib/util'
+	import { onInterval, sleep } from '../../lib/util'
 	import { getTrainWidth, type Train } from '../../lib/trains'
 	import { onMount } from 'svelte'
 	import { deleteTrain, updateTrain } from '../../lib/store'
 	import CoinSpout from './CoinSpout.svelte'
+	import Coin from './Coin.svelte'
 
 	export let train: Train
 	export let top = false
@@ -29,6 +30,8 @@
 	let translateDelta = -100
 	let animationDuration = durationPerScreen
 	let reverse = false
+
+	let looseCoinComponent: Coin
 
 	const reversalEvents = new EventTarget()
 
@@ -64,16 +67,18 @@
 		}, timeUntilReversal)
 	}
 
-	const timeScale = 1
+	// Impulse test
+	onInterval(() => doImpulse(), 2000)
 
 	function doImpulse() {
+		if (looseCoinComponent) looseCoinComponent.toss(pixelsPerMs, 500, 0.4, 100)
 		const now = Date.now()
 		for (let i = cars.length - 1; i >= 0; i--) {
 			const fromEnd = cars.length - i - 1
 			// TODO: Use lastImpulse to pass a delta value for hopping cars mid-hop
 			if (fromEnd > 0 && now - lastImpulse < 400) return
 			if (fromEnd >= maxHopDistance) break
-			cars[i].hop(fromEnd * 100 * timeScale, (maxHopDistance - fromEnd) / maxHopDistance)
+			cars[i].hop(fromEnd * 100, (maxHopDistance - fromEnd) / maxHopDistance)
 		}
 		lastImpulse = now
 	}
@@ -105,10 +110,10 @@
 	}
 
 	onMount(async () => {
-		trainContainer.style.transform = 'translateX(0%)'
-		showSmoke = true
+		// trainContainer.style.transform = 'translateX(0%)'
+		// showSmoke = true
 		// reverse = true
-		return
+		// return
 		const departWait = train.departTime - Date.now()
 		if (departWait > 0) await sleep(departWait)
 		showSmoke = true
@@ -146,13 +151,12 @@
 	})
 </script>
 
-<div bind:this={trainContainer} class:top class:reverse style:opacity>
+<div class="container" bind:this={trainContainer} class:top class:reverse style:opacity>
 	{#each train.colors as color, c (c)}
 		<TrainCar
 			{reverse}
 			{color}
 			gold={hype}
-			number={c}
 			type={c === 0 ? 'engine' : 'car'}
 			bind:this={cars[c]}
 		/>
@@ -164,10 +168,15 @@
 			<Smoke {reverse} speed={pixelsPerMs} />
 		{/if}
 	{/if}
+	{#if hype && !top}
+		<div style="transform: translate(-25px, -80px)">
+			<Coin bind:this={looseCoinComponent} size={25} spinny />
+		</div>
+	{/if}
 </div>
 
 <style>
-	div {
+	.container {
 		display: flex;
 		align-items: flex-end;
 		position: absolute;

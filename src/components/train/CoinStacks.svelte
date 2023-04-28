@@ -68,9 +68,7 @@
 
 	const timeScale = 1
 
-	export function jumble(force: number) {
-		// TODO: Chance of spawning a coin falling out of the car
-
+	export function jostle(force: number) {
 		for (let i = 0; i < stacks.length; i++) {
 			const stack = stacks[i]
 			const shimmy = Math.round((stack.x / 6) * force)
