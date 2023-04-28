@@ -107,6 +107,7 @@
 	onMount(async () => {
 		trainContainer.style.transform = 'translateX(0%)'
 		showSmoke = true
+		// reverse = true
 		return
 		const departWait = train.departTime - Date.now()
 		if (departWait > 0) await sleep(departWait)

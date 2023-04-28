@@ -3,8 +3,11 @@
 	import { sleep, randomIntRange, randomElement } from '../../lib/util'
 
 	export let coords: [number, number][]
+	export let reverse: boolean
 
-	$: translations = coords.map(([x, y]) => `translate(${x}px, ${y}px)`)
+	$: translations = coords.map(
+		([x, y]) => `translate(${x + (reverse ? 15 : 0)}px, ${y}px)`
+	)
 
 	let element: SVGPathElement
 
