@@ -65,6 +65,7 @@
 	}
 
 	const timeScale = 1
+
 	function doImpulse() {
 		const now = Date.now()
 		for (let i = cars.length - 1; i >= 0; i--) {
