@@ -201,7 +201,7 @@
 						x2="1"
 						y2="0"
 						gradientUnits="userSpaceOnUse"
-						gradientTransform="matrix(449.416,0,0,69.141,12.5,304.064)"
+						gradientTransform="matrix(449,0,0,69,12.5,304)"
 					>
 						{@html GRADIENTS.gold}
 					</linearGradient>
@@ -211,7 +211,7 @@
 						cy="0"
 						r="1"
 						gradientUnits="userSpaceOnUse"
-						gradientTransform="matrix(0,236.364,-200,0,30.6969,142.327)"
+						gradientTransform="matrix(0,236,-200,0,31,142)"
 					>
 						{@html GRADIENTS.gold}
 					</radialGradient>
@@ -220,7 +220,9 @@
 						x2="1"
 						y2="0"
 						gradientUnits="userSpaceOnUse"
-						gradientTransform="matrix(-151.895,0,0,-305.171,181.222,73.2605)"
+						gradientTransform="matrix({reverse
+							? '152,0,0,305,30,73'
+							: '-152,0,0,-305,181,73'})"
 					>
 						{@html GRADIENTS.gold}
 					</linearGradient>
@@ -229,7 +231,7 @@
 						x2="1"
 						y2="0"
 						gradientUnits="userSpaceOnUse"
-						gradientTransform="matrix(0,337.902,-225.268,0,449.713,-46.5791)"
+						gradientTransform="matrix(0,338,-225,0,450,-47)"
 					>
 						{@html GRADIENTS.gold}
 					</linearGradient>
@@ -422,7 +424,9 @@
 					x2="1"
 					y2="0"
 					gradientUnits="userSpaceOnUse"
-					gradientTransform="matrix(424,0,0,212,1,12.5)"
+					gradientTransform="matrix({reverse
+						? '-424,0,0,-212,424,12.5'
+						: '424,0,0,212,1,12.5'})"
 				>
 					{@html GRADIENTS.gold}
 				</linearGradient>
@@ -498,5 +502,16 @@
 			#eace50 100%
 		);
 		border-radius: 50%;
+	}
+	.reverse .gold-wheel {
+		background-image: conic-gradient(
+			from 140deg,
+			#eace50 0%,
+			#be9c38 28%,
+			#eace50 48%,
+			#fef9b5 67%,
+			#be9c38 85%,
+			#eace50 100%
+		);
 	}
 </style>
