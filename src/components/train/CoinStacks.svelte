@@ -29,10 +29,9 @@
 			}
 			prevHeights[1] = prevHeights[0]
 			prevHeights[0] = height
-			const splitSegments = randomIntRange(
-				Math.max(0, height - 5),
-				Math.round(height / 2)
-			)
+			const minSplits = Math.min(3, Math.round(height / 4))
+			const maxSplits = Math.min(7, Math.round(height / 2))
+			const splitSegments = randomIntRange(minSplits, maxSplits)
 			const segments = new Array(splitSegments + 1)
 			segments.fill(1)
 			segments[0] = height - splitSegments
@@ -94,28 +93,29 @@
 				],
 				{ delay: stackDelay, duration }
 			)
+			let segmentCumulativeHeight = 0
 			for (let s = 1; s < stack.segments.length; s++) {
-				const segmentJumpHeight = Math.round(s ** 2 * 2 * force)
-				const segmentRotation = Math.round(segmentJumpHeight * 0.3)
-				const segmentShiftX = Math.round((s - 1) ** 2 * force)
+				const segmentJumpHeight = segmentCumulativeHeight + force * 5 * Math.random()
+				segmentCumulativeHeight += segmentJumpHeight
+				const segmentRotation =
+					Math.round(segmentJumpHeight * 0.3) * (Math.random() > 0.5 ? 1 : -1)
+				const segmentShiftX = Math.round((s - 1) ** 1.8 * force)
 				segmentRectElements[i][s].animate(
 					[
-						{ transform: 'translate(0,0) rotate(0)' },
+						{},
 						{
-							transform: `translate(${segmentShiftX}px,0) rotate(${
-								segmentRotation / 2
-							}deg)`,
+							transform: `translate(${segmentShiftX}px,0) rotate(0)`,
 							easing: 'ease-out',
 						},
 						{
-							transform: `translate(${
-								segmentShiftX / 2
-							}px,-${segmentJumpHeight}px) rotate(${segmentRotation}deg)`,
+							transform: `translate(0,-${Math.round(
+								segmentJumpHeight
+							)}px) rotate(${segmentRotation}deg)`,
 							easing: 'ease-in',
 						},
 						{ transform: 'translate(0,0)' },
 					],
-					{ duration: duration + s * 30, delay: stackDelay }
+					{ duration: duration + segmentJumpHeight, delay: stackDelay }
 				)
 			}
 		}
@@ -126,13 +126,16 @@
 	{#each stacks as { x, baseY, segments, segmentYs, segmentXs }, st}
 		<g bind:this={stackGroupElements[st]}>
 			{#each segments as segment, sg}
+				{@const segX = x + segmentXs[sg]}
+				{@const segY = 100 - segmentYs[sg] * coinThick - baseY}
 				<rect
 					bind:this={segmentRectElements[st][sg]}
-					x={x + segmentXs[sg]}
-					y={100 - segmentYs[sg] * coinThick - baseY}
+					x={segX}
+					y={segY}
 					width={coinWidth}
 					height={segment * coinThick + 0.3}
 					fill="url(#coin-stack{reverse ? '-reverse' : ''})"
+					style="transform-origin: {segX + coinWidth / 2}px {segY + coinThick / 2}px"
 				/>
 			{/each}
 		</g>
@@ -170,7 +173,6 @@
 		will-change: transform;
 	}
 	rect {
-		transform-origin: center;
 		will-change: transform;
 	}
 </style>
