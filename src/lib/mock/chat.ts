@@ -33,8 +33,8 @@ const POINTS = {
 }
 
 export function initChat() {
-	// runChatLoop()
-	createStaticTrain()
+	runChatLoop()
+	// createStaticTrain()
 }
 
 export function planTrain() {
@@ -45,7 +45,7 @@ export function planTrain() {
 	let comboSize = 0
 	let comboScore = 0
 	let lastGraceType: GraceInfo['type']
-	const trainSize = randomIntRange(30, 80)
+	const trainSize = randomIntRange(30, 50)
 	for (let i = 0; i < trainSize; i++) {
 		const graceMessage = createGraceMessage()
 		trainUsers.add(graceMessage.username)

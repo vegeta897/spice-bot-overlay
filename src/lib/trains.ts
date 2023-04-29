@@ -101,6 +101,7 @@ export function endAllTrains(exceptID?: number) {
 	})
 }
 
-export const getTrainWidth = (combo: number, gold = false) =>
-	(gold ? TRAIN.engineWidthGold : TRAIN.engineWidth) +
-	(gold ? TRAIN.carWidthGold : TRAIN.carWidth) * (combo - 1)
+export const getTrainWidth = (train: Train) =>
+	(train.hype ? TRAIN.engineWidthGold : TRAIN.engineWidth) +
+	(train.hype ? TRAIN.carWidthGold : TRAIN.carWidth) * (train.combo - 1) +
+	(train.hype && train.combo ? TRAIN.cabooseWidth : 0)

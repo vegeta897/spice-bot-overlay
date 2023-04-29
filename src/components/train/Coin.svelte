@@ -22,7 +22,6 @@
 	import { randomIntRange } from '../../lib/util'
 
 	export let size = 30
-	export let spinny = false // Makes the coin more spinnier
 
 	let translateXdiv: HTMLDivElement
 	let translateYdiv: HTMLDivElement
@@ -32,7 +31,7 @@
 	let circleBackElement: SVGCircleElement
 	let rectElement: SVGRectElement
 
-	const spinDuration = randomIntRange(100, spinny ? 400 : 1500)
+	const spinDuration = randomIntRange(100, 1500)
 	const degreesPerSecond = randomIntRange(-300, 300)
 	const rotateTo = degreesPerSecond < 0 ? '-360deg' : '360deg'
 	const rotateDuration = Math.abs(Math.round((360 / degreesPerSecond) * 1000))
@@ -72,16 +71,16 @@
 		)
 	})
 
-	export function toss(trainSpeed: number, baseDuration: number, yScale = 1, delay = 0) {
+	export function toss(trainSpeed: number, baseDuration: number) {
 		const xDelta = randomIntRange(-50, 50) / 1000
 		const upForce = randomIntRange(minUpForce, maxUpForce)
 		const toX = (trainSpeed + xDelta) * 1000 * (baseDuration / 1000)
-		const toY = upForce * -10 * yScale
-		const upDuration = upDurations[upForce] * yScale
-		const downDuration = downDurations[upForce] * yScale
+		const toY = upForce * -10
+		const upDuration = upDurations[upForce]
+		const downDuration = downDurations[upForce]
 		const duration = upDuration + downDuration
 		const maxDelay = Math.max(0, Math.round((baseDuration - duration) / 8))
-		delay = delay + randomIntRange(0, maxDelay)
+		const delay = randomIntRange(0, maxDelay)
 		translateXdiv.animate(
 			[
 				{ transform: 'translateX(0) scale(0.3)', opacity: 0 },

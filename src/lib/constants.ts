@@ -3,6 +3,7 @@ export const TRAIN = {
 	engineWidthGold: 106,
 	carWidth: 81,
 	carWidthGold: 91,
+	cabooseWidth: 91,
 	speed: 80, // Pixels per second
 	speedAddPerCombo: 1.5, // Pixels per second added per train length
 	minLength: 5,

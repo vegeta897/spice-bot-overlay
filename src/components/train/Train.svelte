@@ -7,7 +7,7 @@
 	import { onMount } from 'svelte'
 	import { deleteTrain, updateTrain } from '../../lib/store'
 	import CoinSpout from './CoinSpout.svelte'
-	import Coin from './Coin.svelte'
+	import Caboose from './Caboose.svelte'
 
 	export let train: Train
 	export let top = false
@@ -31,7 +31,7 @@
 	let animationDuration = durationPerScreen
 	let reverse = false
 
-	let looseCoinComponent: Coin
+	let cabooseComponent: Caboose
 
 	const reversalEvents = new EventTarget()
 
@@ -52,7 +52,7 @@
 
 	function scheduleReversal() {
 		if (train.endUser) return
-		const trainWidth = getTrainWidth(train.combo)
+		const trainWidth = getTrainWidth(train)
 		const animationProgress = (animation?.currentTime || 0) / animationDuration
 		let currentTranslation = translation + translateDelta * animationProgress
 		if (reverse) currentTranslation *= -1 // Trust me it works
@@ -68,17 +68,17 @@
 	}
 
 	// Impulse test
-	onInterval(() => doImpulse(), 2000)
+	// onInterval(() => doImpulse(), 2000)
 
 	function doImpulse() {
-		if (looseCoinComponent) looseCoinComponent.toss(pixelsPerMs, 500, 0.4, 100)
+		if (cabooseComponent) cabooseComponent.hop()
 		const now = Date.now()
 		for (let i = cars.length - 1; i >= 0; i--) {
 			const fromEnd = cars.length - i - 1
 			// TODO: Use lastImpulse to pass a delta value for hopping cars mid-hop
 			if (fromEnd > 0 && now - lastImpulse < 400) return
 			if (fromEnd >= maxHopDistance) break
-			cars[i].hop(fromEnd * 100, (maxHopDistance - fromEnd) / maxHopDistance)
+			cars[i].hop(fromEnd * 90, (maxHopDistance - fromEnd) / maxHopDistance)
 		}
 		lastImpulse = now
 	}
@@ -99,8 +99,9 @@
 	}
 
 	async function finalSlide() {
-		const trainWidth = getTrainWidth(train.combo)
-		const remainingScreens = translation / 100 + trainWidth / SCREEN.width
+		const trainWidth = getTrainWidth(train)
+		const remainingScreens =
+			(translation * (reverse ? -1 : 1)) / 100 + trainWidth / SCREEN.width
 		if (remainingScreens > 0) {
 			translateDelta = Math.round(remainingScreens * (reverse ? 100 : -100))
 			await slide(translation, translateDelta)
@@ -114,6 +115,7 @@
 		// showSmoke = true
 		// reverse = true
 		// return
+		if (hype) train.hype = true // TODO: Remove
 		const departWait = train.departTime - Date.now()
 		if (departWait > 0) await sleep(departWait)
 		showSmoke = true
@@ -168,10 +170,8 @@
 			<Smoke {reverse} speed={pixelsPerMs} />
 		{/if}
 	{/if}
-	{#if hype && !top}
-		<div style="transform: translate(-25px, -80px)">
-			<Coin bind:this={looseCoinComponent} size={25} spinny />
-		</div>
+	{#if hype && train.combo}
+		<Caboose bind:this={cabooseComponent} combo={train.combo} {reverse} />
 	{/if}
 </div>
 

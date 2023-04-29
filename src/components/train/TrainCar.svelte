@@ -41,7 +41,7 @@
 		delay *= timeScale
 		carSVGelement.animate(
 			[
-				{ transform: 'translate(0,0) rotate(0)', easing: 'linear' },
+				{},
 				{
 					transform: `translate(${shimmy}px,${halfJump}px) rotate(${tilt * -1}deg)`,
 					easing: 'ease-out',
@@ -52,9 +52,8 @@
 				},
 				{
 					transform: `translate(0,${halfJump}px) rotate(${halfTilt}deg)`,
-					easing: 'linear',
 				},
-				{ transform: 'translateY(0) rotate(0)' },
+				{},
 			],
 			{ delay, duration: (200 + force * 250) * timeScale }
 		)
