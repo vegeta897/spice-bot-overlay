@@ -34,11 +34,11 @@
 	.coin-container {
 		position: absolute;
 		left: 8px;
-		top: -20px;
+		bottom: 98px;
 	}
 	.coin-container.reverse {
 		left: auto;
-		right: 7px;
+		right: 8px;
 		transform: scaleX(-1);
 	}
 </style>
