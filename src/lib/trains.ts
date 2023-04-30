@@ -69,7 +69,7 @@ export function endTrain(trainEndData: TrainEndData, hideInfoNow = false) {
 		return
 	}
 	const now = Date.now()
-	const train = updateTrain({
+	let train = updateTrain({
 		id: trainEndData.id,
 		combo: trainEndData.combo,
 		score: trainEndData.score,
@@ -80,7 +80,7 @@ export function endTrain(trainEndData: TrainEndData, hideInfoNow = false) {
 	const endInfoDuration =
 		TRAIN.endInfoDuration + Math.floor(train.combo / TRAIN.endInfoLengthPerSecond) * 1000
 	setTimeout(() => {
-		updateTrain({ id: train.id, hideInfo: true })
+		train = updateTrain({ id: train.id, hideInfo: true })
 		if (train.offScreen) deleteTrain(train)
 	}, endInfoDuration)
 }
@@ -90,12 +90,7 @@ export function endAllTrains(exceptID?: number) {
 	get(trains).forEach((train) => {
 		if (!train.endUser && train.id !== exceptID)
 			endTrain(
-				{
-					id: train.id,
-					combo: train.combo,
-					score: train.score,
-					username: 'Somebody',
-				},
+				{ id: train.id, combo: train.combo, score: train.score, username: 'Somebody' },
 				true
 			)
 	})
