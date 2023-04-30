@@ -41,7 +41,12 @@
 		delay *= timeScale
 		carSVGelement.animate(
 			[
-				{},
+				delay === 0
+					? {
+							transform: `translateX(${reverse ? '' : '-'}20px) scaleX(0.5)`,
+							easing: 'ease-out',
+					  }
+					: {},
 				{
 					transform: `translate(${shimmy}px,${halfJump}px) rotate(${tilt * -1}deg)`,
 					easing: 'ease-out',
@@ -57,7 +62,10 @@
 			],
 			{ delay, duration: (200 + force * 250) * timeScale }
 		)
-		if (coinStacksComponent) setTimeout(() => coinStacksComponent.jostle(force), delay)
+		if (coinStacksComponent) {
+			if (delay > 0) setTimeout(() => coinStacksComponent.jostle(force), delay)
+			else coinStacksComponent.jostle(force)
+		}
 	}
 </script>
 

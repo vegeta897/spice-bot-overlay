@@ -7,7 +7,10 @@
 	export function hop() {
 		containerelement.animate(
 			[
-				{ transform: `translate(${reverse ? '' : '-'}85px,0)`, easing: 'ease-out' },
+				{
+					transform: `translateX(${reverse ? '' : '-'}65px) scalex(0.8)`,
+					easing: 'ease-out',
+				},
 				{
 					transform: `translate(${reverse ? '' : '-'}5px,-7px) rotate(${
 						reverse ? '-' : ''

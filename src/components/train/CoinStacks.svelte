@@ -75,9 +75,11 @@
 			const rotate = Math.round(height / 3)
 			const stackDelay = (70 - stack.x) * 1 * timeScale
 			const duration = (200 + force * 200) * timeScale
-			stackGroupElements[i].animate(
+			const stackGroupElement = stackGroupElements[i]
+			if (force === 1) stackGroupElement.style.transform = `translateX(-${stack.x / 2}px)`
+			const animation = stackGroupElement.animate(
 				[
-					{ transform: 'translate(0, 0)' },
+					{ easing: 'ease-out' },
 					{
 						transform: `translate(-${shimmy}px, -${height / 2}px) rotate(-${rotate}deg)`,
 						easing: 'ease-out',
@@ -93,6 +95,7 @@
 				],
 				{ delay: stackDelay, duration }
 			)
+			if (force === 1) animation.onfinish = () => (stackGroupElement.style.transform = '')
 			let segmentCumulativeHeight = 0
 			for (let s = 1; s < stack.segments.length; s++) {
 				const segmentJumpHeight = segmentCumulativeHeight + force * 5 * Math.random()

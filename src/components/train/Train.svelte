@@ -111,7 +111,7 @@
 	}
 
 	onMount(async () => {
-		// trainContainer.style.transform = 'translateX(0%)'
+		// trainContainer.style.transform = 'translateX(0)'
 		// showSmoke = true
 		// reverse = true
 		// return

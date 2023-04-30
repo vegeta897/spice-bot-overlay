@@ -72,7 +72,7 @@ export function planTrain() {
 		}
 		messages.push({
 			message: graceMessage,
-			delay: randomIntRange(1, 100) * 40,
+			delay: randomIntRange(1, 100) * 60,
 			grace: graceInfo,
 		})
 		lastGraceType = graceType
