@@ -1,24 +1,20 @@
 <script lang="ts">
-	import type { Train } from '../lib/trains'
-
-	export let train: Train
+	export let score: number
 
 	let lastScore = 0
 	let scoreTickTime = 0
-	$: if (train.score) {
-		scoreTickTime = Math.min(
-			2000,
-			Math.max(300, (train.score - lastScore) * 10)
-		)
+	$: if (score) {
+		scoreTickTime = Math.min(2000, Math.max(300, (score - lastScore) * 10))
+		lastScore = score
 	}
 </script>
 
 <div class="score nunito">
 	<span
 		class="points"
-		class:mini={train.score.toString().length > 7}
-		class:micro={train.score.toString().length > 8}
-		style="--totalScore: {train.score}; transition: --totalScore {scoreTickTime}ms;"
+		class:mini={score.toString().length > 7}
+		class:micro={score.toString().length > 8}
+		style="--totalScore: {score}; transition: --totalScore {scoreTickTime}ms;"
 	/> pts
 </div>
 

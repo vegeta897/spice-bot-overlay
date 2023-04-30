@@ -21,6 +21,10 @@ export const trains: Writable<Train[]> = writable([])
 export const getTrain = (train: Pick<Train, 'id'>) =>
 	get(trains).find((t) => t.id === train.id)
 
+export function addTrain(train: Train) {
+	trains.update((gt) => [...gt, train])
+}
+
 export function updateTrain(train: Pick<Train, 'id'> & Partial<Train>) {
 	const existingTrain = getTrain(train)
 	const updatedTrain = { ...existingTrain, ...train }
@@ -40,5 +44,5 @@ export function deleteTrain(train: Train) {
 	trains.update((trains) => [...trains.filter((t) => t.id !== train.id)])
 }
 
-// Mock only
+// Demo only
 export const chat = writable([])

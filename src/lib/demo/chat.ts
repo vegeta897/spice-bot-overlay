@@ -1,4 +1,4 @@
-import { randomIntRange } from '../util'
+import { randomElement, randomIntRange } from '../util'
 import { createStaticTrain, runChatLoop } from './loop'
 import {
 	fakeUsers,
@@ -16,6 +16,8 @@ type ChatMessage = {
 	redeem?: boolean
 	highlight?: boolean
 	grace?: boolean
+	bits?: number
+	subs?: number
 }
 
 type GraceInfo = {
@@ -32,54 +34,70 @@ const POINTS = {
 	normal: 1,
 }
 
-export function initChat() {
-	runChatLoop()
+export function initChat(hype = false) {
+	runChatLoop(hype)
 	// createStaticTrain()
 }
 
-export function planTrain() {
-	const messages: { message: ChatMessage; delay: number; grace?: GraceInfo }[] = []
-	const trainUsers: Set<string> = new Set()
+export function planTrain(hype = false) {
+	const messages: {
+		message: ChatMessage
+		delay: number
+		grace?: GraceInfo
+		bits?: number
+		subs?: number
+	}[] = []
+	const graceUsers: Set<string> = new Set()
 	let totalScore = 0
 	let comboPoints = 0
 	let comboSize = 0
 	let comboScore = 0
 	let lastGraceType: GraceInfo['type']
-	const trainSize = randomIntRange(30, 50)
+	const trainSize = hype ? randomIntRange(7, 30) : randomIntRange(30, 50)
 	for (let i = 0; i < trainSize; i++) {
-		const graceMessage = createGraceMessage()
-		trainUsers.add(graceMessage.username)
-		const graceType = graceMessage.grace
-			? 'redeem'
-			: graceMessage.highlight
-			? 'highlight'
-			: 'normal'
-		const prevTotal = totalScore + comboScore
-		if (lastGraceType && graceType !== lastGraceType) {
-			totalScore += comboScore
-			comboPoints = 0
-			comboSize = 0
+		if (hype && (Math.random() < 0.4 || i < 2)) {
+			const hypeMessage = createHypeMessage()
+			messages.push({
+				message: hypeMessage,
+				delay: randomIntRange(1, 100) * 80,
+				bits: hypeMessage.bits,
+				subs: hypeMessage.subs,
+			})
+		} else {
+			const graceMessage = createGraceMessage()
+			graceUsers.add(graceMessage.username)
+			const graceType = graceMessage.grace
+				? 'redeem'
+				: graceMessage.highlight
+				? 'highlight'
+				: 'normal'
+			if (lastGraceType && graceType !== lastGraceType) {
+				totalScore += comboScore
+				comboPoints = 0
+				comboSize = 0
+			}
+			comboPoints += POINTS[graceType]
+			comboSize++
+			comboScore = getComboScore(comboPoints, comboSize)
+			const graceInfo: GraceInfo = {
+				type: graceType,
+				comboSize,
+				comboPoints,
+				comboScore,
+				totalScore,
+			}
+			messages.push({
+				message: graceMessage,
+				delay: randomIntRange(1, 100) * 60,
+				grace: graceInfo,
+			})
+			lastGraceType = graceType
+			if (hype) i-- // Graces don't count toward hype train length
 		}
-		comboPoints += POINTS[graceType]
-		comboSize++
-		comboScore = getComboScore(comboPoints, comboSize)
-		const graceInfo: GraceInfo = {
-			type: graceType,
-			comboSize,
-			comboPoints,
-			comboScore,
-			totalScore,
-		}
-		messages.push({
-			message: graceMessage,
-			delay: randomIntRange(1, 100) * 60,
-			grace: graceInfo,
-		})
-		lastGraceType = graceType
 	}
 	const breakMessage = createTrainBreakingMessage()
 	totalScore += comboScore
-	const userCountBonus = Math.ceil(totalScore * ((trainUsers.size - 1) / 10))
+	const userCountBonus = Math.ceil(totalScore * ((graceUsers.size - 1) / 10))
 	totalScore += userCountBonus
 	totalScore = Math.ceil(totalScore)
 	messages.push({
@@ -113,7 +131,7 @@ export function planTrain() {
 	return { messages }
 }
 
-function createGraceMessage() {
+function createGraceMessage(): ChatMessage {
 	const [username, color] = pickRandom(fakeUsers)
 	const grace = Math.random() < 0.9
 	const highlight = !grace && Math.random() < 0.8
@@ -128,13 +146,26 @@ function createGraceMessage() {
 	}
 }
 
-function createTrainBreakingMessage() {
+function createHypeMessage(): ChatMessage {
+	const [username, color] = pickRandom(fakeUsers)
+	const cheer = Math.random() < 0.3
+	return {
+		username,
+		color,
+		text: '',
+		time: getTimeString(),
+		bits: cheer && randomElement([1, 100, 200, 250, 500, 1000]),
+		subs: !cheer && randomElement([1, 1, 1, 1, 1, 5]),
+	}
+}
+
+function createTrainBreakingMessage(): ChatMessage {
 	const [username, color] = pickRandom(fakeUsers)
 	const text = pickRandom(trainBreakingMessages)
 	return { username, color, text, time: getTimeString() }
 }
 
-function createSpiceBotMessage(endingUser: string, trainLength: number) {
+function createSpiceBotMessage(endingUser: string, trainLength: number): ChatMessage {
 	return {
 		username: 'SpiceBot2',
 		color: '#ff4500',
@@ -143,12 +174,12 @@ function createSpiceBotMessage(endingUser: string, trainLength: number) {
 	}
 }
 
-function createRegretMessage(username: string, color: string) {
+function createRegretMessage(username: string, color: string): ChatMessage {
 	const text = pickRandom(regretMessages)
 	return { username, color, text, time: getTimeString() }
 }
 
-function createAfterTrainMessage() {
+function createAfterTrainMessage(): ChatMessage {
 	const [username, color] = pickRandom(fakeUsers)
 	const text = pickRandom(afterTrainMessages)
 	return { username, color, text, time: getTimeString() }

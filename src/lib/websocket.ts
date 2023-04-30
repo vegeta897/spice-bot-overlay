@@ -5,6 +5,7 @@ import {
 	type OverlayPosition,
 } from './store'
 import { createTrain, addToTrain, endTrain, endAllTrains } from './trains'
+import type { RequireAtLeastOne } from './util'
 
 const version = 1 // Should match version on server websocket.ts
 
@@ -81,10 +82,31 @@ export function initWebsocket(key: string) {
 }
 
 // Should match types on server graceEvents.ts and websocket.ts
-type TrainEventBaseData = { id: number; combo: number; score: number }
-export type TrainStartData = TrainEventBaseData & { colors: string[] }
-export type TrainAddData = TrainEventBaseData & { color: string }
-export type TrainEndData = TrainEventBaseData & { username: string }
+type ID = { id: number }
+type GraceEventBaseData = {
+	combo: number
+	score: number
+}
+type HypeEventBaseData = {
+	totalBits: number
+	totalSubs: number
+}
+export type HypeProgress = { type: 'bits' | 'subs'; amount: number; color: string }
+export type TrainStartData = ID &
+	RequireAtLeastOne<{
+		grace: GraceEventBaseData & { colors: string[] }
+		hype: HypeEventBaseData & { contributions: HypeProgress[] }
+	}>
+export type TrainAddData = ID &
+	RequireAtLeastOne<{
+		grace: GraceEventBaseData & { color: string }
+		hype: HypeEventBaseData & { contribution: HypeProgress }
+	}>
+export type TrainEndData = ID &
+	RequireAtLeastOne<{
+		grace: GraceEventBaseData & { username: string }
+		hype: HypeEventBaseData
+	}>
 type Message =
 	| {
 			type: 'init'

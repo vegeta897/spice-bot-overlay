@@ -4,7 +4,7 @@ export const TRAIN = {
 	carWidth: 81,
 	carWidthGold: 91,
 	cabooseWidth: 91,
-	speed: 80, // Pixels per second
+	speed: 150, // Pixels per second
 	speedAddPerCombo: 1.5, // Pixels per second added per train length
 	minLength: 5,
 	departDelay: 3 * 1000, // Milliseconds before train departs

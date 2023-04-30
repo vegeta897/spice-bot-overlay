@@ -3,7 +3,7 @@
 	import Smoke from './Smoke.svelte'
 	import { SCREEN, TRAIN } from '../../lib/constants'
 	import { onInterval, sleep } from '../../lib/util'
-	import { getTrainWidth, type Train } from '../../lib/trains'
+	import { getTrainSize, getTrainWidth, type Train } from '../../lib/trains'
 	import { onMount } from 'svelte'
 	import { deleteTrain, updateTrain } from '../../lib/store'
 	import CoinSpout from './CoinSpout.svelte'
@@ -12,13 +12,15 @@
 	export let train: Train
 	export let top = false
 	export let fade = 0
-	export let hype = true
+
+	// TODO: For hype trains, don't make the engine one of the contributions
+	// Maybe do this for regular trains too? But what about cool customizations?
 
 	let pixelsPerMs: number
 	let durationPerScreen: number
 
 	function updateTrainSpeed() {
-		const speed = TRAIN.speed + train.combo * TRAIN.speedAddPerCombo
+		const speed = TRAIN.speed + getTrainSize(train) * TRAIN.speedAddPerCombo
 		pixelsPerMs = speed / 1000
 		durationPerScreen = Math.round(SCREEN.width / pixelsPerMs)
 	}
@@ -37,11 +39,11 @@
 
 	const maxHopDistance = 8
 	let lastImpulse = 0
-	let cars: TrainCar[] = []
-	$: if (cars.length > 0) onCarAdd()
+	let carComponents: TrainCar[] = []
+	$: if (carComponents.length > 0) onCarAdd()
 	let showSmoke = false
 	let reversalTimeout: number
-	$: if (train.endUser) clearTimeout(reversalTimeout)
+	$: if (train.endTime) clearTimeout(reversalTimeout)
 
 	$: opacity = 2 / (fade + 2)
 
@@ -51,7 +53,7 @@
 	}
 
 	function scheduleReversal() {
-		if (train.endUser) return
+		if (train.endTime) return
 		const trainWidth = getTrainWidth(train)
 		const animationProgress = (animation?.currentTime || 0) / animationDuration
 		let currentTranslation = translation + translateDelta * animationProgress
@@ -73,12 +75,12 @@
 	function doImpulse() {
 		if (cabooseComponent) cabooseComponent.hop()
 		const now = Date.now()
-		for (let i = cars.length - 1; i >= 0; i--) {
-			const fromEnd = cars.length - i - 1
+		for (let i = carComponents.length - 1; i >= 0; i--) {
+			const fromEnd = carComponents.length - i - 1
 			// TODO: Use lastImpulse to pass a delta value for hopping cars mid-hop
 			if (fromEnd > 0 && now - lastImpulse < 400) return
 			if (fromEnd >= maxHopDistance) break
-			cars[i].hop(fromEnd * 90, (maxHopDistance - fromEnd) / maxHopDistance)
+			carComponents[i].hop(fromEnd * 90, (maxHopDistance - fromEnd) / maxHopDistance)
 		}
 		lastImpulse = now
 	}
@@ -115,7 +117,6 @@
 		// showSmoke = true
 		// reverse = true
 		// return
-		if (hype) train.hype = true // TODO: Remove
 		const departWait = train.departTime - Date.now()
 		if (departWait > 0) await sleep(departWait)
 		showSmoke = true
@@ -139,7 +140,7 @@
 					showSmoke = false
 				}
 			}
-			if (train.endUser) {
+			if (train.endTime) {
 				clearTimeout(reversalTimeout)
 				finalSlide()
 				break
@@ -154,24 +155,35 @@
 </script>
 
 <div class="container" bind:this={trainContainer} class:top class:reverse style:opacity>
-	{#each train.colors as color, c (c)}
-		<TrainCar
-			{reverse}
-			{color}
-			gold={hype}
-			type={c === 0 ? 'engine' : 'car'}
-			bind:this={cars[c]}
-		/>
-	{/each}
+	{#if train.hype}
+		{#each train.hype.contributions as { color, type, amount }, c (c)}
+			<TrainCar
+				{reverse}
+				{color}
+				gold
+				type={c === 0 ? 'engine' : 'car'}
+				bind:this={carComponents[c]}
+			/>
+		{/each}
+	{:else}
+		{#each train.grace.colors as color, c (c)}
+			<TrainCar
+				{reverse}
+				{color}
+				type={c === 0 ? 'engine' : 'car'}
+				bind:this={carComponents[c]}
+			/>
+		{/each}
+	{/if}
 	{#if showSmoke && !top}
-		{#if hype}
+		{#if train.hype}
 			<CoinSpout {reverse} speed={pixelsPerMs} />
 		{:else}
 			<Smoke {reverse} speed={pixelsPerMs} />
 		{/if}
 	{/if}
-	{#if hype && train.combo}
-		<Caboose bind:this={cabooseComponent} combo={train.combo} {reverse} />
+	{#if train.hype && train.grace}
+		<Caboose bind:this={cabooseComponent} combo={train.grace.combo} {reverse} />
 	{/if}
 </div>
 

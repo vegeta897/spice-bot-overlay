@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { initChat } from './lib/mock/chat'
+	import { initChat } from './lib/demo/chat'
 	import ChatPane from './components/ChatPane.svelte'
 	import Train from './components/train/Train.svelte'
 	import PlanTrain from './components/PlanTrain.svelte'
@@ -20,7 +20,7 @@
 	const planMode = urlParams.has('plan')
 
 	if (demoMode) {
-		initChat()
+		initChat(hypeMode)
 	} else {
 		initWebsocket(urlParams.get('key'))
 	}
@@ -62,7 +62,7 @@
 					<PlanTrain />
 				{/if}
 				{#each $trains as train, t (train.id)}
-					<Train {train} {top} fade={$trains.length - 1 - t} hype={hypeMode} />
+					<Train {train} {top} fade={$trains.length - 1 - t} />
 				{/each}
 			</div>
 			{#if planMode}

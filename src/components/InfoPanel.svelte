@@ -40,7 +40,7 @@
 		setTimeout(() => (readyToBounce = true), 1700)
 	})
 
-	$: if (train.combo) {
+	$: if (!train.hype && train.grace?.combo) {
 		bounce(titleElement, 2)
 		bounce(comboElement, 10)
 		bounce(scoreElement, 3, 80)
@@ -55,51 +55,54 @@
 			out:fade={{ duration: 300, easing: cubicIn }}
 			bind:this={titleElement}
 		>
-			<span style="font-size: 60px; line-height: 58px;">HYPE</span> TRAIN!
+			{#if train.hype}<span style="font-size: 60px; line-height: 58px;">HYPE</span
+				>{:else}GRACE{/if} TRAIN!
 		</h1>
-		<div class="stats">
-			<div
-				class="combo"
-				in:fade={{ duration: 200, delay: 1200 }}
-				out:fade={{ duration: 200, delay: 200, easing: cubicIn }}
-				bind:this={comboElement}
-			>
-				{#each train.combo.toString() as digit}
-					<div class="digit">
-						{#key digit}
-							<span
-								in:fly={{ y: 40, duration: 250, easing: backOut }}
-								out:fly|local={{ y: -40, duration: 250 }}
-							>
-								{digit}
-							</span>
-						{/key}
-					</div>
-				{/each}
-				{#key train.combo}
-					<svg class="x" viewBox="0 0 100 100" width="26" height="26">
-						<path d="M20 20 L80 80 M80 20 L20 80" />
-					</svg>
-				{/key}
+		{#if train.grace && !train.hype}
+			<div class="stats">
+				<div
+					class="combo"
+					in:fade={{ duration: 200, delay: 1200 }}
+					out:fade={{ duration: 200, delay: 200, easing: cubicIn }}
+					bind:this={comboElement}
+				>
+					{#each train.grace.combo.toString() as digit}
+						<div class="digit">
+							{#key digit}
+								<span
+									in:fly={{ y: 40, duration: 250, easing: backOut }}
+									out:fly|local={{ y: -40, duration: 250 }}
+								>
+									{digit}
+								</span>
+							{/key}
+						</div>
+					{/each}
+					{#key train.grace.combo}
+						<svg class="x" viewBox="0 0 100 100" width="26" height="26">
+							<path d="M20 20 L80 80 M80 20 L20 80" />
+						</svg>
+					{/key}
+				</div>
+				<div
+					class="score-container"
+					in:fade={{ duration: 200, delay: 1300 }}
+					out:fade={{ duration: 150, delay: 250, easing: cubicIn }}
+					bind:this={scoreElement}
+				>
+					<Score score={train.grace.score} />
+				</div>
 			</div>
-			<div
-				class="score-container"
-				in:fade={{ duration: 200, delay: 1300 }}
-				out:fade={{ duration: 150, delay: 250, easing: cubicIn }}
-				bind:this={scoreElement}
-			>
-				<Score {train} />
-			</div>
-		</div>
+		{/if}
 	</div>
-	{#if train.endUser}
+	{#if train.grace?.endUser}
 		<div
 			class="end"
 			in:fly={{ x: 300, duration: 500, easing: backOut }}
 			out:fade={{ duration: 200, easing: cubicIn }}
 		>
 			<span>ENDED BY</span>
-			<span class="pulse">{train.endUser} !</span>
+			<span class="pulse">{train.grace.endUser} !</span>
 		</div>
 	{/if}
 </section>
