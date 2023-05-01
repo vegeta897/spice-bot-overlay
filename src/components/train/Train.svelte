@@ -31,7 +31,7 @@
 
 	let trainContainer: HTMLDivElement
 	let animation: Animation
-	let translation = 100 // Percent
+	let translation = 100 // Percent of screen width
 	let translateDelta = -100
 	let animationDuration = durationPerScreen
 	let reverse = false
@@ -47,6 +47,11 @@
 	let showSmoke = false
 	let reversalTimeout: number
 	$: if (train.endTime) clearTimeout(reversalTimeout)
+	let cabooseAdded = false
+	$: if (!cabooseAdded && train.hype && train.grace?.combo === 1) {
+		cabooseAdded = true
+		doImpulse()
+	}
 
 	$: opacity = 2 / (fade + 2)
 
