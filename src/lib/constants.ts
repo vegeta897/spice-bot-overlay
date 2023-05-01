@@ -5,7 +5,7 @@ export const TRAIN = {
 	carWidthGold: 91,
 	cabooseWidth: 91,
 	speed: 80, // Pixels per second
-	speedAddPerCombo: 1.5, // Pixels per second added per train length
+	speedAddPerCombo: 1.2, // Pixels per second added per train length
 	minLength: 5,
 	departDelay: 3 * 1000, // Milliseconds before train departs
 	endInfoDuration: 5 * 1000, // Milliseconds until info panel disappears
@@ -15,6 +15,22 @@ export const TRAIN = {
 export const SCREEN = {
 	width: 1920,
 	height: 1080,
+}
+
+export const COLORS = {
+	smokeyRainbow: [
+		'#D6A4A9',
+		'#CEABB4',
+		'#C2B8C3',
+		'#BAC3C3',
+		'#B5CDB4',
+		'#ADD3B3',
+		'#A0CFC8',
+		'#9CCAD6',
+		'#ADC3D0',
+		'#BDBCCA',
+		'#C8B1BC',
+	],
 }
 
 export const GRADIENTS = {

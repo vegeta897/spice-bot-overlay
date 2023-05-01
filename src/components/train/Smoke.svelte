@@ -1,31 +1,37 @@
 <script lang="ts">
-	import { onMount } from 'svelte'
-	import { onInterval, randomIntRange } from '../../lib/util'
+	import { onDestroy, onMount } from 'svelte'
+	import { randomIntRange } from '../../lib/util'
+	import { COLORS, TRAIN } from '../../lib/constants'
 
 	export let reverse = false
 	export let speed: number // Pixels per ms
 
 	const clouds: SVGElement[] = []
-	const cloudDuration = 3000
-	const cloudRate = 200
-	const cloudCount = Math.ceil(cloudDuration / cloudRate)
+
+	const baseCloudDuration = 3000
+	const baseCloudRate = 200
+	const cloudCount = Math.ceil(baseCloudDuration / baseCloudRate)
+
+	$: speedRatio = TRAIN.speed / (speed * 1000)
+	$: cloudDuration = baseCloudDuration * speedRatio
+	$: cloudRate = baseCloudRate * speedRatio
+
+	let timeout: number
+
+	onMount(() => {
+		for (let i = 0; i < cloudCount; i++) {
+			const newCloud = cloudElement.cloneNode(true) as SVGElement
+			const fill = `${COLORS.smokeyRainbow[i % COLORS.smokeyRainbow.length]}bb`
+			newCloud.children[0].setAttribute('fill', fill)
+			clouds.push(newCloud)
+			containerElement.appendChild(newCloud)
+		}
+		animateCloud()
+	})
+	onDestroy(() => clearTimeout(timeout))
 
 	let containerElement: HTMLDivElement
 	let nextCloudIndex = 0
-
-	const smokyRainbow = [
-		'#D6A4A9',
-		'#CEABB4',
-		'#C2B8C3',
-		'#BAC3C3',
-		'#B5CDB4',
-		'#ADD3B3',
-		'#A0CFC8',
-		'#9CCAD6',
-		'#ADC3D0',
-		'#BDBCCA',
-		'#C8B1BC',
-	]
 
 	const newCloudPlaceholder = document.createElement('div')
 	newCloudPlaceholder.innerHTML = `<svg	width="20px" height="20px" viewBox="0 0 20 20"
@@ -33,28 +39,17 @@
 		<circle cx="10" cy="10" r="10" /></svg>`
 	const cloudElement = newCloudPlaceholder.firstElementChild
 
-	onInterval(animateCloud, cloudRate)
-	onMount(() => {
-		for (let i = 0; i < cloudCount; i++) {
-			const newCloud = cloudElement.cloneNode(true) as SVGElement
-			const fill = `${smokyRainbow[i % smokyRainbow.length]}bb`
-			newCloud.children[0].setAttribute('fill', fill)
-			clouds.push(newCloud)
-			containerElement.appendChild(newCloud)
-		}
-	})
-
 	function animateCloud() {
 		const cloud = clouds[nextCloudIndex]
 		if (!cloud) return
 		nextCloudIndex = (nextCloudIndex + 1) % cloudCount
 		const fromScale = randomIntRange(5, 20) / 10
 		const toScale = randomIntRange(30, 50) / 10
-		const toX = Math.round(
-			speed * 1000 * (cloudDuration / 1000) + randomIntRange(-50, 50)
-		)
+		const toScaleX = Math.max(toScale, Math.round(toScale * (0.5 / speedRatio)))
+		const toX = Math.round(speed * cloudDuration + randomIntRange(-50, 50))
 		const toXBegin = Math.round(toX / 10)
-		const toY = -180 + randomIntRange(-20, 20)
+		const toY = (-180 + randomIntRange(-20, 20)) * speedRatio
+		const toYBegin = Math.round(toY / 5)
 		cloud.animate(
 			[
 				{
@@ -64,13 +59,12 @@
 				},
 				{
 					opacity: 1,
-					transform: `translate(${toXBegin}px, -40px) scale(${toScale / 2})`,
+					transform: `translate(${toXBegin}px, ${toYBegin}px) scale(${toScale / 2})`,
 					offset: 0.1,
-					easing: 'linear',
 				},
 				{
 					opacity: 0,
-					transform: `translate(${toX}px, ${toY}px) scale(${toScale})`,
+					transform: `translate(${toX}px, ${toY}px) scale(${toScaleX},${toScale})`,
 				},
 			],
 			{
@@ -79,6 +73,7 @@
 				fill: 'forwards',
 			}
 		)
+		timeout = setTimeout(animateCloud, cloudRate)
 	}
 </script>
 
