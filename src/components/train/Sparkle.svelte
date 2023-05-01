@@ -5,7 +5,7 @@
 	export let coords: [number, number][]
 	export let reverse: boolean
 
-	$: translations = coords.map(
+	$: translateStrings = coords.map(
 		([x, y]) => `translate(${x + (reverse ? 15 : 0)}px, ${y}px)`
 	)
 
@@ -15,7 +15,7 @@
 		while (element) {
 			await sleep(randomIntRange(9, 20) * 100)
 			if (!element) break
-			const translate = randomElement(translations)
+			const translate = randomElement(translateStrings)
 			element.animate(
 				[
 					{ transform: `${translate} rotate(0) scale(0.5) `, opacity: 0 },
