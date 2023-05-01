@@ -2,21 +2,22 @@
 	import { randomIntRange } from '../../lib/util'
 
 	export let reverse: boolean
+	export let amount: number // TODO: Implement this
 
 	const stackGroupElements: SVGGElement[] = []
 	const segmentRectElements: SVGRectElement[][] = []
 
-	const coinWidth = 25
+	const coinDiameter = 25
 	const coinThick = 7
-	const centerX = (100 - coinWidth) / 2
+	const padding = 8
+	const centerX = (100 - coinDiameter) / 2
 
 	function buildStacks() {
 		const stacks = []
-		const minX = randomIntRange(8, 12)
 		let maxX = 0
-		let x = minX
+		let x = padding
 		const prevHeights = [0, 0]
-		const xLimit = 100 - coinWidth - 8
+		const xLimit = 100 - coinDiameter - padding
 		let zIndex = Math.random() > 0.5 ? 1 : -1
 		while (x <= xLimit) {
 			maxX = x
@@ -43,7 +44,7 @@
 		stacks[0].zIndex = 2
 		stacks.at(-1).zIndex = 2
 		stacks.sort((a, b) => b.zIndex - a.zIndex)
-		const xAdjust = Math.round((xLimit - maxX - (minX - 8)) / 2)
+		const xAdjust = Math.round((xLimit - maxX) / 2)
 		return stacks.map(({ x, baseY, segments }) => {
 			const segmentXs = []
 			const segmentYs = []
@@ -135,10 +136,10 @@
 					bind:this={segmentRectElements[st][sg]}
 					x={segX}
 					y={segY}
-					width={coinWidth}
+					width={coinDiameter}
 					height={segment * coinThick + 0.3}
 					fill="url(#coin-stack{reverse ? '-reverse' : ''})"
-					style="transform-origin: {segX + coinWidth / 2}px {segY + coinThick / 2}px"
+					style="transform-origin: {segX + coinDiameter / 2}px {segY + coinThick / 2}px"
 				/>
 			{/each}
 		</g>

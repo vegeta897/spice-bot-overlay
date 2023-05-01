@@ -1,5 +1,4 @@
 <script lang="ts">
-	import TrainCar from './TrainCar.svelte'
 	import Smoke from './Smoke.svelte'
 	import { SCREEN, TRAIN } from '../../lib/constants'
 	import { onInterval, sleep } from '../../lib/util'
@@ -8,6 +7,10 @@
 	import { deleteTrain, updateTrain } from '../../lib/store'
 	import CoinSpout from './CoinSpout.svelte'
 	import Caboose from './Caboose.svelte'
+	import Engine from './Engine.svelte'
+	import Car from './Car.svelte'
+	import GoldEngine from './GoldEngine.svelte'
+	import GoldCar from './GoldCar.svelte'
 
 	export let train: Train
 	export let top = false
@@ -39,7 +42,7 @@
 
 	const maxHopDistance = 8
 	let lastImpulse = 0
-	let carComponents: TrainCar[] = []
+	let carComponents: (Engine | Car | GoldEngine | GoldCar)[] = []
 	$: if (carComponents.length > 0) onCarAdd()
 	let showSmoke = false
 	let reversalTimeout: number
@@ -157,22 +160,23 @@
 <div class="container" bind:this={trainContainer} class:top class:reverse style:opacity>
 	{#if train.hype}
 		{#each train.hype.contributions as { color, type, amount }, c (c)}
-			<TrainCar
-				{reverse}
-				{color}
-				gold
-				type={c === 0 ? 'engine' : 'car'}
-				bind:this={carComponents[c]}
-			/>
+			<div class="train-car-container">
+				{#if c === 0}
+					<GoldEngine {reverse} {color} bind:this={carComponents[c]} />
+				{:else}
+					<GoldCar {reverse} {color} {type} {amount} bind:this={carComponents[c]} />
+				{/if}
+			</div>
 		{/each}
 	{:else}
 		{#each train.grace.colors as color, c (c)}
-			<TrainCar
-				{reverse}
-				{color}
-				type={c === 0 ? 'engine' : 'car'}
-				bind:this={carComponents[c]}
-			/>
+			<div class="train-car-container">
+				{#if c === 0}
+					<Engine {reverse} {color} bind:this={carComponents[c]} />
+				{:else}
+					<Car {reverse} {color} bind:this={carComponents[c]} />
+				{/if}
+			</div>
 		{/each}
 	{/if}
 	{#if showSmoke && !top}
@@ -206,5 +210,10 @@
 	}
 	div.reverse {
 		flex-direction: row-reverse;
+	}
+	.train-car-container {
+		margin: 0 3px;
+		flex-shrink: 0;
+		position: relative;
 	}
 </style>
