@@ -168,6 +168,9 @@
 				{/if}
 			</div>
 		{/each}
+		{#if train.grace}
+			<Caboose bind:this={cabooseComponent} combo={train.grace.combo} {reverse} />
+		{/if}
 	{:else}
 		{#each train.grace.colors as color, c (c)}
 			<div class="train-car-container">
@@ -185,9 +188,6 @@
 		{:else}
 			<Smoke {reverse} speed={pixelsPerMs} />
 		{/if}
-	{/if}
-	{#if train.hype && train.grace}
-		<Caboose bind:this={cabooseComponent} combo={train.grace.combo} {reverse} />
 	{/if}
 </div>
 
