@@ -14,7 +14,8 @@
 		class="points"
 		class:mini={score.toString().length > 7}
 		class:micro={score.toString().length > 8}
-		style="--totalScore: {score}; transition: --totalScore {scoreTickTime}ms;"
+		class:nano={score.toString().length > 9}
+		style="--totalScore: {score}; transition: --totalScore {scoreTickTime}ms ease-out;"
 	/> pts
 </div>
 
@@ -48,5 +49,8 @@
 	}
 	.score .points.micro {
 		font-size: 31px;
+	}
+	.score .points.nano {
+		font-size: 28px;
 	}
 </style>
