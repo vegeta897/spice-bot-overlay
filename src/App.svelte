@@ -12,7 +12,6 @@
 
 	const urlParams = new URLSearchParams(window.location.search)
 	const demoMode = urlParams.has('demo')
-	const hypeMode = urlParams.has('hype')
 	const widthOverride = parseInt(urlParams.get('w'))
 	const heightOverride = parseInt(urlParams.get('h'))
 	if (widthOverride > 0) SCREEN.width = widthOverride
@@ -20,7 +19,7 @@
 	const planMode = urlParams.has('plan')
 
 	if (demoMode) {
-		initChat(hypeMode)
+		initChat(urlParams.has('hype'))
 	} else {
 		initWebsocket(urlParams.get('key'))
 	}

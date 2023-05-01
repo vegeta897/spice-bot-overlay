@@ -43,14 +43,19 @@ export function createTrain({ id, grace, hype }: TrainStartData) {
 	if (existingTrain) {
 		// Update existing train if combo, bits, or subs are different
 		const trainUpdate: Partial<Train> = { id }
-		if (grace && grace.combo !== existingTrain.grace?.combo) trainUpdate.grace = grace
+		if (grace && grace.combo !== existingTrain.grace?.combo) {
+			trainUpdate.grace = grace
+		}
 		if (
 			hype &&
 			(hype.totalBits !== existingTrain.hype?.totalBits ||
 				hype.totalSubs !== existingTrain.hype?.totalSubs)
-		)
+		) {
 			trainUpdate.hype = hype
-		updateTrain(trainUpdate as Train)
+		}
+		if (trainUpdate.grace || trainUpdate.hype) {
+			updateTrain(trainUpdate as Train)
+		}
 	} else {
 		// Add new train
 		const train: Partial<Train> = { id }
@@ -109,7 +114,7 @@ export function endTrain({ id, grace, hype }: TrainEndData, hideInfoNow = false)
 	const graceEndTime = grace
 		? Math.floor(grace.combo / TRAIN.endInfoLengthPerSecond) * 1000
 		: 0
-	const hypeEndTime = 10 * 1000
+	const hypeEndTime = hype ? 10 * 1000 : 0
 	const endInfoDuration = hideInfoNow
 		? 0
 		: TRAIN.endInfoDuration + Math.max(graceEndTime, hypeEndTime)

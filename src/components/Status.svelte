@@ -1,10 +1,16 @@
-<script lang="ts">
-	import { overlayStatus } from '../lib/store'
+<script lang="ts" context="module">
+	import { overlayStatus, type OverlayError } from '../lib/store'
+
+	const errorMessages: Record<OverlayError, string> = {
+		'need-reload': 'Reload required, try refreshing the browser source cache',
+		'missing-key': 'Missing key, check the browser source URL',
+		'invalid-key': 'Invalid key, contact bot admin for a new one',
+	}
 </script>
 
-{#if $overlayStatus.auth !== 'init' && $overlayStatus.auth !== 'success'}
+{#if $overlayStatus.error}
 	<section>
-		Grace Train Overlay error: <code>{$overlayStatus.auth}</code>
+		Spice Bot Overlay error: <span>{errorMessages[$overlayStatus.error]}</span>
 	</section>
 {/if}
 
@@ -17,7 +23,7 @@
 		bottom: 0;
 		color: #f32;
 	}
-	code {
+	span {
 		color: #eee;
 	}
 </style>

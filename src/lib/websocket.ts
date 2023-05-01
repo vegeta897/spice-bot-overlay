@@ -1,13 +1,13 @@
 import {
 	getTrain,
-	setAuthStatus,
+	setOverlayError,
 	setOverlayPosition,
 	type OverlayPosition,
 } from './store'
 import { createTrain, addToTrain, endTrain, endAllTrains } from './trains'
 import type { RequireAtLeastOne } from './util'
 
-const version = 1 // Should match version on server websocket.ts
+const version = 2 // Should match version on server websocket.ts
 
 let ws: WebSocket
 let reloading = false
@@ -17,7 +17,7 @@ export function initWebsocket(key: string) {
 	if (ws) ws.close()
 	reloading = false
 	if (!key) {
-		setAuthStatus('missing-key')
+		setOverlayError('missing-key')
 		return
 	}
 	const wsAddress = import.meta.env.DEV
@@ -38,7 +38,7 @@ export function initWebsocket(key: string) {
 	ws.addEventListener('message', (event) => {
 		if (event.data === 'invalid-key') {
 			invalidKey = true
-			setAuthStatus('invalid-key')
+			setOverlayError('invalid-key')
 			return
 		}
 		let message: Message
@@ -50,11 +50,16 @@ export function initWebsocket(key: string) {
 		switch (message.type) {
 			case 'init':
 				if (message.data.version !== version) {
+					setOverlayError('need-reload')
 					// Reload page after 15s
 					console.log('App out of date! Reloading page in 15 seconds...')
 					setTimeout(() => window.location.reload(), 15 * 1000)
 				}
-				if (message.data.noTrains) endAllTrains()
+				if (message.data.train) {
+					createTrain(message.data.train)
+				} else {
+					endAllTrains()
+				}
 				setOverlayPosition(message.data.position)
 				break
 			case 'train-start':
@@ -110,7 +115,7 @@ export type TrainEndData = ID &
 type Message =
 	| {
 			type: 'init'
-			data: { version: number; noTrains: boolean; position: OverlayPosition }
+			data: { version: number; train: TrainStartData | false; position: OverlayPosition }
 	  }
 	| { type: 'train-start'; data: TrainStartData }
 	| { type: 'train-add'; data: TrainAddData }
