@@ -1,8 +1,14 @@
 <script lang="ts">
+	import { onMount } from 'svelte'
+
 	export let combo: number
 	export let reverse: boolean
 
 	let containerelement: HTMLDivElement
+
+	onMount(hop)
+
+	$: if (containerelement && combo) miniHop()
 
 	export function hop() {
 		containerelement.animate(
@@ -25,9 +31,18 @@
 				},
 				{},
 			],
-			{
-				duration: 400 * 1,
-			}
+			{ duration: 400 }
+		)
+	}
+
+	function miniHop() {
+		containerelement.animate(
+			[
+				{ easing: 'ease-out' },
+				{ transform: `translateY(-10px)`, easing: 'ease-out' },
+				{},
+			],
+			{ duration: 300 }
 		)
 	}
 </script>
