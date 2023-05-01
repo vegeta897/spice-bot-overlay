@@ -1,23 +1,18 @@
 <script lang="ts">
-	import Color from 'color'
 	import { carHop } from '../../lib/animations'
+	import { getGemColors } from '../../lib/colors'
 	import { GRADIENTS, SPARKLE_COORDS } from '../../lib/constants'
 	import Sparkle from './Sparkle.svelte'
-	import { clamp } from '../../lib/util'
 
 	export let reverse: boolean
 	export let color: string
 
-	$: colorObject = Color(color || '#ff538f')
-	$: baseColor = colorObject.lightness(clamp(colorObject.lightness(), 40, 85)).hex()
-	$: brighterColor = colorObject.lightness(75).rotate(10).hex()
-	$: brightestColor = colorObject.lightness(92).rotate(20).hex()
-	$: darkerColor = colorObject.lightness(55).rotate(-10).hex()
-	$: darkestColor = colorObject.lightness(30).rotate(-20).hex()
-	$: gemTopLeftColor = reverse ? brighterColor : brightestColor
-	$: gemTopRightColor = reverse ? brightestColor : brighterColor
-	$: gemBottomLeftColor = reverse ? darkestColor : darkerColor
-	$: gemBottomRightColor = reverse ? darkerColor : darkestColor
+	$: gemColors = getGemColors(color || '#ff538f')
+
+	$: gemTopLeftColor = reverse ? gemColors.brighterColor : gemColors.brightestColor
+	$: gemTopRightColor = reverse ? gemColors.brightestColor : gemColors.brighterColor
+	$: gemBottomLeftColor = reverse ? gemColors.darkestColor : gemColors.darkerColor
+	$: gemBottomRightColor = reverse ? gemColors.darkerColor : gemColors.darkestColor
 
 	let svgElement: SVGElement
 
@@ -93,7 +88,7 @@
 		<path
 			id="Big-Gem-Center"
 			d="M418.411,178.782l-37.639,37.639l-37.31,-37.681l37.31,-37.319l37.639,37.361Z"
-			style="fill:{baseColor};"
+			style="fill:{gemColors.baseColor};"
 		/>
 		<path
 			id="Rear-Gem-Top-Left"
@@ -138,12 +133,12 @@
 		<path
 			id="Rear-Gem-Center"
 			d="M243.473,178.814l-22.569,22.569l-22.372,-22.594l22.372,-22.377l22.569,22.402Z"
-			style="fill:{baseColor};"
+			style="fill:{gemColors.baseColor};"
 		/>
 		<path
 			id="Front-Gem-Center"
 			d="M134.801,178.814l-22.569,22.569l-22.372,-22.594l22.372,-22.377l22.569,22.402Z"
-			style="fill:{baseColor};"
+			style="fill:{gemColors.baseColor};"
 		/>
 		<Sparkle coords={SPARKLE_COORDS.engine} {reverse} />
 	</g>

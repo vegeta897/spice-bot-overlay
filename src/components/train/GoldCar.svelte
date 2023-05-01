@@ -1,26 +1,21 @@
 <script lang="ts">
-	import Color from 'color'
 	import { carHop } from '../../lib/animations'
 	import { GRADIENTS, SPARKLE_COORDS } from '../../lib/constants'
 	import CoinStacks from './CoinStacks.svelte'
 	import Sparkle from './Sparkle.svelte'
-	import { clamp } from '../../lib/util'
+	import { getGemColors } from '../../lib/colors'
 
 	export let reverse: boolean
 	export let color: string
 	export let type: 'bits' | 'subs'
 	export let amount: number
 
-	$: colorObject = Color(color || '#ff538f')
-	$: baseColor = colorObject.lightness(clamp(colorObject.lightness(), 40, 85)).hex()
-	$: brighterColor = colorObject.lightness(75).rotate(10).hex()
-	$: brightestColor = colorObject.lightness(92).rotate(20).hex()
-	$: darkerColor = colorObject.lightness(55).rotate(-10).hex()
-	$: darkestColor = colorObject.lightness(30).rotate(-20).hex()
-	$: gemTopLeftColor = reverse ? brighterColor : brightestColor
-	$: gemTopRightColor = reverse ? brightestColor : brighterColor
-	$: gemBottomLeftColor = reverse ? darkestColor : darkerColor
-	$: gemBottomRightColor = reverse ? darkerColor : darkestColor
+	$: gemColors = getGemColors(color || '#ff538f')
+
+	$: gemTopLeftColor = gemColors.brightestColor
+	$: gemTopRightColor = gemColors.brighterColor
+	$: gemBottomLeftColor = gemColors.darkerColor
+	$: gemBottomRightColor = gemColors.darkestColor
 
 	let svgElement: SVGElement
 	let coinStacksComponent: CoinStacks
@@ -77,7 +72,7 @@
 	<path
 		id="Big-Gem-Center"
 		d="M250.131,87.219l-37.638,37.638l-37.311,-37.68l37.311,-37.32l37.638,37.362Z"
-		style="fill:{baseColor};"
+		style="fill:{gemColors.baseColor};"
 	/>
 	<path
 		id="Rear-Gem-Top-Left"
@@ -122,14 +117,14 @@
 	<path
 		id="Rear-Gem-Center"
 		d="M358.047,87.251l-22.569,22.569l-22.372,-22.595l22.372,-22.377l22.569,22.403Z"
-		style="fill:{baseColor};"
+		style="fill:{gemColors.baseColor};"
 	/>
 	<path
 		id="Front-Gem-Center"
 		d="M110.014,87.251l-22.569,22.569l-22.372,-22.595l22.372,-22.377l22.569,22.403Z"
-		style="fill:{baseColor};"
+		style="fill:{gemColors.baseColor};"
 	/>
-	<Sparkle coords={SPARKLE_COORDS.car} {reverse} />
+	<Sparkle coords={SPARKLE_COORDS.car} />
 	<defs>
 		<linearGradient
 			id="LG-Body"
@@ -138,9 +133,7 @@
 			x2="1"
 			y2="0"
 			gradientUnits="userSpaceOnUse"
-			gradientTransform="matrix({reverse
-				? '-424,0,0,-212,424,12.5'
-				: '424,0,0,212,1,12.5'})"
+			gradientTransform="matrix(424,0,0,212,1,12.5)"
 		>
 			{@html GRADIENTS.gold}
 		</linearGradient>

@@ -3,7 +3,7 @@
 	import { sleep, randomIntRange, randomElement } from '../../lib/util'
 
 	export let coords: [number, number][]
-	export let reverse: boolean
+	export let reverse = false
 
 	$: translateStrings = coords.map(
 		([x, y]) => `translate(${x + (reverse ? 15 : 0)}px, ${y}px)`
