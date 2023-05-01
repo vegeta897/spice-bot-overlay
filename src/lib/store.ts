@@ -10,7 +10,6 @@ export const overlayStatus: Writable<{
 }> = writable({ auth: 'init', error: null, position: 'bottom' })
 
 export function setOverlayError(error: OverlayError) {
-	console.log('setoverlayerror', error)
 	overlayStatus.update((status) => ({ ...status, error }))
 }
 export function setOverlayPosition(position: OverlayPosition) {
