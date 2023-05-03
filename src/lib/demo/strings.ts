@@ -48,7 +48,7 @@ export const regretMessages = [
 	'OH NO I BROKE IT',
 	'oops sorry',
 ]
-export const afterTrainMessages = [
+export const afterGraceTrainMessages = [
 	'that was great',
 	'good grace train',
 	'very good grace train',
@@ -62,4 +62,16 @@ export const afterTrainMessages = [
 	'wow',
 	'wow what a train!',
 	'good stuff',
+]
+
+export const afterHypeTrainMessages = [
+	'HYPE!',
+	'hype!!!',
+	'H Y P E',
+	'choo choo!',
+	'CHOO CHOO',
+	'hyped!',
+	'HYYYPE!',
+	'choo chooooo!',
+	'hype hype!',
 ]

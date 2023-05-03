@@ -4,7 +4,8 @@ import {
 	graceMessages,
 	trainBreakingMessages,
 	regretMessages,
-	afterTrainMessages,
+	afterGraceTrainMessages,
+	afterHypeTrainMessages,
 } from './strings'
 
 type ChatMessage = {
@@ -42,7 +43,7 @@ const POINTS = {
 	normal: 1,
 }
 
-export function planTrain(hype = false) {
+export function planTrain(hypeMode = false) {
 	const messages: {
 		message: ChatMessage
 		delay: number
@@ -60,9 +61,9 @@ export function planTrain(hype = false) {
 	let hypeLevel = 1
 	let hypeContributions = 0
 	let goal = 1000 + hypeLevel * 500
-	const trainSize = hype ? randomIntRange(10, 30) : randomIntRange(30, 50)
+	const trainSize = hypeMode ? randomIntRange(10, 30) : randomIntRange(30, 50)
 	for (let i = 0; i < trainSize; i++) {
-		if (hype && (Math.random() < 0.4 || i < 3)) {
+		if (hypeMode && (Math.random() < 0.4 || i < 3)) {
 			hypeContributions++
 			const hypeMessage = createHypeMessage()
 			if (hypeContributions > 3) {
@@ -116,39 +117,41 @@ export function planTrain(hype = false) {
 				grace: graceInfo,
 			})
 			lastGraceType = graceType
-			if (hype) i-- // Graces don't count toward hype train length
+			if (hypeMode) i-- // Graces don't count toward hype train length
 		}
 	}
-	const breakMessage = createTrainBreakingMessage()
-	totalScore += comboScore
-	const userCountBonus = Math.ceil(totalScore * ((graceUsers.size - 1) / 10))
-	totalScore += userCountBonus
-	totalScore = Math.ceil(totalScore)
-	messages.push({
-		message: breakMessage,
-		delay: randomIntRange(1, 30) * 100,
-		grace: {
-			type: 'end',
-			comboSize: 0,
-			comboPoints: 0,
-			comboScore: 0,
-			totalScore,
-		},
-	})
-	messages.push({
-		message: createSpiceBotMessage(breakMessage.username, trainSize),
-		delay: 300,
-	})
-	if (Math.random() < 0.5) {
+	if (!hypeMode) {
+		const breakMessage = createTrainBreakingMessage()
+		totalScore += comboScore
+		const userCountBonus = Math.ceil(totalScore * ((graceUsers.size - 1) / 10))
+		totalScore += userCountBonus
+		totalScore = Math.ceil(totalScore)
 		messages.push({
-			message: createRegretMessage(breakMessage.username, breakMessage.color),
-			delay: randomIntRange(5, 15) * 100,
+			message: breakMessage,
+			delay: randomIntRange(1, 30) * 100,
+			grace: {
+				type: 'end',
+				comboSize: 0,
+				comboPoints: 0,
+				comboScore: 0,
+				totalScore,
+			},
 		})
+		messages.push({
+			message: createSpiceBotMessage(breakMessage.username, trainSize),
+			delay: 300,
+		})
+		if (Math.random() < 0.5) {
+			messages.push({
+				message: createRegretMessage(breakMessage.username, breakMessage.color),
+				delay: randomIntRange(5, 15) * 100,
+			})
+		}
 	}
-	const afterTrainMessageCount = randomIntRange(1, 4)
+	const afterTrainMessageCount = hypeMode ? randomIntRange(3, 7) : randomIntRange(1, 4)
 	for (let i = 0; i < afterTrainMessageCount; i++) {
 		messages.push({
-			message: createAfterTrainMessage(),
+			message: createAfterTrainMessage(hypeMode),
 			delay: randomIntRange(3, 10) * 100,
 		})
 	}
@@ -179,7 +182,7 @@ function createHypeMessage(): ChatMessage {
 		text: '',
 		time: getTimeString(),
 		bits: cheer && randomElement([100, 100, 200, 250, 500, 1000, 2000]),
-		subs: !cheer && randomElement([1, 1, 1, 1, 1, 1, 1, 1, 1, 5, 5, 10, 15]),
+		subs: !cheer && randomElement([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5, 5, 10, 15]),
 	}
 }
 
@@ -203,9 +206,9 @@ function createRegretMessage(username: string, color: string): ChatMessage {
 	return { username, color, text, time: getTimeString() }
 }
 
-function createAfterTrainMessage(): ChatMessage {
+function createAfterTrainMessage(hype: boolean): ChatMessage {
 	const [username, color] = randomElement(fakeUsers)
-	const text = randomElement(afterTrainMessages)
+	const text = randomElement(hype ? afterHypeTrainMessages : afterGraceTrainMessages)
 	return { username, color, text, time: getTimeString() }
 }
 
