@@ -21,7 +21,7 @@ type ChatMessage = {
 }
 
 type GraceInfo = {
-	type: 'redeem' | 'highlight' | 'normal' | 'end'
+	type: 'redeem' | 'highlight' | 'normal'
 	comboSize: number
 	comboPoints: number
 	comboScore: number
@@ -49,6 +49,7 @@ export function planTrain(hypeMode = false) {
 		delay: number
 		grace?: GraceInfo
 		hype?: HypeInfo
+		end?: boolean
 	}[] = []
 	const graceUsers: Set<string> = new Set()
 	let totalScore = 0
@@ -61,7 +62,7 @@ export function planTrain(hypeMode = false) {
 	let hypeLevel = 1
 	let hypeContributions = 0
 	let goal = 1000 + hypeLevel * 500
-	const trainSize = hypeMode ? randomIntRange(10, 30) : randomIntRange(30, 50)
+	const trainSize = hypeMode ? randomIntRange(10, 25) : randomIntRange(30, 50)
 	for (let i = 0; i < trainSize; i++) {
 		if (hypeMode && (Math.random() < 0.4 || i < 3)) {
 			hypeContributions++
@@ -122,20 +123,10 @@ export function planTrain(hypeMode = false) {
 	}
 	if (!hypeMode) {
 		const breakMessage = createTrainBreakingMessage()
-		totalScore += comboScore
-		const userCountBonus = Math.ceil(totalScore * ((graceUsers.size - 1) / 10))
-		totalScore += userCountBonus
-		totalScore = Math.ceil(totalScore)
 		messages.push({
 			message: breakMessage,
 			delay: randomIntRange(1, 30) * 100,
-			grace: {
-				type: 'end',
-				comboSize: 0,
-				comboPoints: 0,
-				comboScore: 0,
-				totalScore,
-			},
+			end: true,
 		})
 		messages.push({
 			message: createSpiceBotMessage(breakMessage.username, trainSize),
@@ -153,6 +144,7 @@ export function planTrain(hypeMode = false) {
 		messages.push({
 			message: createAfterTrainMessage(hypeMode),
 			delay: randomIntRange(3, 10) * 100,
+			end: hypeMode && i === 0,
 		})
 	}
 	return { messages }

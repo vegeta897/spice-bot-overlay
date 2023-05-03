@@ -26,29 +26,33 @@ export async function runChatLoop(hypeMode = false) {
 		let score = 0
 		let totalBits = 0
 		let totalSubs = 0
+		let level = 0
+		let progress = 0
+		let total = 0
+		let goal = 0
 		const { messages } = planTrain(hypeMode)
-		for (const { message, delay, grace, hype } of messages) {
+		for (const { message, delay, grace, hype, end } of messages) {
 			if (chatLoopStartTime !== runTime) break
 			await sleep(delay)
 			chat.update((_chat) => [..._chat.slice(-MAX_MESSAGES), message])
 			if (grace) {
-				if (grace.type === 'end') {
-					endTrain({ id: trainID, grace: { combo, score, username: message.username } })
+				combo++
+				score = grace.totalScore + grace.comboScore
+				if (!hypeMode && combo < TRAIN.minLength) {
+					initialColors.push(message.color)
+				} else if ((hypeMode && combo === 1) || combo === TRAIN.minLength) {
+					initialColors.push(message.color)
+					createTrain({ id: trainID, grace: { colors: initialColors, combo, score } })
 				} else {
-					combo++
-					score = grace.totalScore + grace.comboScore
-					if (!hypeMode && combo < TRAIN.minLength) {
-						initialColors.push(message.color)
-					} else if ((hypeMode && combo === 1) || combo === TRAIN.minLength) {
-						initialColors.push(message.color)
-						createTrain({ id: trainID, grace: { colors: initialColors, combo, score } })
-					} else {
-						addToTrain({ id: trainID, grace: { combo, score, color: message.color } })
-					}
+					addToTrain({ id: trainID, grace: { combo, score, color: message.color } })
 				}
 			} else if (hype) {
 				totalBits += hype.bits || 0
 				totalSubs += hype.subs || 0
+				level = hype.level
+				progress = hype.progress
+				total = hype.total
+				goal = hype.goal
 				const contribution: HypeProgress = {
 					type: hype.bits ? 'bits' : 'subs',
 					amount: hype.bits || hype.subs,
@@ -61,30 +65,30 @@ export async function runChatLoop(hypeMode = false) {
 						hype: {
 							totalBits,
 							totalSubs,
-							level: hype.level,
-							progress: hype.progress,
-							total: hype.total,
-							goal: hype.goal,
+							level,
+							progress,
+							total,
+							goal,
 							contributions: [...initialContributions],
 						},
 					})
 				} else if (getTrain({ id: trainID })) {
 					addToTrain({
 						id: trainID,
-						hype: {
-							totalBits,
-							totalSubs,
-							level: hype.level,
-							progress: hype.progress,
-							total: hype.total,
-							goal: hype.goal,
-							contribution,
-						},
+						hype: { totalBits, totalSubs, level, progress, total, goal, contribution },
 					})
 				}
 			}
+			if (end) {
+				const train = getTrain({ id: trainID })
+				endTrain({
+					id: trainID,
+					grace: train.grace && { combo, score, username: message.username },
+					hype: train.hype && { totalBits, totalSubs, level, progress, total, goal },
+				})
+			}
 		}
-		await sleep(randomIntRange(2, 7) * 1000)
+		await sleep((hypeMode ? randomIntRange(10, 15) : randomIntRange(2, 7)) * 1000)
 	}
 }
 
