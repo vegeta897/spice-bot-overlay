@@ -5,7 +5,7 @@
 	export let type: 'bits' | 'subs'
 	export let amount: number
 
-	$: value = type === 'subs' ? amount * 500 : amount
+	$: value = Math.min(500, type === 'subs' ? amount * 500 : amount)
 	$: coinCount = 5 + Math.floor(value / 20)
 	$: if (coinCount) coinStacks = buildCoinStacks()
 
@@ -83,22 +83,22 @@
 		delay *= timeScale
 		for (let s = 0; s < coinStacks.length; s++) {
 			const stack = coinStacks[s]
-			const shimmy = Math.round((stack.x / 6) * force)
+			const shimmy = Math.round((stack.x / -6) * force)
 			const height = Math.round(20 * force)
-			const rotate = Math.round(height / 3)
+			const rotate = Math.round(height / -3)
 			const stackDelay = (70 - stack.x) * 1 * timeScale
 			const duration = (200 + force * 200) * timeScale
 			const stackGroupElement = stackGroupElements[s]
-			if (force === 1) stackGroupElement.style.transform = `translateX(-${stack.x / 2}px)`
+			if (force === 1) stackGroupElement.style.transform = `translateX(${stack.x / -2}px)`
 			const animation = stackGroupElement.animate(
 				[
 					{ easing: 'ease-out' },
 					{
-						transform: `translate(-${shimmy}px, -${height / 2}px) rotate(-${rotate}deg)`,
+						transform: `translate(${shimmy}px, -${height / 2}px) rotate(${rotate}deg)`,
 						easing: 'ease-out',
 					},
 					{
-						transform: `translate(-${shimmy / 2}px, -${height}px) rotate(-${
+						transform: `translate(${shimmy / 2}px, -${height}px) rotate(${
 							rotate / 2
 						}deg)`,
 						easing: 'ease-in',
@@ -116,7 +116,8 @@
 				coinCumulativeHeight += coinJumpHeight
 				const coinRotation =
 					Math.round(coinJumpHeight * 0.3) * (Math.random() > 0.5 ? 1 : -1)
-				const coinShiftX = Math.round((c - stack.staticCoins) * 5 * force)
+				const coinShiftX =
+					Math.round((c - stack.staticCoins) * 5 * force) * (reverse ? -1 : 1)
 				stackCoinRectElements[c].animate(
 					[
 						{},
@@ -140,21 +141,26 @@
 </script>
 
 <svg viewBox="0 0 100 100" width="91" height="91" class:reverse>
-	{#each coinStacks as { x, baseY, coinXs, staticCoins }, s}
+	{#each coinStacks as { x, baseY, coinXs }, s}
 		<g bind:this={stackGroupElements[s]}>
 			{#each coinXs as coinX, c}
 				{@const rectX = x + coinX}
 				{@const rectY = 100 - c * coinThick - baseY}
-				<rect
-					bind:this={coinRectElements[s][c]}
-					x={rectX}
-					y={rectY}
-					width={coinDiameter}
-					height={coinThick + 0.3}
-					fill="url(#coin-stack{reverse ? '-reverse' : ''})"
-					style={c >= staticCoins &&
-						`transform-origin: ${rectX + coinDiameter / 2}px ${rectY + coinThick / 2}px`}
-				/>
+				<!-- Using a reverse transform instead of reversed gradient,
+				     because switching gradients causes a lag spike -->
+				<g class:reverse style={`transform-origin: ${rectX + coinDiameter / 2}px`}>
+					<rect
+						bind:this={coinRectElements[s][c]}
+						x={rectX}
+						y={rectY}
+						width={coinDiameter}
+						height={coinThick + 0.3}
+						fill="url(#coin-stack)"
+						style={`transform-origin: ${rectX + coinDiameter / 2}px ${
+							rectY + coinThick / 2
+						}px`}
+					/>
+				</g>
 			{/each}
 		</g>
 	{/each}
@@ -185,13 +191,6 @@
 			<stop offset="0.37" stop-color="#f4ce34" />
 			<stop offset="0.7" stop-color="#e5ba0b" />
 			<stop offset="1" stop-color="#ba9400" />
-		</linearGradient>
-		<linearGradient id="coin-stack-reverse" x1="0" y1="0" x2="1" y2="0">
-			<stop offset="0" stop-color="#ba9400" />
-			<stop offset="0.19" stop-color="#e5ba0b" />
-			<stop offset="0.37" stop-color="#f4ce34" />
-			<stop offset="0.7" stop-color="#ffefb0" />
-			<stop offset="1" stop-color="#f4ce34" />
 		</linearGradient>
 	</defs>
 </svg>
