@@ -8,23 +8,23 @@
 
 	const coins: Coin[] = []
 	const coinDuration = 2500
-	const coinRate = 100
-	const coinCount = Math.ceil(coinDuration / coinRate)
+	const msPerCoin = 100
+	const coinCount = Math.ceil(coinDuration / msPerCoin)
 
 	let containerElement: HTMLDivElement
-	let nextCoinIndex = 0
 
-	onInterval(animateCoin, coinRate)
+	onInterval(animateCoins, coinDuration)
 	onMount(() => {
 		for (let i = 0; i < coinCount; i++) {
 			coins.push(new Coin({ target: containerElement }))
 		}
+		animateCoins()
 	})
 
-	function animateCoin() {
-		const coinComponent = coins[nextCoinIndex]
-		coinComponent.toss(speed, coinDuration)
-		nextCoinIndex = (nextCoinIndex + 1) % coinCount
+	function animateCoins() {
+		for (let i = 0; i < coins.length; i++) {
+			coins[i].toss(speed, coinDuration, i * msPerCoin)
+		}
 	}
 </script>
 
