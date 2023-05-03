@@ -2,13 +2,17 @@
 	const gravity = 300
 	const upDurations: number[] = []
 	const downDurations: number[] = []
-	const minUpForce = 5
-	const maxUpForce = 30
+	const minAngle = 30 // CCW from 90 degrees
+	const maxAngle = 85
+	const minForce = 150
+	const maxForce = 300
+	const minYforce = Math.round(Math.sin(minAngle * (Math.PI / 180)) * minForce)
+	const maxYforce = Math.round(Math.sin(maxAngle * (Math.PI / 180)) * maxForce)
 
-	// Pre-compute durations because these are expensive calculations
-	for (let i = minUpForce; i <= maxUpForce; i++) {
-		upDurations[i] = Math.round(Math.sqrt((i * 10) / gravity) * 1000)
-		downDurations[i] = Math.round(Math.sqrt((i * 10 + 100) / gravity) * 1000)
+	// Pre-compute durations because these are expensive calculations (I guess)
+	for (let i = minYforce; i <= maxYforce; i++) {
+		upDurations[i] = Math.round(Math.sqrt((i * 1) / gravity) * 1000)
+		downDurations[i] = Math.round(Math.sqrt((i * 1 + 100) / gravity) * 1000)
 	}
 
 	const easeIn = 'cubic-bezier(0.12, 0, 0.39, 0)'
@@ -72,13 +76,14 @@
 	})
 
 	export function toss(trainSpeed: number, baseDuration: number) {
-		const xDelta = randomIntRange(-50, 50) / 1000
-		const upForce = randomIntRange(minUpForce, maxUpForce)
-		const toX = (trainSpeed + xDelta) * 1000 * (baseDuration / 1000)
-		const toY = upForce * -10
-		const upDuration = upDurations[upForce]
-		const downDuration = downDurations[upForce]
+		const angle = randomIntRange(minAngle, maxAngle) * (Math.PI / 180)
+		const force = randomIntRange(minForce, maxForce)
+		const xForce = Math.cos(angle) * force + trainSpeed * 500
+		const yForce = Math.round(Math.sin(angle) * force)
+		const upDuration = upDurations[yForce]
+		const downDuration = downDurations[yForce]
 		const duration = upDuration + downDuration
+		const toX = Math.round(xForce * (duration / 1000))
 		const maxDelay = Math.max(0, Math.round((baseDuration - duration) / 8))
 		const delay = randomIntRange(0, maxDelay)
 		translateXdiv.animate(
@@ -97,7 +102,7 @@
 			[
 				{ transform: 'translateY(0)', easing: easeOutCirc },
 				{
-					transform: `translateY(${toY}px)`,
+					transform: `translateY(${-yForce}px)`,
 					easing: easeInCirc,
 					offset: upDuration / duration,
 				},
