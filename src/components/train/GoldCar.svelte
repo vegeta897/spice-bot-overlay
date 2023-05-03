@@ -22,12 +22,11 @@
 
 	export function hop(delay: number, force: number) {
 		carHop(svgElement, delay, force, reverse)
-		if (delay > 0) setTimeout(() => coinStacksComponent.jostle(force), delay)
-		else coinStacksComponent.jostle(force)
+		coinStacksComponent.jostle(delay, force)
 	}
 </script>
 
-<CoinStacks bind:this={coinStacksComponent} {amount} {reverse} />
+<CoinStacks bind:this={coinStacksComponent} {type} {amount} {reverse} />
 <svg viewBox="0 0 425 276" width="85" height="55" bind:this={svgElement}>
 	<rect
 		id="Underside"
@@ -146,6 +145,7 @@
 		stroke-linejoin: round;
 		stroke-width: 25px;
 		will-change: transform;
+		/* opacity: 0.5; */
 	}
 	.gold-wheel {
 		width: 100%;

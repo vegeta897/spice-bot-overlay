@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { initChat } from './lib/demo/chat'
+	import { initDemo } from './lib/demo/loop'
 	import ChatPane from './components/ChatPane.svelte'
 	import Train from './components/train/Train.svelte'
 	import PlanTrain from './components/PlanTrain.svelte'
@@ -19,7 +19,7 @@
 	const planMode = urlParams.has('plan')
 
 	if (demoMode) {
-		initChat(urlParams.has('hype'))
+		initDemo(urlParams.has('hype'), urlParams.has('static'))
 	} else {
 		initWebsocket(urlParams.get('key'))
 	}

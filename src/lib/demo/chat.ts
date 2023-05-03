@@ -1,5 +1,4 @@
 import { randomElement, randomIntRange } from '../util'
-import { createStaticTrain, runChatLoop } from './loop'
 import {
 	fakeUsers,
 	graceMessages,
@@ -28,15 +27,19 @@ type GraceInfo = {
 	totalScore: number
 }
 
+type HypeInfo = {
+	bits?: number
+	subs?: number
+	total: number
+	progress: number
+	level: number
+	goal: number
+}
+
 const POINTS = {
 	redeem: 10,
 	highlight: 5,
 	normal: 1,
-}
-
-export function initChat(hype = false) {
-	runChatLoop(hype)
-	// createStaticTrain()
 }
 
 export function planTrain(hype = false) {
@@ -44,8 +47,7 @@ export function planTrain(hype = false) {
 		message: ChatMessage
 		delay: number
 		grace?: GraceInfo
-		bits?: number
-		subs?: number
+		hype?: HypeInfo
 	}[] = []
 	const graceUsers: Set<string> = new Set()
 	let totalScore = 0
@@ -53,15 +55,37 @@ export function planTrain(hype = false) {
 	let comboSize = 0
 	let comboScore = 0
 	let lastGraceType: GraceInfo['type']
-	const trainSize = hype ? randomIntRange(7, 30) : randomIntRange(30, 50)
+	let hypeTotal = 0
+	let hypeProgress = 0
+	let hypeLevel = 1
+	let hypeContributions = 0
+	let goal = 1000 + hypeLevel * 500
+	const trainSize = hype ? randomIntRange(10, 30) : randomIntRange(30, 50)
 	for (let i = 0; i < trainSize; i++) {
-		if (hype && (Math.random() < 0.4 || i < 2)) {
+		if (hype && (Math.random() < 0.4 || i < 3)) {
+			hypeContributions++
 			const hypeMessage = createHypeMessage()
+			if (hypeContributions > 3) {
+				const points = (hypeMessage.bits || 0) + (hypeMessage.subs || 0) * 500
+				hypeTotal += points
+				hypeProgress += points
+				while (hypeProgress >= goal) {
+					hypeProgress = hypeProgress - goal
+					hypeLevel++
+					goal = 1000 + hypeLevel * 500
+				}
+			}
 			messages.push({
 				message: hypeMessage,
 				delay: randomIntRange(1, 100) * 80,
-				bits: hypeMessage.bits,
-				subs: hypeMessage.subs,
+				hype: {
+					bits: hypeMessage.bits,
+					subs: hypeMessage.subs,
+					total: hypeTotal,
+					progress: hypeProgress,
+					level: hypeLevel,
+					goal,
+				},
 			})
 		} else {
 			const graceMessage = createGraceMessage()
@@ -132,13 +156,13 @@ export function planTrain(hype = false) {
 }
 
 function createGraceMessage(): ChatMessage {
-	const [username, color] = pickRandom(fakeUsers)
+	const [username, color] = randomElement(fakeUsers)
 	const grace = Math.random() < 0.9
 	const highlight = !grace && Math.random() < 0.8
 	return {
 		username,
 		color,
-		text: pickRandom(graceMessages),
+		text: randomElement(graceMessages),
 		time: getTimeString(),
 		grace,
 		highlight,
@@ -147,21 +171,21 @@ function createGraceMessage(): ChatMessage {
 }
 
 function createHypeMessage(): ChatMessage {
-	const [username, color] = pickRandom(fakeUsers)
+	const [username, color] = randomElement(fakeUsers)
 	const cheer = Math.random() < 0.3
 	return {
 		username,
 		color,
 		text: '',
 		time: getTimeString(),
-		bits: cheer && randomElement([1, 100, 200, 250, 500, 1000]),
-		subs: !cheer && randomElement([1, 1, 1, 1, 1, 5]),
+		bits: cheer && randomElement([100, 100, 200, 250, 500, 1000, 2000]),
+		subs: !cheer && randomElement([1, 1, 1, 1, 1, 1, 1, 1, 1, 5, 5, 10, 15]),
 	}
 }
 
 function createTrainBreakingMessage(): ChatMessage {
-	const [username, color] = pickRandom(fakeUsers)
-	const text = pickRandom(trainBreakingMessages)
+	const [username, color] = randomElement(fakeUsers)
+	const text = randomElement(trainBreakingMessages)
 	return { username, color, text, time: getTimeString() }
 }
 
@@ -175,13 +199,13 @@ function createSpiceBotMessage(endingUser: string, trainLength: number): ChatMes
 }
 
 function createRegretMessage(username: string, color: string): ChatMessage {
-	const text = pickRandom(regretMessages)
+	const text = randomElement(regretMessages)
 	return { username, color, text, time: getTimeString() }
 }
 
 function createAfterTrainMessage(): ChatMessage {
-	const [username, color] = pickRandom(fakeUsers)
-	const text = pickRandom(afterTrainMessages)
+	const [username, color] = randomElement(fakeUsers)
+	const text = randomElement(afterTrainMessages)
 	return { username, color, text, time: getTimeString() }
 }
 
@@ -195,5 +219,3 @@ const getTimeString = () => {
 	const now = new Date()
 	return `${now.getHours() % 12 || 12}:${now.getMinutes().toString().padStart(2, '0')}`
 }
-
-const pickRandom = (arr: any[]) => arr[Math.floor(Math.random() * arr.length)]

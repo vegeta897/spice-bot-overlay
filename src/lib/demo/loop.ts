@@ -10,18 +10,24 @@ const MAX_MESSAGES = 18
 
 let runTime: number
 
-export async function runChatLoop(hype = false) {
+export function initDemo(hype: boolean, staticTrain: boolean) {
+	if (staticTrain) createStaticTrain(hype)
+	else runChatLoop(hype)
+}
+
+export async function runChatLoop(hypeMode = false) {
 	const chatLoopStartTime = Date.now()
 	runTime = chatLoopStartTime
 	while (chatLoopStartTime === runTime) {
 		const trainID = Date.now()
 		const initialColors: string[] = []
+		const initialContributions: HypeProgress[] = []
 		let combo = 0
 		let score = 0
 		let totalBits = 0
 		let totalSubs = 0
-		const { messages } = planTrain(hype)
-		for (const { message, delay, grace, bits, subs } of messages) {
+		const { messages } = planTrain(hypeMode)
+		for (const { message, delay, grace, hype } of messages) {
 			if (chatLoopStartTime !== runTime) break
 			await sleep(delay)
 			chat.update((_chat) => [..._chat.slice(-MAX_MESSAGES), message])
@@ -31,31 +37,50 @@ export async function runChatLoop(hype = false) {
 				} else {
 					combo++
 					score = grace.totalScore + grace.comboScore
-					if (!hype && combo < TRAIN.minLength) {
+					if (!hypeMode && combo < TRAIN.minLength) {
 						initialColors.push(message.color)
-					} else if ((hype && combo === 1) || combo === TRAIN.minLength) {
+					} else if ((hypeMode && combo === 1) || combo === TRAIN.minLength) {
 						initialColors.push(message.color)
 						createTrain({ id: trainID, grace: { colors: initialColors, combo, score } })
 					} else {
 						addToTrain({ id: trainID, grace: { combo, score, color: message.color } })
 					}
 				}
-			} else if (bits || subs) {
-				const type = bits ? 'bits' : 'subs'
-				totalBits += bits || 0
-				totalSubs += subs || 0
+			} else if (hype) {
+				totalBits += hype.bits || 0
+				totalSubs += hype.subs || 0
 				const contribution: HypeProgress = {
-					type,
-					amount: bits || subs,
+					type: hype.bits ? 'bits' : 'subs',
+					amount: hype.bits || hype.subs,
 					color: message.color,
 				}
-				if (!getTrain({ id: trainID })) {
+				if (initialContributions.length < 3) initialContributions.push(contribution)
+				if (!getTrain({ id: trainID }) && initialContributions.length === 3) {
 					createTrain({
 						id: trainID,
-						hype: { totalBits, totalSubs, contributions: [contribution] },
+						hype: {
+							totalBits,
+							totalSubs,
+							level: hype.level,
+							progress: hype.progress,
+							total: hype.total,
+							goal: hype.goal,
+							contributions: [...initialContributions],
+						},
 					})
-				} else {
-					addToTrain({ id: trainID, hype: { totalBits, totalSubs, contribution } })
+				} else if (getTrain({ id: trainID })) {
+					addToTrain({
+						id: trainID,
+						hype: {
+							totalBits,
+							totalSubs,
+							level: hype.level,
+							progress: hype.progress,
+							total: hype.total,
+							goal: hype.goal,
+							contribution,
+						},
+					})
 				}
 			}
 		}
@@ -63,16 +88,51 @@ export async function runChatLoop(hype = false) {
 	}
 }
 
-export function createStaticTrain() {
+export function createStaticTrain(hype: boolean) {
 	trains.set([
 		{
 			id: Date.now(),
+			static: true,
 			departTime: Date.now(),
 			grace: {
 				colors: fakeUsers.slice(0, 12).map((u) => u[1]),
 				score: 1234567,
 				combo: 13,
 				endUser: 'General_Jackal',
+			},
+			hype: hype && {
+				totalBits: 750,
+				totalSubs: 8,
+				total: 4750,
+				level: 3,
+				progress: 1000,
+				goal: 2500,
+				contributions: [
+					// { type: 'bits', amount: 1, color: null },
+					// { type: 'bits', amount: 5, color: null },
+					// { type: 'bits', amount: 50, color: null },
+					{ type: 'bits', amount: 100, color: null },
+					{ type: 'bits', amount: 100, color: null },
+					{ type: 'bits', amount: 100, color: null },
+					{ type: 'bits', amount: 200, color: null },
+					{ type: 'bits', amount: 250, color: null },
+					{ type: 'bits', amount: 300, color: null },
+					{ type: 'bits', amount: 400, color: null },
+					{ type: 'bits', amount: 500, color: null },
+					// { type: 'bits', amount: 1000, color: null },
+					// { type: 'bits', amount: 2000, color: null },
+					{ type: 'subs', amount: 1, color: null },
+					{ type: 'subs', amount: 1, color: null },
+					{ type: 'subs', amount: 1, color: null },
+					{ type: 'subs', amount: 1, color: null },
+					{ type: 'subs', amount: 1, color: null },
+					{ type: 'subs', amount: 1, color: null },
+					{ type: 'subs', amount: 1, color: null },
+					{ type: 'subs', amount: 1, color: null },
+					{ type: 'subs', amount: 1, color: null },
+					{ type: 'subs', amount: 1, color: null },
+					// { type: 'bits', amount: 3000, color: null },
+				],
 			},
 		},
 	])

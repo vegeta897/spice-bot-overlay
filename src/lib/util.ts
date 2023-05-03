@@ -1,9 +1,14 @@
 import { onDestroy } from 'svelte'
 
-export const randomIntRange = (minOrMax: number, max?: number) => {
+export const randomRange = (minOrMax: number, max?: number) => {
 	const min = max === undefined ? 0 : minOrMax
 	const range = max === undefined ? minOrMax : max - minOrMax
-	return Math.floor(min + Math.random() * range)
+	return min + Math.random() * range
+}
+
+export const randomIntRange = (minOrMax: number, max?: number) => {
+	if (max === undefined) return Math.floor(randomRange(minOrMax + 1))
+	return Math.floor(randomRange(minOrMax, max + 1))
 }
 
 export const randomElement = <T>(arr: T[]): T => arr[randomIntRange(0, arr.length - 1)]

@@ -20,11 +20,6 @@ export const fakeUsers = [
 	['WackyBelly', '#aa64ea'],
 	['Prof_FickleKits', '#3db974'],
 	['OzzieInShoes', '#7878ff'],
-	['Somebody1', null],
-	['Somebody2', null],
-	['Somebody3', null],
-	['Somebody4', null],
-	['Somebody5', null],
 ]
 
 export const graceMessages = [

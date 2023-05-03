@@ -16,9 +16,6 @@
 	export let top = false
 	export let fade = 0
 
-	// TODO: For hype trains, don't make the engine one of the contributions
-	// Maybe do this for regular trains too? But what about cool customizations?
-
 	let pixelsPerMs: number
 	let durationPerScreen: number
 
@@ -121,10 +118,12 @@
 	}
 
 	onMount(async () => {
-		// trainContainer.style.transform = 'translateX(0)'
-		// showSmoke = true
-		// reverse = true
-		// return
+		if (train.static) {
+			trainContainer.style.transform = 'translateX(0)'
+			showSmoke = true
+			// reverse = true
+			return
+		}
 		const departWait = train.departTime - Date.now()
 		if (departWait > 0) await sleep(departWait)
 		showSmoke = true
@@ -164,13 +163,12 @@
 
 <div class="container" bind:this={trainContainer} class:top class:reverse style:opacity>
 	{#if train.hype}
+		<div class="train-car-container">
+			<GoldEngine {reverse} bind:this={carComponents[0]} />
+		</div>
 		{#each train.hype.contributions as { color, type, amount }, c (c)}
 			<div class="train-car-container">
-				{#if c === 0}
-					<GoldEngine {reverse} {color} bind:this={carComponents[c]} />
-				{:else}
-					<GoldCar {reverse} {color} {type} {amount} bind:this={carComponents[c]} />
-				{/if}
+				<GoldCar {reverse} {color} {type} {amount} bind:this={carComponents[c + 1]} />
 			</div>
 		{/each}
 		{#if train.grace}

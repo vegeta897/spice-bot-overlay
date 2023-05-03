@@ -95,17 +95,22 @@ type GraceEventBaseData = {
 type HypeEventBaseData = {
 	totalBits: number
 	totalSubs: number
+	total: number
+	progress: number
+	level: number
+	goal: number
 }
+export type HypeTrainData = HypeEventBaseData & { contributions: HypeProgress[] }
 export type HypeProgress = { type: 'bits' | 'subs'; amount: number; color: string }
 export type TrainStartData = ID &
 	RequireAtLeastOne<{
 		grace: GraceEventBaseData & { colors: string[] }
-		hype: HypeEventBaseData & { contributions: HypeProgress[] }
+		hype: HypeTrainData
 	}>
 export type TrainAddData = ID &
 	RequireAtLeastOne<{
 		grace: GraceEventBaseData & { color: string }
-		hype: HypeEventBaseData & { contribution: HypeProgress }
+		hype: HypeEventBaseData & { contribution?: HypeProgress }
 	}>
 export type TrainEndData = ID &
 	RequireAtLeastOne<{

@@ -1,82 +1,94 @@
 <script lang="ts">
-	import { randomIntRange } from '../../lib/util'
+	import { clamp, randomElement, randomIntRange, randomRange } from '../../lib/util'
 
 	export let reverse: boolean
-	export let amount: number // TODO: Implement this
+	export let type: 'bits' | 'subs'
+	export let amount: number
+
+	$: value = type === 'subs' ? amount * 500 : amount
+	$: coinCount = 5 + Math.floor(value / 20)
+	$: if (coinCount) coinStacks = buildCoinStacks()
+
+	let coinStacks: {
+		x: number
+		baseY: number
+		staticCoins: number
+		coinXs: number[]
+	}[] = []
 
 	const stackGroupElements: SVGGElement[] = []
-	const segmentRectElements: SVGRectElement[][] = []
+	const coinRectElements: SVGRectElement[][] = []
 
 	const coinDiameter = 25
 	const coinThick = 7
 	const padding = 8
-	const centerX = (100 - coinDiameter) / 2
+	const xLimit = 100 - coinDiameter - padding
+	const xRange = xLimit - padding
 
-	function buildStacks() {
-		const stacks = []
-		let maxX = 0
-		let x = padding
-		const prevHeights = [0, 0]
-		const xLimit = 100 - coinDiameter - padding
+	function buildCoinStacks() {
+		const stackCount = clamp(Math.ceil(coinCount / 5), 3, 5)
+		const maxCoinStack = 3 + (coinCount / stackCount) * 1.2
+		const stackPositions: { x: number; central: number; zIndex: number }[] = []
+		const stackXstep = Math.min(coinDiameter, xRange / (stackCount - 1))
+		const totalStackWidth = (stackCount - 1) * stackXstep
+		const xCentering = (xRange - totalStackWidth) / 2
 		let zIndex = Math.random() > 0.5 ? 1 : -1
-		while (x <= xLimit) {
-			maxX = x
-			const central = 1 - Math.abs(x - centerX) / centerX
-			const minHeight = Math.round(4 + central * 3)
-			const maxHeight = Math.round(5 + central * 4)
-			let height = randomIntRange(minHeight, maxHeight)
-			while (prevHeights.includes(height)) {
-				height++
-			}
-			prevHeights[1] = prevHeights[0]
-			prevHeights[0] = height
-			const minSplits = Math.min(3, Math.round(height / 4))
-			const maxSplits = Math.min(7, Math.round(height / 2))
-			const splitSegments = randomIntRange(minSplits, maxSplits)
-			const segments = new Array(splitSegments + 1)
-			segments.fill(1)
-			segments[0] = height - splitSegments
-			const baseY = Math.round(central * coinThick)
-			stacks.push({ x, baseY, segments, zIndex })
+		for (let i = 0; i < stackCount; i++) {
+			const x = Math.round(padding + stackXstep * i + xCentering)
+			const central = 1 - Math.abs(i + 0.5 - stackCount / 2) / (stackCount / 2)
+			stackPositions.push({ x, central, zIndex })
 			zIndex *= -1
-			x += randomIntRange(Math.round(12 - central * 5), Math.round(25 - central * 5))
 		}
-		stacks[0].zIndex = 2
-		stacks.at(-1).zIndex = 2
-		stacks.sort((a, b) => b.zIndex - a.zIndex)
-		const xAdjust = Math.round((xLimit - maxX) / 2)
-		return stacks.map(({ x, baseY, segments }) => {
-			const segmentXs = []
-			const segmentYs = []
-			let y = 0
-			let xShift = 0
-			for (const segment of segments) {
-				y += segment
-				segmentYs.push(y)
-				segmentXs.push(xShift)
-				xShift += randomIntRange(-2, 2)
+		stackPositions[0].zIndex = 2
+		stackPositions.at(-1).zIndex = 2
+		stackPositions.sort((a, b) => b.zIndex - a.zIndex)
+		const stacks = stackPositions.map((p) => ({ ...p, coins: 3 }))
+		const nonFullStacks = [...stacks]
+		for (let i = stackCount * 2; i < coinCount; i++) {
+			if (nonFullStacks.length === 0) {
+				// This will never happen, but just in case I break it later
+				break
 			}
-			return { x: x + xAdjust, baseY, segments, segmentYs, segmentXs }
+			const stack = randomElement(nonFullStacks)
+			if (0.2 + stack.central * 0.8 > Math.random()) {
+				stack.coins++
+				if (stack.coins === maxCoinStack)
+					nonFullStacks.splice(nonFullStacks.indexOf(stack), 1)
+			} else i--
+		}
+		coinRectElements.length = 0
+		for (let i = 0; i < stacks.length; i++) {
+			coinRectElements.push([])
+		}
+		return stacks.map(({ x, central, coins }) => {
+			const minAnimatedCoins = Math.min(3, coins / 5)
+			const maxAnimatedCoins = Math.min(8, coins / 3)
+			const animnatedCoins = Math.round(randomRange(minAnimatedCoins, maxAnimatedCoins))
+			const staticCoins = coins - animnatedCoins
+			const coinXs = []
+			let xShift = 0
+			for (let i = 0; i < coins; i++) {
+				coinXs.push(xShift)
+				const maxShift = i >= staticCoins ? 2 : 1
+				xShift += randomIntRange(-maxShift, maxShift)
+			}
+			const baseY = Math.round(central * coinThick)
+			return { x, baseY, staticCoins, coinXs }
 		})
-	}
-
-	const stacks = buildStacks()
-
-	for (let i = 0; i < stacks.length; i++) {
-		segmentRectElements.push([])
 	}
 
 	const timeScale = 1
 
-	export function jostle(force: number) {
-		for (let i = 0; i < stacks.length; i++) {
-			const stack = stacks[i]
+	export function jostle(delay: number, force: number) {
+		delay *= timeScale
+		for (let s = 0; s < coinStacks.length; s++) {
+			const stack = coinStacks[s]
 			const shimmy = Math.round((stack.x / 6) * force)
 			const height = Math.round(20 * force)
 			const rotate = Math.round(height / 3)
 			const stackDelay = (70 - stack.x) * 1 * timeScale
 			const duration = (200 + force * 200) * timeScale
-			const stackGroupElement = stackGroupElements[i]
+			const stackGroupElement = stackGroupElements[s]
 			if (force === 1) stackGroupElement.style.transform = `translateX(-${stack.x / 2}px)`
 			const animation = stackGroupElement.animate(
 				[
@@ -94,32 +106,33 @@
 					{ transform: `translate(0, -${height / 4}px)` },
 					{ transform: 'translate(0, 0)' },
 				],
-				{ delay: stackDelay, duration }
+				{ delay: delay + stackDelay, duration }
 			)
 			if (force === 1) animation.onfinish = () => (stackGroupElement.style.transform = '')
-			let segmentCumulativeHeight = 0
-			for (let s = 1; s < stack.segments.length; s++) {
-				const segmentJumpHeight = segmentCumulativeHeight + force * 5 * Math.random()
-				segmentCumulativeHeight += segmentJumpHeight
-				const segmentRotation =
-					Math.round(segmentJumpHeight * 0.3) * (Math.random() > 0.5 ? 1 : -1)
-				const segmentShiftX = Math.round((s - 1) ** 1.8 * force)
-				segmentRectElements[i][s].animate(
+			let coinCumulativeHeight = 0
+			const stackCoinRectElements = coinRectElements[s]
+			for (let c = stack.staticCoins; c < stackCoinRectElements.length; c++) {
+				const coinJumpHeight = coinCumulativeHeight + force * 5 * Math.random()
+				coinCumulativeHeight += coinJumpHeight
+				const coinRotation =
+					Math.round(coinJumpHeight * 0.3) * (Math.random() > 0.5 ? 1 : -1)
+				const coinShiftX = Math.round((c - stack.staticCoins) * 5 * force)
+				stackCoinRectElements[c].animate(
 					[
 						{},
 						{
-							transform: `translate(${segmentShiftX}px,0) rotate(0)`,
+							transform: `translate(${coinShiftX}px,0) rotate(0)`,
 							easing: 'ease-out',
 						},
 						{
 							transform: `translate(0,-${Math.round(
-								segmentJumpHeight
-							)}px) rotate(${segmentRotation}deg)`,
+								coinJumpHeight
+							)}px) rotate(${coinRotation}deg)`,
 							easing: 'ease-in',
 						},
 						{ transform: 'translate(0,0)' },
 					],
-					{ duration: duration + segmentJumpHeight, delay: stackDelay }
+					{ duration: duration + coinJumpHeight, delay: delay + stackDelay }
 				)
 			}
 		}
@@ -127,23 +140,44 @@
 </script>
 
 <svg viewBox="0 0 100 100" width="91" height="91" class:reverse>
-	{#each stacks as { x, baseY, segments, segmentYs, segmentXs }, st}
-		<g bind:this={stackGroupElements[st]}>
-			{#each segments as segment, sg}
-				{@const segX = x + segmentXs[sg]}
-				{@const segY = 100 - segmentYs[sg] * coinThick - baseY}
+	{#each coinStacks as { x, baseY, coinXs, staticCoins }, s}
+		<g bind:this={stackGroupElements[s]}>
+			{#each coinXs as coinX, c}
+				{@const rectX = x + coinX}
+				{@const rectY = 100 - c * coinThick - baseY}
 				<rect
-					bind:this={segmentRectElements[st][sg]}
-					x={segX}
-					y={segY}
+					bind:this={coinRectElements[s][c]}
+					x={rectX}
+					y={rectY}
 					width={coinDiameter}
-					height={segment * coinThick + 0.3}
+					height={coinThick + 0.3}
 					fill="url(#coin-stack{reverse ? '-reverse' : ''})"
-					style="transform-origin: {segX + coinDiameter / 2}px {segY + coinThick / 2}px"
+					style={c >= staticCoins &&
+						`transform-origin: ${rectX + coinDiameter / 2}px ${rectY + coinThick / 2}px`}
 				/>
 			{/each}
 		</g>
 	{/each}
+	<!-- <text
+		fill="white"
+		style="font-size: 24px; font-weight: 700; text-shadow: 0 0 1px black"
+	>
+		{value}
+	</text>
+	<text
+		y="20"
+		fill="white"
+		style="font-size: 24px; font-weight: 700; text-shadow: 0 0 1px black"
+	>
+		{coinCount}
+	</text>
+	<text
+		y="40"
+		fill="white"
+		style="font-size: 24px; font-weight: 700; text-shadow: 0 0 1px black"
+	>
+		{coinStacks.length}
+	</text> -->
 	<defs>
 		<linearGradient id="coin-stack" x1="0" y1="0" x2="1" y2="0">
 			<stop offset="0" stop-color="#f4ce34" />
@@ -165,7 +199,7 @@
 <style>
 	svg {
 		position: absolute;
-		bottom: 40px;
+		bottom: 50px;
 		left: -3px;
 		overflow: visible;
 	}

@@ -5,11 +5,11 @@
 	import type { Train } from '../lib/trains'
 	import TrainTrack from './TrainTrack.svelte'
 	import { onMount } from 'svelte'
+	import { onInterval } from '../lib/util'
 
 	// TODO: Show high scores after end
 
-	// TODO: For subs, make displayed number increment one at a time
-	// Use an async function that loops w/ sleep until displayed number reaches actual
+	// TODO: Leave progress at 100 for a bit before increasing displayed level
 
 	export let train: Train
 	export let top = false
@@ -41,25 +41,27 @@
 	})
 
 	$: if (!train.hype && train.grace?.combo) {
-		bounce(titleElement, 2)
+		bounce(titleElement, 4)
 		bounce(comboElement, 10)
 		bounce(scoreElement, 3, 80)
 	}
 </script>
 
-<section class="nunito" class:top>
+<section class="nunito" class:top class:hype={train.hype}>
 	<TrainTrack />
 	<div class="rail-content">
-		<h1
+		<div
+			class="title"
 			in:fly={{ x: 500, duration: 800, delay: 1000, easing: cubicOut }}
 			out:fade={{ duration: 300, easing: cubicIn }}
-			bind:this={titleElement}
 		>
-			{#if train.hype}<span style="font-size: 60px; line-height: 58px;">HYPE</span
-				>{:else}GRACE{/if} TRAIN!
-		</h1>
-		{#if train.grace && !train.hype}
-			<div class="stats">
+			<h1 bind:this={titleElement}>
+				{#if train.hype}<span style="font-size: 64px; line-height: 58px;">HYPE</span
+					>{:else}GRACE{/if} TRAIN!
+			</h1>
+		</div>
+		<div class="grace-stats">
+			{#if train.grace && !train.hype}
 				<div
 					class="combo"
 					in:fade={{ duration: 200, delay: 1200 }}
@@ -92,17 +94,51 @@
 				>
 					<Score score={train.grace.score} />
 				</div>
-			</div>
-		{/if}
+			{/if}
+			{#if train.hype}
+				{@const percent = train.hype.progress / train.hype.goal}
+				<div
+					class="progress"
+					in:fade={{ duration: 300, delay: 1500, easing: cubicOut }}
+					out:fade={{ duration: 200, delay: 200, easing: cubicIn }}
+				>
+					<div class="level" class:level-2digit={train.hype.level.toString().length > 1}>
+						LEVEL {train.hype.level}
+					</div>
+					{#key train.hype.level}
+						<div
+							in:fly|local={{ y: 24, duration: 300, delay: 200, easing: cubicOut }}
+							out:fly|local={{ y: -24, duration: 300, easing: cubicIn }}
+							class="progress-bar-outer"
+						>
+							<div class="progress-bar-inner-left-cap" />
+							<div
+								class="progress-bar-inner"
+								style="transform: scaleX({(percent * 170) / 178})"
+							/>
+							<div
+								class="progress-bar-inner-right-cap"
+								style="transform: translateX({4 + percent * 170}px)"
+							/>
+						</div>
+					{/key}
+				</div>
+			{/if}
+		</div>
 	</div>
-	{#if train.grace?.endUser}
+	{#if (train.hype && train.grace) || train.grace?.endUser}
 		<div
-			class="end"
+			class="bottom"
+			class:ended-by={!train.hype}
 			in:fly={{ x: 300, duration: 500, easing: backOut }}
 			out:fade={{ duration: 200, easing: cubicIn }}
 		>
-			<span>ENDED BY</span>
-			<span class="pulse">{train.grace.endUser} !</span>
+			{#if !train.hype}
+				<span>ENDED BY</span>
+				<span class="pulse">{train.grace.endUser} !</span>
+			{:else if train.grace}
+				<div><span>+</span> GRACE {train.grace.combo}x</div>
+			{/if}
 		</div>
 	{/if}
 </section>
@@ -135,21 +171,40 @@
 		justify-content: center;
 	}
 
-	h1 {
-		font-size: 48px;
-		line-height: 45px;
+	.title {
 		margin: 0;
 		margin-left: 22px;
 		width: 190px;
 		padding: 5px 0 2px;
 		border-radius: 20px;
 		background: #5029c4e0;
-		transform-origin: 50% 50%;
 		position: relative;
+	}
+
+	h1 {
+		margin: 0;
+		font-size: 48px;
+		line-height: 45px;
+		transform-origin: 50% 50%;
 		will-change: transform;
 	}
 
-	.stats {
+	.hype .title {
+		background: #6b22d9e8;
+		margin-left: 24px;
+		width: 194px;
+		padding: 7px 0 4px;
+	}
+
+	.hype h1 {
+		font-size: 50px;
+		background: linear-gradient(#fffcd7, #f5e396);
+		background-clip: text;
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
+	.grace-stats {
 		width: 233px;
 		margin-right: 29px;
 		display: flex;
@@ -213,23 +268,97 @@
 		position: relative;
 	}
 
-	.end {
-		background: #df256dc3;
+	.progress {
+		display: flex;
+		flex-direction: column;
+		position: relative;
+		background: #2538c4e7;
+		justify-content: flex-start;
+		align-items: stretch;
+		margin-right: 0;
+		/* margin-bottom: 6px; */
+		width: 190px;
+		height: 81px;
+		padding: 8px 12px;
+		border-radius: 16px;
+		will-change: transform;
+	}
+
+	.level {
+		font-size: 47px;
+		line-height: 47px;
+	}
+
+	.level.level-2digit {
+		font-size: 41px;
+	}
+
+	.progress-bar-outer {
+		width: 190px;
+		height: 26px;
+		padding: 3px;
+		margin: 3px 0;
+		border: 3px solid #fff;
+		border-radius: 8px;
+		box-sizing: border-box;
+		position: absolute;
+		top: 54px;
+	}
+
+	.progress-bar-inner-left-cap,
+	.progress-bar-inner-right-cap,
+	.progress-bar-inner {
+		position: absolute;
+		background: #fff;
+		height: 14px;
+	}
+
+	.progress-bar-inner-left-cap {
+		width: 4px;
+		left: 3px;
+		border-top-left-radius: 4px;
+		border-bottom-left-radius: 4px;
+	}
+
+	.progress-bar-inner-right-cap {
+		width: 4px;
+		border-top-right-radius: 4px;
+		border-bottom-right-radius: 4px;
+		transition: transform 500ms ease-out;
+		will-change: transform;
+	}
+
+	.progress-bar-inner {
+		left: 7px;
+		width: 179px; /* Extra pixel to cover tiny gap during transitions */
+		transform-origin: 0%;
+		transition: transform 500ms ease-out;
+		will-change: transform;
+	}
+
+	.bottom {
+		background: #d83b72dd;
 		border-radius: 16px;
 		display: flex;
 		flex-direction: column;
 		position: relative;
 		margin: 14px auto 0;
-		padding: 6px 22px;
+		padding: 6px 14px;
+		font-size: 28px;
+		line-height: 30px;
 	}
 
-	.end span:first-child {
+	.ended-by {
+		padding: 6px 22px;
+		background: #df256dc3;
+	}
+
+	.ended-by span:first-child {
 		font-size: 24px;
 	}
 
-	.end span {
-		font-size: 28px;
-		line-height: 30px;
+	.hype .bottom span {
+		font-size: 32px;
 	}
 
 	.pulse {

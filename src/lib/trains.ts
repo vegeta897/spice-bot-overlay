@@ -3,15 +3,11 @@ import { TRAIN } from './constants'
 import { addTrain, deleteTrain, getTrain, trains, updateTrain } from './store'
 import type { RequireAtLeastOne } from './util'
 import type {
-	HypeProgress,
+	HypeTrainData,
 	TrainAddData,
 	TrainEndData,
 	TrainStartData,
 } from './websocket'
-
-// TODO: Idea: Grace trains are unbreakable during hype trains
-// This solves the issue of having multiple grace trains associated with one hype train
-// And avoids having to announce grace trains ending while the hype train is still going
 
 type TrainBase = {
 	id: number
@@ -19,6 +15,7 @@ type TrainBase = {
 	endTime?: number
 	hideInfo?: boolean
 	offScreen?: boolean
+	static?: boolean // Use in demo mode only
 }
 
 type GraceStats = {
@@ -28,14 +25,9 @@ type GraceStats = {
 	endUser?: string
 }
 
-type HypeStats = {
-	contributions: HypeProgress[]
-	totalBits: number
-	totalSubs: number
-}
-
 // A train must have a grace or hype property, or both
-export type Train = TrainBase & RequireAtLeastOne<{ grace: GraceStats; hype: HypeStats }>
+export type Train = TrainBase &
+	RequireAtLeastOne<{ grace: GraceStats; hype: HypeTrainData }>
 
 export function createTrain({ id, grace, hype }: TrainStartData) {
 	endAllTrains(id) // End all trains except this one
@@ -72,18 +64,26 @@ export function addToTrain({ id, grace, hype }: TrainAddData) {
 		return
 	}
 	const trainUpdate: Partial<Train> = { id }
-	if (grace)
+	if (grace) {
 		trainUpdate.grace = {
 			combo: grace.combo,
 			score: grace.score,
 			colors: [...existingTrain.grace.colors, grace.color],
 		}
-	if (hype)
+	}
+	if (hype) {
+		const contributions = [...existingTrain.hype.contributions]
+		if (hype.contribution) contributions.push(hype.contribution)
 		trainUpdate.hype = {
 			totalBits: hype.totalBits,
 			totalSubs: hype.totalSubs,
-			contributions: [...existingTrain.hype.contributions, hype.contribution],
+			total: hype.total,
+			progress: hype.progress,
+			level: hype.level,
+			goal: hype.goal,
+			contributions,
 		}
+	}
 	updateTrain(trainUpdate as Train)
 }
 
