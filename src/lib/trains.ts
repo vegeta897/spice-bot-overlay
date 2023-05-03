@@ -138,7 +138,13 @@ export function endAllTrains(exceptID?: number) {
 export const getTrainSize = (train: Train) =>
 	train.hype ? train.hype.contributions.length : train.grace.combo
 
-export const getTrainWidth = (train: Train) =>
-	(train.hype ? TRAIN.engineWidthGold : TRAIN.engineWidth) +
-	(train.hype ? TRAIN.carWidthGold : TRAIN.carWidth) * (getTrainSize(train) - 1) +
-	(train.hype && train.grace ? TRAIN.cabooseWidth : 0)
+export const getTrainWidth = (train: Train) => {
+	const trainSize = getTrainSize(train)
+	if (train.hype)
+		return (
+			TRAIN.engineWidthGold +
+			TRAIN.carWidthGold * trainSize +
+			(train.grace ? TRAIN.cabooseWidth : 0)
+		)
+	return TRAIN.engineWidth + TRAIN.carWidth * (trainSize - 1)
+}
