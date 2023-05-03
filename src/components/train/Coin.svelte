@@ -36,10 +36,10 @@
 	let circleBackElement: SVGCircleElement
 	let rectElement: SVGRectElement
 
-	const spinDuration = randomIntRange(100, 1500)
-	const degreesPerSecond = randomIntRange(-300, 300)
-	const rotateTo = degreesPerSecond < 0 ? '-360deg' : '360deg'
-	const rotateDuration = Math.abs(Math.round((360 / degreesPerSecond) * 1000))
+	const spinDuration = randomIntRange(150, 1000)
+	const degreesPerSecond = randomIntRange(180, 400)
+	const rotateTo = Math.random() > 0.5 ? '-360deg' : '360deg'
+	const rotateDuration = Math.round((360 / degreesPerSecond) * 1000)
 
 	onMount(() => {
 		svgElement.animate(
