@@ -14,7 +14,6 @@
 		upDurations[i] = Math.round(Math.sqrt((i * 1) / gravity) * 1000)
 		downDurations[i] = Math.round(Math.sqrt((i * 1 + 100) / gravity) * 1000)
 	}
-	console.log(upDurations[maxYforce], downDurations[maxYforce])
 
 	const easeIn = 'cubic-bezier(0.12, 0, 0.39, 0)'
 	const easeOut = 'cubic-bezier(0.61, 1, 0.88, 1)'
