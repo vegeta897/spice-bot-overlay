@@ -60,7 +60,7 @@
 					>{:else}GRACE{/if} TRAIN!
 			</h1>
 		</div>
-		<div class="grace-stats">
+		<div class="stats">
 			{#if train.grace && !train.hype}
 				<div
 					class="combo"
@@ -203,7 +203,7 @@
 		-webkit-text-fill-color: transparent;
 	}
 
-	.grace-stats {
+	.stats {
 		width: 233px;
 		margin-right: 29px;
 		display: flex;

@@ -30,7 +30,8 @@
 		background = 1 + (background % 5)
 	}
 
-	$: infoTrains = $trains.filter((g) => !g.hideInfo)
+	$: infoTrains = $trains.filter((t) => !t.hideInfo)
+	$: latestInfoTrain = infoTrains[infoTrains.length - 1]
 	$: top = $overlayStatus.position === 'top'
 </script>
 
@@ -51,8 +52,7 @@
 			<!-- <video autoplay muted loop style="position: absolute">
 				<source src="/sample-stream.mp4" type="video/mp4" />
 			</video> -->
-			{#if infoTrains.length > 0}
-				{@const latestInfoTrain = infoTrains[infoTrains.length - 1]}
+			{#if latestInfoTrain}
 				{#key latestInfoTrain.id}
 					<InfoPanel train={latestInfoTrain} {top} />
 				{/key}
