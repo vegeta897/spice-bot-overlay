@@ -48,12 +48,7 @@
 			d="M299.427,279.064l162.489,-0l0,-175l-162.489,-0l-0,175Zm162.489,-0l25,-0"
 			style="fill:url(#LG_Cabin);stroke:url(#LG_Cabin);"
 		/>
-		<path
-			id="Cabin-Liner"
-			d="M299.427,104.064l162.484,-0"
-			style="fill:none;stroke:#e9cd50;"
-		/>
-
+		<path id="Cabin-Liner" d="M299.4,104.1l162.5,-0" style="fill:none;stroke:#e9cd50;" />
 		<path
 			id="Cabin"
 			d="M486.916,12.5l-212.518,0l25,0l0,97m162.518,0l0,-97"
@@ -64,18 +59,22 @@
 			d="M62.5,279.064l-50,50l50,-0l0,-25l25,-25l-25,-0Z"
 			style="fill:url(#LG_Body);stroke:url(#LG_Body);"
 		/>
-		<foreignObject id="Small-Wheel-Rear" x="149.4" y="291.5" width="75" height="75">
-			<div class="gold-wheel" />
-		</foreignObject>
-		<foreignObject id="Small-Wheel-Front" x="74.5" y="291.5" width="75" height="75">
-			<div class="gold-wheel" />
-		</foreignObject>
-		<foreignObject id="Big-Wheel-Rear" x="349.4" y="241.5" width="125" height="125">
-			<div class="gold-wheel" />
-		</foreignObject>
-		<foreignObject id="Big-Wheel-Front" x="224.4" y="241.5" width="125" height="125">
-			<div class="gold-wheel" />
-		</foreignObject>
+		<g class:reverse style:transform-origin="149.5px">
+			<foreignObject id="Small-Wheel-Rear" x="149.4" y="291.5" width="75" height="75">
+				<div class="gold-wheel" />
+			</foreignObject>
+			<foreignObject id="Small-Wheel-Front" x="74.5" y="291.5" width="75" height="75">
+				<div class="gold-wheel" />
+			</foreignObject>
+		</g>
+		<g class:reverse style:transform-origin="349.4px">
+			<foreignObject id="Big-Wheel-Rear" x="349.4" y="241.5" width="125" height="125">
+				<div class="gold-wheel" />
+			</foreignObject>
+			<foreignObject id="Big-Wheel-Front" x="224.4" y="241.5" width="125" height="125">
+				<div class="gold-wheel" />
+			</foreignObject>
+		</g>
 	</g>
 	<defs>
 		<linearGradient
@@ -150,16 +149,5 @@
 			#eace50 100%
 		);
 		border-radius: 50%;
-	}
-	.reverse .gold-wheel {
-		background-image: conic-gradient(
-			from 140deg,
-			#eace50 0%,
-			#be9c38 28%,
-			#eace50 48%,
-			#fef9b5 67%,
-			#be9c38 85%,
-			#eace50 100%
-		);
 	}
 </style>
