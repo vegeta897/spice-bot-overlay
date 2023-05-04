@@ -12,6 +12,7 @@
 
 	const urlParams = new URLSearchParams(window.location.search)
 	const demoMode = urlParams.has('demo')
+	const fullDemoMode = urlParams.has('fulldemo')
 	const widthOverride = parseInt(urlParams.get('w'))
 	const heightOverride = parseInt(urlParams.get('h'))
 	if (widthOverride > 0) SCREEN.width = widthOverride
@@ -36,12 +37,12 @@
 <Status />
 <main
 	style="--screen-width: {SCREEN.width}px; --screen-height: {SCREEN.height}px;"
-	class:demo={demoMode}
+	class:demo={demoMode && !fullDemoMode}
 	class:top
 >
 	<div class="stream-container">
 		<div class="stream">
-			{#if demoMode}
+			{#if demoMode && !fullDemoMode}
 				<div
 					class="stream-background"
 					style="background: url('sample-stream-{background}.jpg')"
@@ -69,11 +70,11 @@
 			{/if}
 		</div>
 	</div>
-	{#if demoMode}
+	{#if demoMode && !fullDemoMode}
 		<ChatPane />
 	{/if}
 </main>
-{#if demoMode}
+{#if demoMode && !fullDemoMode}
 	<section>
 		<button on:click={changeBackground}>Change Stream BG</button>
 	</section>
