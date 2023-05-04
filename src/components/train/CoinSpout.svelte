@@ -8,7 +8,7 @@
 
 	const coins: Coin[] = []
 	const coinDuration = 2500
-	const msPerCoin = 100
+	const msPerCoin = 125
 	const coinCount = Math.ceil(coinDuration / msPerCoin)
 
 	let containerElement: HTMLDivElement
