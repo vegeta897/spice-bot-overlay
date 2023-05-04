@@ -27,7 +27,7 @@
 
 	function buildCoinStacks() {
 		const stackCount = clamp(Math.ceil(coinCount / 5), 3, 5)
-		const maxCoinStack = 3 + (coinCount / stackCount) * 1.2
+		const maxCoinStack = 3 + (coinCount / stackCount) * 1.1
 		const stackPositions: { x: number; central: number; zIndex: number }[] = []
 		const stackXstep = Math.min(coinDiameter, xRange / (stackCount - 1))
 		const totalStackWidth = (stackCount - 1) * stackXstep
