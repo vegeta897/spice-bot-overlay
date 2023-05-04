@@ -41,6 +41,5 @@
 	path {
 		transform-origin: 25px 25px;
 		opacity: 0;
-		will-change: transform, opacity;
 	}
 </style>

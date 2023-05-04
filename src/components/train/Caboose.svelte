@@ -90,7 +90,6 @@
 		margin: 0 3px;
 		flex-shrink: 0;
 		position: relative;
-		will-change: transform;
 		transform-origin: center;
 	}
 	svg {

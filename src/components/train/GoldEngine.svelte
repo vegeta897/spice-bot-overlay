@@ -132,7 +132,6 @@
 		stroke-linecap: round;
 		stroke-linejoin: round;
 		stroke-width: 25px;
-		will-change: transform;
 	}
 	g.reverse {
 		transform: scaleX(-1);

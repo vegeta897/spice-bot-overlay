@@ -207,9 +207,5 @@
 	}
 	g {
 		transform-origin: 50% 100%;
-		will-change: transform;
-	}
-	rect {
-		will-change: transform;
 	}
 </style>

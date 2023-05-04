@@ -186,7 +186,6 @@
 		font-size: 48px;
 		line-height: 45px;
 		transform-origin: 50% 50%;
-		will-change: transform;
 	}
 
 	.hype .title {
@@ -226,7 +225,6 @@
 		padding: 1px 9px;
 		border-radius: 16px;
 		transform-origin: 75% 50%;
-		will-change: transform;
 	}
 
 	.digit {
@@ -264,7 +262,6 @@
 
 	.score-container {
 		transform-origin: 80% -100%;
-		will-change: transform;
 		position: relative;
 	}
 
@@ -281,7 +278,6 @@
 		height: 81px;
 		padding: 8px 12px;
 		border-radius: 16px;
-		will-change: transform;
 	}
 
 	.level {
@@ -325,7 +321,6 @@
 		border-top-right-radius: 4px;
 		border-bottom-right-radius: 4px;
 		transition: transform 500ms ease-out;
-		will-change: transform;
 	}
 
 	.progress-bar-inner {
@@ -333,7 +328,6 @@
 		width: 179px; /* Extra pixel to cover tiny gap during transitions */
 		transform-origin: 0%;
 		transition: transform 500ms ease-out;
-		will-change: transform;
 	}
 
 	.bottom {
