@@ -1,5 +1,5 @@
 import { TRAIN } from '../constants'
-import { chat, getTrain, trains } from '../store'
+import { chat, getTrain, trains, updateTrain } from '../store'
 import { addToTrain, createTrain, endTrain } from '../trains'
 import { randomIntRange, sleep } from '../util'
 import type { HypeProgress } from '../websocket'
@@ -93,51 +93,46 @@ export async function runChatLoop(hypeMode = false) {
 }
 
 export function createStaticTrain(hype: boolean) {
-	trains.set([
-		{
-			id: Date.now(),
-			static: true,
-			departTime: Date.now(),
-			grace: {
-				colors: fakeUsers.slice(0, 12).map((u) => u[1]),
-				score: 1234567,
-				combo: 13,
-				endUser: 'General_Jackal',
-			},
-			hype: hype && {
-				totalBits: 750,
-				totalSubs: 8,
-				total: 4750,
-				level: 3,
-				progress: 1000,
-				goal: 2500,
-				contributions: [
-					// { type: 'bits', amount: 1, color: null },
-					// { type: 'bits', amount: 5, color: null },
-					// { type: 'bits', amount: 50, color: null },
-					{ type: 'bits', amount: 100, color: null },
-					{ type: 'bits', amount: 100, color: null },
-					{ type: 'bits', amount: 100, color: null },
-					{ type: 'bits', amount: 200, color: null },
-					{ type: 'bits', amount: 250, color: null },
-					{ type: 'bits', amount: 300, color: null },
-					{ type: 'bits', amount: 400, color: null },
-					{ type: 'bits', amount: 500, color: null },
-					// { type: 'bits', amount: 1000, color: null },
-					// { type: 'bits', amount: 2000, color: null },
-					{ type: 'subs', amount: 1, color: null },
-					{ type: 'subs', amount: 1, color: null },
-					{ type: 'subs', amount: 1, color: null },
-					{ type: 'subs', amount: 1, color: null },
-					{ type: 'subs', amount: 1, color: null },
-					{ type: 'subs', amount: 1, color: null },
-					{ type: 'subs', amount: 1, color: null },
-					{ type: 'subs', amount: 1, color: null },
-					{ type: 'subs', amount: 1, color: null },
-					{ type: 'subs', amount: 1, color: null },
-					// { type: 'bits', amount: 3000, color: null },
-				],
-			},
+	const id = Date.now()
+	const grace = {
+		colors: fakeUsers.slice(0, 12).map((u) => u[1]),
+		score: 1234567,
+		combo: 13,
+	}
+	createTrain({
+		id,
+		grace,
+		hype: hype && {
+			totalBits: 750,
+			totalSubs: 8,
+			total: 4750,
+			level: 3,
+			progress: 1000,
+			goal: 2500,
+			contributions: [
+				// { type: 'bits', amount: 100, color: null },
+				// { type: 'bits', amount: 100, color: null },
+				// { type: 'bits', amount: 100, color: null },
+				// { type: 'bits', amount: 200, color: null },
+				// { type: 'bits', amount: 250, color: null },
+				// { type: 'bits', amount: 300, color: null },
+				// { type: 'bits', amount: 400, color: null },
+				{ type: 'bits', amount: 500, color: null },
+				{ type: 'bits', amount: 600, color: null },
+				{ type: 'bits', amount: 550, color: null },
+				{ type: 'bits', amount: 1000, color: null },
+				{ type: 'bits', amount: 2000, color: null },
+				// { type: 'subs', amount: 1, color: null },
+				// { type: 'subs', amount: 1, color: null },
+				// { type: 'subs', amount: 1, color: null },
+				// { type: 'subs', amount: 1, color: null },
+				// { type: 'subs', amount: 1, color: null },
+				// { type: 'subs', amount: 1, color: null },
+				// { type: 'subs', amount: 1, color: null },
+				{ type: 'subs', amount: 3, color: null },
+				// { type: 'bits', amount: 3000, color: null },
+			],
 		},
-	])
+	})
+	updateTrain({ id, static: true, grace: { ...grace, endUser: 'General_Jackal' } })
 }

@@ -1,5 +1,6 @@
 import { get } from 'svelte/store'
 import { TRAIN } from './constants'
+import { normalizeContribution, normalizeHypeData } from './hype'
 import { addTrain, deleteTrain, getTrain, trains, updateTrain } from './store'
 import type { RequireAtLeastOne } from './util'
 import type {
@@ -38,12 +39,8 @@ export function createTrain({ id, grace, hype }: TrainStartData) {
 		if (grace && grace.combo !== existingTrain.grace?.combo) {
 			trainUpdate.grace = grace
 		}
-		if (
-			hype &&
-			(hype.totalBits !== existingTrain.hype?.totalBits ||
-				hype.totalSubs !== existingTrain.hype?.totalSubs)
-		) {
-			trainUpdate.hype = hype
+		if (hype && hype.total !== existingTrain.hype?.total) {
+			trainUpdate.hype = normalizeHypeData(hype)
 		}
 		if (trainUpdate.grace || trainUpdate.hype) {
 			updateTrain(trainUpdate as Train)
@@ -52,7 +49,7 @@ export function createTrain({ id, grace, hype }: TrainStartData) {
 		// Add new train
 		const train: Partial<Train> = { id }
 		if (grace) train.grace = grace
-		if (hype) train.hype = hype
+		if (hype) train.hype = normalizeHypeData(hype)
 		addTrain({ ...(train as Train), departTime: Date.now() + TRAIN.departDelay })
 	}
 }
@@ -73,16 +70,11 @@ export function addToTrain({ id, grace, hype }: TrainAddData) {
 	}
 	if (hype) {
 		const contributions = [...existingTrain.hype.contributions]
-		if (hype.contribution) contributions.push(hype.contribution)
-		trainUpdate.hype = {
-			totalBits: hype.totalBits,
-			totalSubs: hype.totalSubs,
-			total: hype.total,
-			progress: hype.progress,
-			level: hype.level,
-			goal: hype.goal,
-			contributions,
-		}
+		const updatedHypeData = { ...hype }
+		if (hype.contribution) {
+			contributions.push(...normalizeContribution(hype.contribution))
+		} else delete updatedHypeData.contribution
+		trainUpdate.hype = { ...hype, contributions }
 	}
 	updateTrain(trainUpdate as Train)
 }
@@ -104,13 +96,10 @@ export function endTrain({ id, grace, hype }: TrainEndData, hideInfoNow = false)
 		}
 	}
 	if (hype) {
-		trainUpdate.hype = {
-			...existingTrain.hype,
-			totalBits: hype.totalBits,
-			totalSubs: hype.totalSubs,
-		}
+		trainUpdate.hype = { ...existingTrain.hype, ...hype }
 	}
 	let train = updateTrain(trainUpdate as Train)
+	if (!train) return
 	const graceEndTime = grace
 		? Math.floor(grace.combo / TRAIN.endInfoLengthPerSecond) * 1000
 		: 0
@@ -120,6 +109,7 @@ export function endTrain({ id, grace, hype }: TrainEndData, hideInfoNow = false)
 		: TRAIN.endInfoDuration + Math.max(graceEndTime, hypeEndTime)
 	setTimeout(() => {
 		train = updateTrain({ id: train.id, hideInfo: true })
+		if (!train) return
 		if (train.offScreen) deleteTrain(train)
 	}, endInfoDuration)
 }

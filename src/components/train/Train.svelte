@@ -113,8 +113,8 @@
 			translateDelta = Math.round(remainingScreens * (reverse ? 100 : -100))
 			await slide(translation, translateDelta)
 		}
-		updateTrain({ id: train.id, offScreen: true })
-		if (train.hideInfo) deleteTrain(train)
+		let updatedTrain = updateTrain({ id: train.id, offScreen: true })
+		if (!updatedTrain || updatedTrain.hideInfo) deleteTrain(train)
 	}
 
 	onMount(async () => {

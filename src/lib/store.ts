@@ -27,6 +27,10 @@ export function addTrain(train: Train) {
 
 export function updateTrain(train: Pick<Train, 'id'> & Partial<Train>) {
 	const existingTrain = getTrain(train)
+	if (!existingTrain) {
+		console.log('Tried to update unknown train ID', train.id)
+		return
+	}
 	const updatedTrain = { ...existingTrain, ...train }
 	trains.update((gt) => {
 		gt.splice(
