@@ -11,6 +11,7 @@ const MAX_MESSAGES = 18
 let runTime: number
 
 export function initDemo(hype: boolean, staticTrain: boolean) {
+	trains.set([]) // Clean up after hot reload
 	if (staticTrain) createStaticTrain(hype)
 	else runChatLoop(hype)
 }
