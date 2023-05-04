@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { randomElement } from '../lib/util'
 	import Redeem from './Redeem.svelte'
 	export let username: string
 	export let color: string
@@ -9,6 +10,8 @@
 	export let redeem = false
 	export let bits: number | false = false
 	export let subs: number | false = false
+
+	const subType = randomElement(['at Tier 1.', 'with Prime.'])
 </script>
 
 <div class="message" class:redeem class:subs>
@@ -20,7 +23,7 @@
 				Redeemed Highlight My Message
 			{:else if subs}
 				{username}
-				{#if subs === 1}subscribed for 1 month!{:else}gifted {subs} subs!{/if}
+				{#if subs === 1}subscribed {subType}{:else}gifted {subs} subs!{/if}
 			{/if}
 			{#if redeem}<Redeem />{grace ? 250 : 100}{/if}
 		</p>
