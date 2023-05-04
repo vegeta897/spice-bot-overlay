@@ -37,10 +37,28 @@
 
 	const reversalEvents = new EventTarget()
 
+	$: hypeCars = train.hype?.contributions
+	let hypeCarsDisplayed: typeof hypeCars = []
+
+	$: if (hypeCars.length > 0) onHypeCarAdd()
+
+	let addingHypeCars = false
+	async function onHypeCarAdd() {
+		if (addingHypeCars) return
+		addingHypeCars = true
+		while (hypeCarsDisplayed.length < hypeCars.length) {
+			hypeCarsDisplayed.push(hypeCars[hypeCarsDisplayed.length])
+			hypeCarsDisplayed = hypeCarsDisplayed // For reactivity
+			await sleep(500)
+		}
+		addingHypeCars = false
+	}
+
 	const maxHopDistance = 8
 	let lastImpulse = 0
 	let carComponents: (Engine | Car | GoldEngine | GoldCar)[] = []
-	$: if (carComponents.length > 0) onCarAdd()
+	$: if (carComponents.length > 0) onCarComponentAdd()
+	$: opacity = 2 / (fade + 2)
 	let showSmoke = false
 	let reversalTimeout: number
 	$: if (train.endTime) clearTimeout(reversalTimeout)
@@ -50,9 +68,7 @@
 		doImpulse()
 	}
 
-	$: opacity = 2 / (fade + 2)
-
-	function onCarAdd() {
+	function onCarComponentAdd() {
 		doImpulse()
 		if (animation) scheduleReversal()
 	}
@@ -166,7 +182,7 @@
 		<div class="train-car-container">
 			<GoldEngine {reverse} bind:this={carComponents[0]} />
 		</div>
-		{#each train.hype.contributions as { color, type, amount }, c (c)}
+		{#each hypeCarsDisplayed as { color, type, amount }, c (c)}
 			<div class="train-car-container">
 				<GoldCar {reverse} {color} {type} {amount} bind:this={carComponents[c + 1]} />
 			</div>
