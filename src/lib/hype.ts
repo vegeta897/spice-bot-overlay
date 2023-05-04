@@ -22,12 +22,10 @@ export function normalizeContribution({ type, amount, color }: HypeProgress) {
 }
 
 function normalizeContributions(contributions: HypeProgress[]) {
-	console.log('input', contributions)
 	const normalized: HypeProgress[] = []
 	for (const contribution of contributions) {
 		normalized.push(...normalizeContribution(contribution))
 	}
-	console.log('normalized', normalized)
 	return normalized
 }
 
