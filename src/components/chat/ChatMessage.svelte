@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { randomElement } from '../lib/util'
+	import { randomElement } from '../../lib/util'
 	import Redeem from './Redeem.svelte'
 	export let username: string
 	export let color: string

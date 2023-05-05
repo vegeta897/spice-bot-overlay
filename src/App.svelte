@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { initDemo } from './lib/demo/loop'
-	import ChatPane from './components/ChatPane.svelte'
+	import ChatPane from './components/chat/ChatPane.svelte'
 	import Train from './components/train/Train.svelte'
 	import PlanTrain from './components/PlanTrain.svelte'
 	import { initWebsocket } from './lib/websocket'
