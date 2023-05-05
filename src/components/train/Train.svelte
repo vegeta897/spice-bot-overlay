@@ -225,7 +225,7 @@
 	}
 	div.top {
 		bottom: auto;
-		top: 4px;
+		top: 16px;
 	}
 	div.reverse {
 		flex-direction: row-reverse;
