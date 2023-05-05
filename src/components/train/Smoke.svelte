@@ -3,13 +3,9 @@
 	import { randomIntRange } from '../../lib/util'
 	import { COLORS, TRAIN } from '../../lib/constants'
 
-	// TODO: Use the same onInterval method as CoinSpout
-
 	export let reverse = false
 	export let speed: number // Pixels per ms
 	export let disable: boolean
-
-	const clouds: SVGElement[] = []
 
 	const baseCloudDuration = 3000
 	const baseCloudRate = 200
@@ -19,7 +15,7 @@
 	$: cloudDuration = baseCloudDuration * speedRatio
 	$: cloudRate = baseCloudRate * speedRatio
 
-	let timeout: number
+	const clouds: SVGElement[] = []
 
 	onMount(() => {
 		for (let i = 0; i < cloudCount; i++) {
@@ -29,12 +25,20 @@
 			clouds.push(newCloud)
 			containerElement.appendChild(newCloud)
 		}
-		animateCloud()
+		animateSmoke()
 	})
 	onDestroy(() => clearTimeout(timeout))
 
+	let timeout: number
+
+	function animateSmoke() {
+		for (let i = 0; i < clouds.length; i++) {
+			animateCloud(clouds[i], i * cloudRate)
+		}
+		timeout = setTimeout(animateSmoke, cloudDuration)
+	}
+
 	let containerElement: HTMLDivElement
-	let nextCloudIndex = 0
 
 	const newCloudPlaceholder = document.createElement('div')
 	newCloudPlaceholder.innerHTML = `<svg	width="20px" height="20px" viewBox="0 0 20 20"
@@ -42,13 +46,11 @@
 		<circle cx="10" cy="10" r="10" /></svg>`
 	const cloudElement = newCloudPlaceholder.firstElementChild
 
-	function animateCloud() {
-		const cloud = clouds[nextCloudIndex]
+	function animateCloud(cloud: SVGElement, delay: number) {
 		if (!cloud) return
-		nextCloudIndex = (nextCloudIndex + 1) % cloudCount
 		const fromScale = randomIntRange(5, 20) / 10
-		const toScale = randomIntRange(30, 50) / 10
-		const toScaleX = Math.max(toScale, Math.round(toScale * (0.5 / speedRatio)))
+		const toScale = (randomIntRange(30, 50) / 10) * Math.min(1, speedRatio * 4)
+		const toScaleX = Math.max(toScale, Math.round(toScale * (0.8 / speedRatio)))
 		const toX = Math.round(speed * cloudDuration + randomIntRange(-50, 50))
 		const toXBegin = Math.round(toX / 10)
 		const toY = (-180 + randomIntRange(-20, 20)) * speedRatio
@@ -72,11 +74,10 @@
 			],
 			{
 				duration: cloudDuration,
-				delay: randomIntRange(0, 10) * 10,
+				delay: delay + randomIntRange(0, 10) * 10,
 				fill: 'forwards',
 			}
 		)
-		timeout = setTimeout(animateCloud, cloudRate)
 	}
 </script>
 
