@@ -40,7 +40,7 @@
 	$: hypeCars = train.hype?.contributions
 	let hypeCarsDisplayed: typeof hypeCars = []
 
-	$: if (hypeCars.length > 0) onHypeCarAdd()
+	$: if (hypeCars?.length > 0) onHypeCarAdd()
 
 	let addingHypeCars = false
 	async function onHypeCarAdd() {

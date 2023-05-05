@@ -6,6 +6,7 @@
 	import TrainTrack from './TrainTrack.svelte'
 	import { onMount } from 'svelte'
 	import { onInterval } from '../lib/util'
+	import Ratchet from './Ratchet.svelte'
 
 	// TODO: Show high scores after end
 
@@ -17,6 +18,7 @@
 	let titleElement: HTMLHeadingElement
 	let comboElement: HTMLDivElement
 	let scoreElement: HTMLDivElement
+	let levelElement: HTMLDivElement
 
 	function bounce(element: HTMLElement, force: number, delay = 0) {
 		if (!readyToBounce || !element) return
@@ -45,6 +47,20 @@
 		bounce(comboElement, 10)
 		bounce(scoreElement, 3, 80)
 	}
+
+	let lastProgress = 0
+	$: if (train.hype?.progress > 0 || train.hype?.level > 0) updateProgress()
+
+	function updateProgress() {
+		const newProgress = 100 * (train.hype.level + train.hype.progress / train.hype.goal)
+		if (newProgress > lastProgress) {
+			bounce(
+				levelElement,
+				Math.floor(newProgress / 100) > Math.floor(lastProgress / 100) ? 10 : 5
+			)
+			lastProgress = newProgress
+		}
+	}
 </script>
 
 <section class="nunito" class:top class:hype={train.hype}>
@@ -68,18 +84,7 @@
 					out:fade={{ duration: 200, delay: 200, easing: cubicIn }}
 					bind:this={comboElement}
 				>
-					{#each train.grace.combo.toString() as digit}
-						<div class="digit">
-							{#key digit}
-								<span
-									in:fly={{ y: 40, duration: 250, easing: backOut }}
-									out:fly|local={{ y: -40, duration: 250 }}
-								>
-									{digit}
-								</span>
-							{/key}
-						</div>
-					{/each}
+					<Ratchet number={train.grace.combo} digitWidth={28} />
 					{#key train.grace.combo}
 						<svg class="x" viewBox="0 0 100 100" width="26" height="26">
 							<path d="M20 20 L80 80 M80 20 L20 80" />
@@ -98,17 +103,18 @@
 			{#if train.hype}
 				{@const percent = train.hype.progress / train.hype.goal}
 				<div
+					bind:this={levelElement}
 					class="progress"
 					in:fade={{ duration: 300, delay: 1500, easing: cubicOut }}
 					out:fade={{ duration: 200, delay: 200, easing: cubicIn }}
 				>
 					<div class="level" class:level-2digit={train.hype.level.toString().length > 1}>
-						LEVEL {train.hype.level}
+						LEVEL <Ratchet number={train.hype.level} digitWidth={25} />
 					</div>
 					{#key train.hype.level}
 						<div
-							in:fly|local={{ y: 24, duration: 300, delay: 200, easing: cubicOut }}
-							out:fly|local={{ y: -24, duration: 300, easing: cubicIn }}
+							in:fly|local={{ y: -24, duration: 300, delay: 200, easing: cubicOut }}
+							out:fly|local={{ y: 24, duration: 300, easing: cubicIn }}
 							class="progress-bar-outer"
 						>
 							<div class="progress-bar-inner-left-cap" />
@@ -130,14 +136,24 @@
 		<div
 			class="bottom"
 			class:ended-by={!train.hype}
-			in:fly={{ x: 300, duration: 500, easing: backOut }}
+			in:fly={{
+				x: train.hype ? 0 : 300,
+				y: train.hype ? -50 : 0,
+				duration: train.hype ? 300 : 500,
+				easing: backOut,
+			}}
 			out:fade={{ duration: 200, easing: cubicIn }}
 		>
 			{#if !train.hype}
 				<span>ENDED BY</span>
 				<span class="pulse">{train.grace.endUser} !</span>
 			{:else if train.grace}
-				<div><span>+</span> GRACE {train.grace.combo}x</div>
+				<div>
+					<span style="font-size: 40px; line-height: 20px; position:relative; top: 2px;"
+						>+</span
+					>
+					GRACE {train.grace.combo}x
+				</div>
 			{/if}
 		</div>
 	{/if}
@@ -227,23 +243,9 @@
 		transform-origin: 75% 50%;
 	}
 
-	.digit {
-		width: 28px;
-		height: 44px;
-		line-height: 44px;
-		position: relative;
-	}
-
-	.digit span {
-		display: inline-block;
-		position: absolute;
-		top: 0;
-		left: 0;
-	}
-
 	.x {
 		margin-top: 12px;
-		margin-left: 4px;
+		margin-left: 1px;
 		stroke-width: 30px;
 		stroke-linecap: round;
 		stroke: #fff;
@@ -281,8 +283,11 @@
 	}
 
 	.level {
+		height: 44px;
 		font-size: 47px;
-		line-height: 47px;
+		line-height: 44px;
+		display: flex;
+		justify-content: space-between;
 	}
 
 	.level.level-2digit {
@@ -349,10 +354,6 @@
 
 	.ended-by span:first-child {
 		font-size: 24px;
-	}
-
-	.hype .bottom span {
-		font-size: 32px;
 	}
 
 	.pulse {
