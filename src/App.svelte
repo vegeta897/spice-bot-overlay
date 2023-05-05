@@ -6,7 +6,7 @@
 	import { initWebsocket } from './lib/websocket'
 	import InfoPanel from './components/InfoPanel.svelte'
 	import PlanInfoPanel from './components/PlanInfoPanel.svelte'
-	import { trains, overlayStatus } from './lib/store'
+	import { trains, overlayStatus, setOverlayPosition } from './lib/store'
 	import { SCREEN } from './lib/constants'
 	import Status from './components/Status.svelte'
 
@@ -29,6 +29,8 @@
 	function changeBackground() {
 		background = 1 + (background % 5)
 	}
+
+	if (urlParams.has('top')) setOverlayPosition('top')
 
 	$: infoTrains = $trains.filter((t) => !t.hideInfo)
 	$: latestInfoTrain = infoTrains[infoTrains.length - 1]
