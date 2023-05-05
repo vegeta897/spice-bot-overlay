@@ -201,11 +201,11 @@
 			</div>
 		{/each}
 	{/if}
-	{#if showSmoke && !top}
+	{#if !top}
 		{#if train.hype}
-			<CoinSpout {reverse} speed={pixelsPerMs} />
+			<CoinSpout {reverse} speed={pixelsPerMs} disable={!showSmoke} />
 		{:else}
-			<Smoke {reverse} speed={pixelsPerMs} />
+			<Smoke {reverse} speed={pixelsPerMs} disable={!showSmoke} />
 		{/if}
 	{/if}
 </div>

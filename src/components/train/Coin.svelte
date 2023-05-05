@@ -1,10 +1,10 @@
 <script lang="ts" context="module">
-	const gravity = 300
+	const gravity = 500
 	const upDurations: number[] = []
 	const downDurations: number[] = []
 	const minAngle = 30 // CCW from 90 degrees
 	const maxAngle = 85
-	const minForce = 150
+	const minForce = 180
 	const maxForce = 300
 	const minYforce = Math.round(Math.sin(minAngle * (Math.PI / 180)) * minForce)
 	const maxYforce = Math.round(Math.sin(maxAngle * (Math.PI / 180)) * maxForce)
@@ -35,7 +35,7 @@
 	let circleBackElement: SVGCircleElement
 	let rectElement: SVGRectElement
 
-	const spinDuration = randomIntRange(150, 1000)
+	const spinDuration = randomIntRange(150, 700)
 	const degreesPerSecond = randomIntRange(180, 400)
 	const rotateTo = Math.random() > 0.5 ? '-360deg' : '360deg'
 	const rotateDuration = Math.round((360 / degreesPerSecond) * 1000)

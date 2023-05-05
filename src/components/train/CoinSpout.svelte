@@ -5,10 +5,11 @@
 
 	export let reverse = false
 	export let speed: number // Pixels per ms
+	export let disable: boolean
 
 	const coins: Coin[] = []
-	const coinDuration = 2500
-	const msPerCoin = 125
+	const coinDuration = 1700
+	const msPerCoin = 100
 	const coinCount = Math.ceil(coinDuration / msPerCoin)
 
 	let containerElement: HTMLDivElement
@@ -28,7 +29,12 @@
 	}
 </script>
 
-<div class="coin-container" class:reverse bind:this={containerElement} />
+<div
+	class="coin-container"
+	class:reverse
+	style:display={disable ? 'none' : 'block'}
+	bind:this={containerElement}
+/>
 
 <style>
 	.coin-container {

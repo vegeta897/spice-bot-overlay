@@ -3,8 +3,11 @@
 	import { randomIntRange } from '../../lib/util'
 	import { COLORS, TRAIN } from '../../lib/constants'
 
+	// TODO: Use the same onInterval method as CoinSpout
+
 	export let reverse = false
 	export let speed: number // Pixels per ms
+	export let disable: boolean
 
 	const clouds: SVGElement[] = []
 
@@ -77,7 +80,12 @@
 	}
 </script>
 
-<div class="cloud-container" class:reverse bind:this={containerElement} />
+<div
+	class="cloud-container"
+	class:reverse
+	style:display={disable ? 'none' : 'block'}
+	bind:this={containerElement}
+/>
 
 <style>
 	.cloud-container {
