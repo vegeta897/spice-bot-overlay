@@ -51,7 +51,6 @@ export function initWebsocket(key: string) {
 			case 'init':
 				if (message.data.version !== version) {
 					setOverlayError('need-reload')
-					// Reload page after 15s
 					console.log('App out of date! Reloading page in 15 seconds...')
 					setTimeout(() => window.location.reload(), 15 * 1000)
 				}
