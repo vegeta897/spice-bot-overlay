@@ -57,14 +57,18 @@ export function planTrain(hypeMode = false) {
 	let comboSize = 0
 	let comboScore = 0
 	let lastGraceType: GraceInfo['type']
+	let graces = 0
 	let hypeTotal = 0
 	let hypeProgress = 0
 	let hypeLevel = 1
 	let hypeContributions = 0
 	let goal = 1000 + hypeLevel * 500
 	const trainSize = hypeMode ? randomIntRange(10, 25) : randomIntRange(30, 50)
-	for (let i = 0; i < trainSize; i++) {
-		if (hypeMode && (Math.random() < 0.4 || i < 3)) {
+	while (
+		(hypeMode && hypeContributions < trainSize) ||
+		(!hypeMode && graces < trainSize)
+	) {
+		if ((hypeMode && Math.random() < 0.4) || hypeContributions < 3 /*&& graces > 5*/) {
 			hypeContributions++
 			const hypeMessage = createHypeMessage()
 			if (hypeContributions > 3) {
@@ -90,6 +94,7 @@ export function planTrain(hypeMode = false) {
 				},
 			})
 		} else {
+			graces++
 			const graceMessage = createGraceMessage()
 			graceUsers.add(graceMessage.username)
 			const graceType = graceMessage.grace
@@ -118,7 +123,6 @@ export function planTrain(hypeMode = false) {
 				grace: graceInfo,
 			})
 			lastGraceType = graceType
-			if (hypeMode) i-- // Graces don't count toward hype train length
 		}
 	}
 	if (!hypeMode) {

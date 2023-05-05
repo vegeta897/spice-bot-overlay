@@ -20,7 +20,7 @@ export async function runChatLoop(hypeMode = false) {
 	const chatLoopStartTime = Date.now()
 	runTime = chatLoopStartTime
 	while (chatLoopStartTime === runTime) {
-		const trainID = Date.now()
+		let trainID = Date.now()
 		const initialColors: string[] = []
 		const initialContributions: HypeProgress[] = []
 		let combo = 0
@@ -34,12 +34,13 @@ export async function runChatLoop(hypeMode = false) {
 			if (chatLoopStartTime !== runTime) break
 			await sleep(delay)
 			chat.update((_chat) => [..._chat.slice(-MAX_MESSAGES), message])
+			const trainCreated = getTrain({ id: trainID })
 			if (grace) {
 				combo++
 				score = grace.totalScore + grace.comboScore
-				if (!hypeMode && combo < TRAIN.minLength) {
+				if (!trainCreated?.hype && combo < TRAIN.minLength) {
 					initialColors.push(message.color)
-				} else if ((hypeMode && combo === 1) || combo === TRAIN.minLength) {
+				} else if ((trainCreated?.hype && combo === 1) || combo === TRAIN.minLength) {
 					initialColors.push(message.color)
 					createTrain({ id: trainID, grace: { colors: initialColors, combo, score } })
 				} else {
@@ -56,22 +57,29 @@ export async function runChatLoop(hypeMode = false) {
 					color: message.color,
 				}
 				if (initialContributions.length < 3) initialContributions.push(contribution)
-				if (!getTrain({ id: trainID }) && initialContributions.length === 3) {
-					createTrain({
-						id: trainID,
-						hype: {
-							level,
-							progress,
-							total,
-							goal,
-							contributions: [...initialContributions],
-						},
-					})
-				} else if (getTrain({ id: trainID })) {
-					addToTrain({
-						id: trainID,
-						hype: { level, progress, total, goal, contribution },
-					})
+				if (initialContributions.length === 3) {
+					if (trainCreated && !trainCreated.hype) {
+						trainID = Date.now()
+						initialColors.length = 0
+						combo = 0
+					}
+					if (!getTrain({ id: trainID })) {
+						createTrain({
+							id: trainID,
+							hype: {
+								level,
+								progress,
+								total,
+								goal,
+								contributions: [...initialContributions],
+							},
+						})
+					} else if (getTrain({ id: trainID })) {
+						addToTrain({
+							id: trainID,
+							hype: { level, progress, total, goal, contribution },
+						})
+					}
 				}
 			}
 			if (end) {
