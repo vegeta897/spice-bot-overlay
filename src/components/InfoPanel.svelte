@@ -117,23 +117,32 @@
 					<div class="level" class:level-2digit={displayedLevel.toString().length > 1}>
 						LEVEL {displayedLevel}
 					</div>
-					{#key displayedLevel}
-						<div class="progress-bar-outer">
-							<div class="progress-bar-inner-left-cap" />
-							<div
-								class="progress-bar-inner"
-								style:transform="scaleX({(percent * 170) / 178})"
-								style:transition-duration={levellingUp ? '1000ms' : '700ms'}
-							/>
-							<div
-								class="progress-bar-inner-right-cap"
-								style:transform="translateX({4 + percent * 170}px)"
-								style:transition-duration={levellingUp ? '1000ms' : '700ms'}
-							/>
+					{#if train.endTime}
+						<div
+							in:fade={{ duration: 500 }}
+							style="white-space: nowrap; font-size: 28px; line-height: 40px;"
+						>
+							CHOO CHOO!
 						</div>
-					{/key}
-					{#if levellingUp}
-						<Shatter bind:this={shatterComponent} />
+					{:else}
+						{#key displayedLevel}
+							<div class="progress-bar-outer" out:fade={{ duration: 500 }}>
+								<div class="progress-bar-inner-left-cap" />
+								<div
+									class="progress-bar-inner"
+									style:transform="scaleX({(percent * 170) / 178})"
+									style:transition-duration={levellingUp ? '1000ms' : '700ms'}
+								/>
+								<div
+									class="progress-bar-inner-right-cap"
+									style:transform="translateX({4 + percent * 170}px)"
+									style:transition-duration={levellingUp ? '1000ms' : '700ms'}
+								/>
+							</div>
+						{/key}
+						{#if levellingUp}
+							<Shatter bind:this={shatterComponent} />
+						{/if}
 					{/if}
 					<!-- <Shatter /> -->
 				</div>
