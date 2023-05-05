@@ -100,9 +100,8 @@ export function endTrain({ id, grace, hype }: TrainEndData, hideInfoNow = false)
 	}
 	let train = updateTrain(trainUpdate as Train)
 	if (!train) return
-	const graceEndTime = grace
-		? Math.floor(grace.combo / TRAIN.endInfoLengthPerSecond) * 1000
-		: 0
+	const graceEndTime =
+		!hype && grace ? Math.floor(grace.combo / TRAIN.endInfoLengthPerSecond) * 1000 : 0
 	const hypeEndTime = hype ? 10 * 1000 : 0
 	const endInfoDuration = hideInfoNow
 		? 0
