@@ -25,8 +25,6 @@ export async function runChatLoop(hypeMode = false) {
 		const initialContributions: HypeProgress[] = []
 		let combo = 0
 		let score = 0
-		let totalBits = 0
-		let totalSubs = 0
 		let level = 0
 		let progress = 0
 		let total = 0
@@ -48,8 +46,6 @@ export async function runChatLoop(hypeMode = false) {
 					addToTrain({ id: trainID, grace: { combo, score, color: message.color } })
 				}
 			} else if (hype) {
-				totalBits += hype.bits || 0
-				totalSubs += hype.subs || 0
 				level = hype.level
 				progress = hype.progress
 				total = hype.total
@@ -64,8 +60,6 @@ export async function runChatLoop(hypeMode = false) {
 					createTrain({
 						id: trainID,
 						hype: {
-							totalBits,
-							totalSubs,
 							level,
 							progress,
 							total,
@@ -76,7 +70,7 @@ export async function runChatLoop(hypeMode = false) {
 				} else if (getTrain({ id: trainID })) {
 					addToTrain({
 						id: trainID,
-						hype: { totalBits, totalSubs, level, progress, total, goal, contribution },
+						hype: { level, progress, total, goal, contribution },
 					})
 				}
 			}
@@ -85,7 +79,7 @@ export async function runChatLoop(hypeMode = false) {
 				endTrain({
 					id: trainID,
 					grace: train.grace && { combo, score, username: message.username },
-					hype: train.hype && { totalBits, totalSubs, level, progress, total, goal },
+					hype: train.hype && { level, progress, total, goal },
 				})
 			}
 		}
@@ -104,8 +98,6 @@ export function createStaticTrain(hype: boolean) {
 		id,
 		grace,
 		hype: hype && {
-			totalBits: 750,
-			totalSubs: 8,
 			total: 4750,
 			level: 3,
 			progress: 1000,

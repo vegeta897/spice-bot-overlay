@@ -92,11 +92,9 @@ type GraceEventBaseData = {
 	score: number
 }
 type HypeEventBaseData = {
-	totalBits: number
-	totalSubs: number
+	level: number
 	total: number
 	progress: number
-	level: number
 	goal: number
 }
 export type HypeTrainData = HypeEventBaseData & { contributions: HypeProgress[] }
