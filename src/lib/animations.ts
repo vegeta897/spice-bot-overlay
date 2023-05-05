@@ -38,3 +38,35 @@ export function carHop(
 		{ delay, duration: (200 + force * 250) * timeScale }
 	)
 }
+
+export function bounce(element: HTMLElement, force: number, delay = 0) {
+	element?.animate(
+		[
+			{ easing: 'ease-out' },
+			{
+				transform: `scale(${100 + force}%)`,
+				easing: 'cubic-bezier(0.5, 0, 0.55, 1.65)',
+				offset: 0.3,
+			},
+			{ transform: 'scale(100%)' },
+		],
+		{ delay, duration: 300 }
+	)
+}
+
+const growKeyframes: Keyframe[] = [
+	{ easing: 'ease-out' },
+	{ offset: 0.67, transform: 'scale(110%)', easing: 'ease-out' },
+	{ offset: 0.76, transform: 'scale(111%) translateX(-1px)', easing: 'ease-out' },
+	{ offset: 0.83, transform: 'scale(111%) translateX(1px)', easing: 'ease-out' },
+	{ offset: 0.88, transform: 'scale(112%) translateX(-2px)', easing: 'ease-out' },
+	{ offset: 0.92, transform: 'scale(112%) translateX(2px)', easing: 'ease-out' },
+	{ offset: 0.95, transform: 'scale(113%) translateX(-3px)', easing: 'ease-out' },
+	{ offset: 0.97, transform: 'scale(113%) translateX(3px)', easing: 'ease-out' },
+	{ offset: 0.99, transform: 'scale(113%) translateX(-4px)', easing: 'ease-out' },
+	{ offset: 1, transform: 'scale(113%)' },
+]
+
+export function grow(element: HTMLElement, duration: number) {
+	element?.animate(growKeyframes, duration)
+}

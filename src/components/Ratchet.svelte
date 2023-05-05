@@ -26,6 +26,7 @@
 	.digits {
 		line-height: 44px;
 		margin-right: 3px;
+		white-space: nowrap;
 	}
 
 	.digit {

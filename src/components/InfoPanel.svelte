@@ -5,12 +5,12 @@
 	import type { Train } from '../lib/trains'
 	import TrainTrack from './TrainTrack.svelte'
 	import { onMount } from 'svelte'
-	import { onInterval } from '../lib/util'
+	import { onInterval, sleep } from '../lib/util'
 	import Ratchet from './Ratchet.svelte'
+	import { bounce, grow } from '../lib/animations'
+	import Shatter from './Shatter.svelte'
 
 	// TODO: Show high scores after end
-
-	// TODO: Leave progress at 100 for a bit before increasing displayed level
 
 	export let train: Train
 	export let top = false
@@ -18,47 +18,52 @@
 	let titleElement: HTMLHeadingElement
 	let comboElement: HTMLDivElement
 	let scoreElement: HTMLDivElement
-	let levelElement: HTMLDivElement
+	let progressElement: HTMLDivElement
+	let shatterComponent: Shatter
 
-	function bounce(element: HTMLElement, force: number, delay = 0) {
-		if (!readyToBounce || !element) return
-		element.animate(
-			[
-				{ transform: 'scale(100%)', easing: 'ease-out' },
-				{
-					transform: `scale(${100 + force}%)`,
-					easing: 'cubic-bezier(0.5, 0, 0.55, 1.65)',
-					offset: 0.3,
-				},
-				{ transform: 'scale(100%)' },
-			],
-			{ delay, duration: 300 }
-		)
-	}
-
-	let readyToBounce = false
+	// onInterval(() => grow(progressElement), 3000)
+	// onInterval(() => train.hype.level++, 3000)
 
 	onMount(() => {
+		onHypeProgress()
 		setTimeout(() => (readyToBounce = true), 1700)
 	})
 
-	$: if (!train.hype && train.grace?.combo) {
+	$: if (!train.hype && train.grace?.combo) onGraceCombo()
+
+	let readyToBounce = false
+	function onGraceCombo() {
+		if (!readyToBounce) return
 		bounce(titleElement, 4)
 		bounce(comboElement, 10)
 		bounce(scoreElement, 3, 80)
 	}
 
-	let lastProgress = 0
-	$: if (train.hype?.progress > 0 || train.hype?.level > 0) updateProgress()
+	$: if (train.hype?.progress > 0 || train.hype?.level > 0) onHypeProgress()
+	let prevLevel = 1
+	let prevProgress = -1
+	let displayedLevel = 1
+	let displayedProgress = 0
+	let levellingUp = false
 
-	function updateProgress() {
-		const newProgress = 100 * (train.hype.level + train.hype.progress / train.hype.goal)
-		if (newProgress > lastProgress) {
-			bounce(
-				levelElement,
-				Math.floor(newProgress / 100) > Math.floor(lastProgress / 100) ? 10 : 5
-			)
-			lastProgress = newProgress
+	async function onHypeProgress() {
+		const levelUp = train.hype.level > prevLevel
+		if (levelUp || train.hype.progress > prevProgress) {
+			prevLevel = train.hype.level
+			prevProgress = train.hype.progress
+			if (levelUp) {
+				levellingUp = true
+				grow(progressElement, 2000)
+				// shatterComponent?.fadeIn(700, 1300)
+				displayedProgress = train.hype.goal
+				await sleep(2000)
+				levellingUp = false
+				// bounce(levelElement, 12)
+			} else if (!levellingUp) {
+				bounce(progressElement, 5)
+			}
+			displayedLevel = train.hype.level
+			displayedProgress = train.hype.progress
 		}
 	}
 </script>
@@ -101,33 +106,35 @@
 				</div>
 			{/if}
 			{#if train.hype}
-				{@const percent = train.hype.progress / train.hype.goal}
+				{@const percent = displayedProgress / train.hype.goal}
 				<div
-					bind:this={levelElement}
+					bind:this={progressElement}
 					class="progress"
 					in:fade={{ duration: 300, delay: 1500, easing: cubicOut }}
 					out:fade={{ duration: 200, delay: 200, easing: cubicIn }}
 				>
-					<div class="level" class:level-2digit={train.hype.level.toString().length > 1}>
-						LEVEL <Ratchet number={train.hype.level} digitWidth={25} />
+					<div class="level" class:level-2digit={displayedLevel.toString().length > 1}>
+						LEVEL {displayedLevel}
 					</div>
-					{#key train.hype.level}
-						<div
-							in:fly|local={{ y: -24, duration: 300, delay: 200, easing: cubicOut }}
-							out:fly|local={{ y: 24, duration: 300, easing: cubicIn }}
-							class="progress-bar-outer"
-						>
+					{#key displayedLevel}
+						<div class="progress-bar-outer">
 							<div class="progress-bar-inner-left-cap" />
 							<div
 								class="progress-bar-inner"
-								style="transform: scaleX({(percent * 170) / 178})"
+								style:transform="scaleX({(percent * 170) / 178})"
+								style:transition-duration={levellingUp ? '1000ms' : '700ms'}
 							/>
 							<div
 								class="progress-bar-inner-right-cap"
-								style="transform: translateX({4 + percent * 170}px)"
+								style:transform="translateX({4 + percent * 170}px)"
+								style:transition-duration={levellingUp ? '1000ms' : '700ms'}
 							/>
 						</div>
 					{/key}
+					{#if levellingUp}
+						<Shatter bind:this={shatterComponent} />
+					{/if}
+					<!-- <Shatter /> -->
 				</div>
 			{/if}
 		</div>
@@ -288,6 +295,7 @@
 		line-height: 44px;
 		display: flex;
 		justify-content: space-between;
+		white-space: nowrap;
 	}
 
 	.level.level-2digit {
@@ -325,14 +333,14 @@
 		width: 4px;
 		border-top-right-radius: 4px;
 		border-bottom-right-radius: 4px;
-		transition: transform 500ms ease-out;
+		transition: transform ease-out;
 	}
 
 	.progress-bar-inner {
 		left: 7px;
 		width: 179px; /* Extra pixel to cover tiny gap during transitions */
 		transform-origin: 0%;
-		transition: transform 500ms ease-out;
+		transition: transform ease-out;
 	}
 
 	.bottom {
