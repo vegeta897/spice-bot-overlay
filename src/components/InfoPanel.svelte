@@ -47,6 +47,7 @@
 	let levellingUp = false
 
 	async function onHypeProgress() {
+		if (!train.hype) return
 		const levelUp = train.hype.level > prevLevel
 		if (levelUp || train.hype.progress > prevProgress) {
 			prevLevel = train.hype.level
