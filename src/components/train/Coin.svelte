@@ -111,6 +111,20 @@
 			{ duration, delay, fill: 'forwards' }
 		)
 	}
+	export function drop(duration: number, delay: number, x: number) {
+		translateXdiv.animate(
+			[
+				{ transform: `translate(${x}px,0)`, easing: 'ease-out' },
+				{
+					transform: `translate(${x}px,15px)`,
+					opacity: 1,
+					offset: 0.15,
+				},
+				{ transform: `translate(${x}px,200px)` },
+			],
+			{ duration, delay }
+		)
+	}
 </script>
 
 <div class="container will-transform will-opacity" bind:this={translateXdiv}>

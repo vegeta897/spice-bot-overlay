@@ -9,6 +9,7 @@
 	import Ratchet from './Ratchet.svelte'
 	import { bounce, grow } from '../lib/animations'
 	import Shatter from './Shatter.svelte'
+	import CoinWaterfall from './CoinWaterfall.svelte'
 
 	// TODO: Show high scores after end
 
@@ -55,11 +56,9 @@
 			if (levelUp) {
 				levellingUp = true
 				grow(progressElement, 2000)
-				// shatterComponent?.fadeIn(700, 1300)
 				displayedProgress = train.hype.goal
 				await sleep(2000)
 				levellingUp = false
-				// bounce(levelElement, 12)
 			} else if (!levellingUp) {
 				bounce(progressElement, 5)
 			}
@@ -72,6 +71,9 @@
 <section class="nunito" class:top class:hype={train.hype}>
 	<TrainTrack />
 	<div class="rail-content">
+		{#if train.hype && train.endTime}
+			<CoinWaterfall />
+		{/if}
 		<div
 			class="title"
 			in:fly={{ x: 500, duration: 800, delay: 1000, easing: cubicOut }}
@@ -144,7 +146,6 @@
 							<Shatter bind:this={shatterComponent} />
 						{/if}
 					{/if}
-					<!-- <Shatter /> -->
 				</div>
 			{/if}
 		</div>
