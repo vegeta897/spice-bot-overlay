@@ -83,7 +83,7 @@ export function planTrain(hypeMode = false) {
 			}
 			messages.push({
 				message: hypeMessage,
-				delay: randomIntRange(1, 100) * 80,
+				delay: randomIntRange(1, 100) * 50,
 				hype: {
 					bits: hypeMessage.bits,
 					subs: hypeMessage.subs,
@@ -119,7 +119,7 @@ export function planTrain(hypeMode = false) {
 			}
 			messages.push({
 				message: graceMessage,
-				delay: randomIntRange(1, 100) * 60,
+				delay: randomIntRange(1, 100) * 30,
 				grace: graceInfo,
 			})
 			lastGraceType = graceType

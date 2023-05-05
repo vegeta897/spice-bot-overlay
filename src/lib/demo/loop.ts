@@ -129,5 +129,10 @@ export function createStaticTrain(hype: boolean) {
 			].map((c, i) => ({ ...c, color: c.color || fakeUsers[i][1] })) as HypeProgress[],
 		},
 	})
-	updateTrain({ id, static: true, grace: { ...grace, endUser: 'General_Jackal' } })
+	updateTrain({
+		id,
+		static: true,
+		grace: { ...grace, endUser: 'General_Jackal' },
+		// endTime: 1,
+	})
 }
