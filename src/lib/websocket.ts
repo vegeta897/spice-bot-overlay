@@ -7,7 +7,7 @@ import {
 import { createTrain, addToTrain, endTrain, endAllTrains } from './trains'
 import type { RequireAtLeastOne } from './util'
 
-const version = 2 // Should match version on server websocket.ts
+const version = 3 // Should match version on server websocket.ts
 
 let ws: WebSocket
 let reloading = false
@@ -112,7 +112,7 @@ export type TrainAddData = ID &
 export type TrainEndData = ID &
 	RequireAtLeastOne<{
 		grace: GraceEventBaseData & { username: string }
-		hype: HypeEventBaseData
+		hype: Omit<HypeEventBaseData, 'progress' | 'goal'>
 	}>
 type Message =
 	| {

@@ -87,7 +87,7 @@ export async function runChatLoop(hypeMode = false) {
 				endTrain({
 					id: trainID,
 					grace: train.grace && { combo, score, username: message.username },
-					hype: train.hype && { level, progress, total, goal },
+					hype: train.hype && { level, total },
 				})
 			}
 		}
