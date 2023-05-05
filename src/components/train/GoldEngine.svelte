@@ -36,19 +36,19 @@
 		<path
 			id="Rear-Bracer"
 			d="M249.708,121.709l0,62.2"
-			style="fill:none;stroke:#e9cd50;"
+			style="fill:none;stroke:#ff538f;"
 		/>
 		<path
 			id="Front-Bracer"
 			d="M199.723,121.709l-0,62.2"
-			style="fill:none;stroke:#e9cd50;"
+			style="fill:none;stroke:#ff538f;"
 		/>
 		<path
 			id="Cabin-Box"
 			d="M299.427,279.064l162.489,-0l0,-175l-162.489,-0l-0,175Zm162.489,-0l25,-0"
 			style="fill:url(#LG_Cabin);stroke:url(#LG_Cabin);"
 		/>
-		<path id="Cabin-Liner" d="M299.4,104.1l162.5,-0" style="fill:none;stroke:#e9cd50;" />
+		<path id="Cabin-Liner" d="M299.4,104.1l162.5,-0" style="fill:none;stroke:#ff538f;" />
 		<path
 			id="Cabin"
 			d="M486.916,12.5l-212.518,0l25,0l0,97m162.518,0l0,-97"
