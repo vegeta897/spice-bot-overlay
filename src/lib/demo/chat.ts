@@ -178,7 +178,7 @@ function createHypeMessage(): ChatMessage {
 		text: '',
 		time: getTimeString(),
 		bits: cheer && randomElement([100, 100, 200, 250, 500, 1000, 2000]),
-		subs: !cheer && randomElement([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5, 5, 10, 15]),
+		subs: !cheer && randomElement([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5, 5, 10]),
 	}
 }
 
