@@ -170,7 +170,7 @@
 					<span style="font-size: 40px; line-height: 20px; position:relative; top: 2px;"
 						>+</span
 					>
-					GRACE {train.grace.combo}x
+					GRACE {train.grace.combo}<span style:margin-left="2px">x</span>
 				</div>
 			{/if}
 		</div>
