@@ -94,9 +94,10 @@
 	// onInterval(() => doImpulse(), 2000)
 
 	function doImpulse() {
-		if (cabooseComponent) cabooseComponent.hop()
+		cabooseComponent?.hop()
 		const now = Date.now()
 		for (let i = carComponents.length - 1; i >= 0; i--) {
+			if (!carComponents[i]) continue
 			const fromEnd = carComponents.length - i - 1
 			// TODO: Use lastImpulse to pass a delta value for hopping cars mid-hop
 			if (fromEnd > 0 && now - lastImpulse < 400) return
