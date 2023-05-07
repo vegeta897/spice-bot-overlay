@@ -119,7 +119,7 @@
 			x2="1"
 			y2="0"
 			gradientUnits="userSpaceOnUse"
-			gradientTransform="matrix(-402,0,0,-268,690,12.5)"
+			gradientTransform="matrix(409,509,-339,273,78,-230)"
 		>
 			{@html GRADIENTS.gold}
 		</linearGradient>
