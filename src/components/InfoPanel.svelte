@@ -37,38 +37,43 @@
 <section class="nunito" class:top class:hype={train.hype}>
 	<TrainTrack />
 	<div class="rail-content">
-		{#if train.hype}
-			{#if train.endTime}<CoinWaterfall />{/if}
-			<div
-				class="title-glow"
-				style:animation-duration="2s"
-				style:box-shadow="-5px -5px 25px #fffcd7"
-			/>
-			<div
-				class="title-glow"
-				style:animation-duration="3s"
-				style:box-shadow="5px -5px 25px #fffcd7"
-			/>
-			<div
-				class="title-glow"
-				style:animation-duration="5s"
-				style:box-shadow="-5px 5px 25px #fffcd7"
-			/>
-			<div
-				class="title-glow"
-				style:animation-duration="7s"
-				style:box-shadow="5px 5px 25px #fffcd7"
-			/>
-		{/if}
+		{#if train.endTime}<CoinWaterfall />{/if}
 		<div
-			class="title"
+			bind:this={titleElement}
+			class="title-container"
 			in:fly={{ x: 500, duration: 800, delay: 1000, easing: cubicOut }}
 			out:fade={{ duration: 300, easing: cubicIn }}
 		>
-			<h1 bind:this={titleElement}>
-				{#if train.hype}<span style="font-size: 64px; line-height: 58px;">HYPE</span
-					>{:else}GRACE{/if} TRAIN!
-			</h1>
+			{#if train.hype}
+				<div in:fade={{ duration: 2000, delay: 1800 }}>
+					<div
+						class="title-glow"
+						style:animation-duration="2s"
+						style:box-shadow="-5px -5px 25px #fffcd7"
+					/>
+					<div
+						class="title-glow"
+						style:animation-duration="3s"
+						style:box-shadow="5px -5px 25px #fffcd7"
+					/>
+					<div
+						class="title-glow"
+						style:animation-duration="5s"
+						style:box-shadow="-5px 5px 25px #fffcd7"
+					/>
+					<div
+						class="title-glow"
+						style:animation-duration="7s"
+						style:box-shadow="5px 5px 25px #fffcd7"
+					/>
+				</div>
+			{/if}
+			<div class="title">
+				<h1>
+					{#if train.hype}<span style="font-size: 64px; line-height: 58px;">HYPE</span
+						>{:else}GRACE{/if} TRAIN!
+				</h1>
+			</div>
 		</div>
 		<div class="stats">
 			{#if train.grace && !train.hype}
@@ -152,14 +157,26 @@
 		justify-content: center;
 	}
 
-	.title {
-		margin: 0;
+	.title-container {
+		position: relative;
 		margin-left: 22px;
 		width: 190px;
-		padding: 5px 0 2px;
+	}
+
+	.hype .title-container {
+		margin-left: 24px;
+		width: 194px;
+	}
+
+	.title {
 		border-radius: 20px;
 		background: #5029c4e0;
-		position: relative;
+		padding: 5px 0 2px;
+	}
+
+	.hype .title {
+		background: #6b22d9e8;
+		padding: 7px 0 4px;
 	}
 
 	h1 {
@@ -169,27 +186,20 @@
 		transform-origin: 50% 50%;
 	}
 
-	.hype .title {
-		background: #6b22d9e8;
-		margin-left: 24px;
-		width: 194px;
-		padding: 7px 0 4px;
-	}
-
 	.title-glow {
 		position: absolute;
-		top: 22px;
-		left: 35px;
-		width: 194px;
-		height: 114px;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
 		border-radius: 20px;
-		opacity: 0.6;
+		opacity: 0.2;
 		animation: 2s ease-in-out infinite title-glowing;
 	}
 
 	@keyframes title-glowing {
 		50% {
-			opacity: 0.2;
+			opacity: 0.6;
 		}
 	}
 
