@@ -34,7 +34,7 @@ export const COLORS = {
 }
 
 export const GRADIENTS = {
-	gold: '<stop offset="0" stop-color="#fef9b5" /><stop offset="0.28" stop-color="#be9c38" /><stop offset="0.48" stop-color="#eace50" /><stop offset="0.67" stop-color="#fef9b5" /><stop offset="0.85" stop-color="#be9c38" /><stop offset="1" stop-color="#eace50" />',
+	gold: '<stop offset="0" stop-color="#fffab1" /><stop offset="0.28" stop-color="#cda42a" /><stop offset="0.48" stop-color="#f8d740" /><stop offset="0.67" stop-color="#fffab1" /><stop offset="0.85" stop-color="#cda42a" /><stop offset="1" stop-color="#f8d740" />',
 }
 
 export const SPARKLE_COORDS: Record<string, [number, number][]> = {

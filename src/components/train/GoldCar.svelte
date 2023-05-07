@@ -47,7 +47,7 @@
 		d="M37.5,187.5l-25,-175l399.984,0l-25,175l-349.984,0Z"
 		style="fill:url(#LG-Body);stroke:url(#LG-Body);"
 	/>
-	<path id="Rim" d="M12.5,187.5l400,0" style="fill:none;stroke:#e9cd50;" />
+	<path id="Rim" d="M12.5,187.5l400,0" style="fill:none;stroke:#f8d740;" />
 	<path id="Top-Rim" d="M12.5,12.5 h400Z" style="fill:none;stroke:#ff538f" />
 	<path
 		id="Big-Gem-Top-Left"
@@ -146,19 +146,18 @@
 		stroke-linejoin: round;
 		stroke-width: 25px;
 		position: relative;
-		/* opacity: 0.5; */
 	}
 	.gold-wheel {
 		width: 100%;
 		height: 100%;
 		background-image: conic-gradient(
 			from 140deg,
-			#eace50 0%,
-			#be9c38 28%,
-			#fef9b5 48%,
-			#eace50 67%,
-			#be9c38 85%,
-			#eace50 100%
+			#f8d740 0%,
+			#cda42a 28%,
+			#fffab1 48%,
+			#f8d740 67%,
+			#cda42a 85%,
+			#f8d740 100%
 		);
 		border-radius: 50%;
 	}

@@ -166,7 +166,7 @@
 			</g>
 			<defs>
 				<linearGradient id="coin_edge" gradientTransform="rotate(90)">
-					<stop offset="0" stop-color="#fef9b5" />
+					<stop offset="0" stop-color="#fffab1" />
 					<stop offset="0.3" stop-color="#FFDB4D" />
 					<stop offset="0.7" stop-color="#FFDB4D" />
 					<stop offset="1" stop-color="#FCC900" />

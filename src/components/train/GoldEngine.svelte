@@ -141,12 +141,12 @@
 		height: 100%;
 		background-image: conic-gradient(
 			from 140deg,
-			#eace50 0%,
-			#be9c38 28%,
-			#fef9b5 48%,
-			#eace50 67%,
-			#be9c38 85%,
-			#eace50 100%
+			#f8d740 0%,
+			#cda42a 28%,
+			#fffab1 48%,
+			#f8d740 67%,
+			#cda42a 85%,
+			#f8d740 100%
 		);
 		border-radius: 50%;
 	}
