@@ -37,7 +37,7 @@
 <section class="nunito" class:top class:hype={train.hype}>
 	<TrainTrack />
 	<div class="rail-content">
-		{#if train.endTime}<CoinWaterfall />{/if}
+		{#if train.hype && train.endTime}<CoinWaterfall />{/if}
 		<div
 			bind:this={titleElement}
 			class="title-container"
