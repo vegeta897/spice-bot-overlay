@@ -20,9 +20,7 @@
 	let comboElement: HTMLDivElement
 	let scoreElement: HTMLDivElement
 	let progressElement: HTMLDivElement
-	let shatterComponent: Shatter
 
-	// onInterval(() => grow(progressElement), 3000)
 	// onInterval(() => train.hype.level++, 3000)
 
 	onMount(() => {
@@ -162,9 +160,7 @@
 								/>
 							</div>
 						{/key}
-						{#if levellingUp}
-							<Shatter bind:this={shatterComponent} />
-						{/if}
+						{#if levellingUp} <Shatter /> {/if}
 					{/if}
 				</div>
 			{/if}
