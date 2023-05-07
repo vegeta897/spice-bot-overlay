@@ -151,23 +151,16 @@
 	}
 	.waving-arm {
 		transform-origin: 268px 37px;
-		animation: 0.8s linear infinite waving;
+		animation: 0.8s ease-in infinite waving;
 	}
 	@keyframes waving {
-		0% {
-			animation-timing-function: ease-in;
-		}
-		25% {
+		25%,
+		75% {
 			transform: rotate(-30deg);
 			animation-timing-function: ease-out;
 		}
 		50% {
 			transform: rotate(-55deg);
-			animation-timing-function: ease-in;
-		}
-		75% {
-			transform: rotate(-30deg);
-			animation-timing-function: ease-out;
 		}
 	}
 </style>
