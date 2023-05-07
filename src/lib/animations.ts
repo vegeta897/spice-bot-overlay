@@ -55,7 +55,7 @@ export function bounce(element: HTMLElement, force: number, delay = 0) {
 }
 
 const growKeyframes: Keyframe[] = [
-	{ easing: 'ease-out' },
+	{ easing: 'ease-in' },
 	{ offset: 0.67, transform: 'scale(110%)', easing: 'ease-out' },
 	{ offset: 0.76, transform: 'scale(111%) translateX(-1px)', easing: 'ease-out' },
 	{ offset: 0.83, transform: 'scale(111%) translateX(1px)', easing: 'ease-out' },
