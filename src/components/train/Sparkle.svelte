@@ -23,7 +23,7 @@
 					{ transform: `${translate} rotate(-160deg) scale(0.5) `, opacity: 0 },
 				],
 				{
-					duration: randomIntRange(4, 9) * 100,
+					duration: randomIntRange(8, 16) * 100,
 					easing: 'ease-in-out',
 				}
 			)
