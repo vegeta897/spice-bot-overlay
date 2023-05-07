@@ -37,25 +37,43 @@
 
 	const reversalEvents = new EventTarget()
 
+	$: graceCars = !train.hype && train.grace.colors
 	$: hypeCars = train.hype?.contributions
+	let graceCarsDisplayed: typeof graceCars = []
 	let hypeCarsDisplayed: typeof hypeCars = []
 
-	$: if (hypeCars?.length > 0) onHypeCarAdd()
+	// This is kinda lame but it works and I don't care right now
+	$: onCarAdd(
+		() => graceCars,
+		() => graceCarsDisplayed,
+		400,
+		() => (graceCarsDisplayed = graceCarsDisplayed)
+	)
+	$: onCarAdd(
+		() => hypeCars,
+		() => hypeCarsDisplayed,
+		500,
+		() => (hypeCarsDisplayed = hypeCarsDisplayed)
+	)
 
-	let addingHypeCars = false
-	async function onHypeCarAdd() {
-		if (addingHypeCars) return
-		addingHypeCars = true
-		while (hypeCarsDisplayed.length < hypeCars.length) {
-			hypeCarsDisplayed.push(hypeCars[hypeCarsDisplayed.length])
-			hypeCarsDisplayed = hypeCarsDisplayed // For reactivity
-			await sleep(500)
+	let addingCars = false
+	async function onCarAdd<T extends unknown[]>(
+		getCars: () => T,
+		getDisplayedCars: () => T,
+		cooldown: number,
+		selfAssign: () => {}
+	) {
+		if (addingCars) return
+		addingCars = true
+		while (getDisplayedCars().length < getCars().length) {
+			const displayedCars = getDisplayedCars()
+			displayedCars.push(getCars()[displayedCars.length])
+			selfAssign() // Call for svelte reactivity
+			await sleep(cooldown)
 		}
-		addingHypeCars = false
+		addingCars = false
 	}
 
-	const maxHopDistance = 8
-	let lastImpulse = 0
 	let carComponents: (Engine | Car | GoldEngine | GoldCar)[] = []
 	$: if (carComponents.length > 0) onCarComponentAdd()
 	$: opacity = 2 / (fade + 2)
@@ -93,17 +111,15 @@
 	// Impulse test
 	// onInterval(() => doImpulse(), 2000)
 
+	const maxHopDistance = 8
 	function doImpulse() {
 		cabooseComponent?.hop()
-		const now = Date.now()
 		for (let i = carComponents.length - 1; i >= 0; i--) {
 			if (!carComponents[i]) continue
 			const fromEnd = carComponents.length - i - 1
-			if (fromEnd > 0 && now - lastImpulse < 400) return
 			if (fromEnd >= maxHopDistance) break
 			carComponents[i].hop(fromEnd * 90, (maxHopDistance - fromEnd) / maxHopDistance)
 		}
-		lastImpulse = now
 	}
 
 	function slide(start: number, delta: number, easing = 'linear') {
@@ -191,7 +207,7 @@
 			<Caboose bind:this={cabooseComponent} combo={train.grace.combo} {reverse} />
 		{/if}
 	{:else}
-		{#each train.grace.colors as color, c (c)}
+		{#each graceCarsDisplayed as color, c (c)}
 			<div class="train-car-container">
 				{#if c === 0}
 					<Engine {reverse} {color} bind:this={carComponents[c]} />
