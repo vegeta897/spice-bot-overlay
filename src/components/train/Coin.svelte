@@ -9,7 +9,7 @@
 	const minYforce = Math.round(Math.sin(minAngle * (Math.PI / 180)) * minForce)
 	const maxYforce = Math.round(Math.sin(maxAngle * (Math.PI / 180)) * maxForce)
 
-	// Pre-compute durations because these are expensive calculations (I guess)
+	// Pre-compute toss durations because these are expensive calculations (I guess)
 	for (let i = minYforce; i <= maxYforce; i++) {
 		upDurations[i] = Math.round(Math.sqrt((i * 1) / gravity) * 1000)
 		downDurations[i] = Math.round(Math.sqrt((i * 1 + 100) / gravity) * 1000)
@@ -41,6 +41,7 @@
 	const rotateDuration = Math.round((360 / degreesPerSecond) * 1000)
 
 	onMount(() => {
+		// These could all be done in pure CSS but this is cleaner and has no real performance impact
 		svgElement.animate(
 			[{ transform: 'rotate(0)' }, { transform: `rotate(${rotateTo})` }],
 			{ duration: rotateDuration, iterations: Infinity }
