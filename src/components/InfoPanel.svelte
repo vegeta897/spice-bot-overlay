@@ -71,8 +71,28 @@
 <section class="nunito" class:top class:hype={train.hype}>
 	<TrainTrack />
 	<div class="rail-content">
-		{#if train.hype && train.endTime}
-			<CoinWaterfall />
+		{#if train.hype}
+			{#if train.endTime}<CoinWaterfall />{/if}
+			<div
+				class="title-glow"
+				style:animation-duration="2s"
+				style:box-shadow="-5px -5px 25px #fffcd7"
+			/>
+			<div
+				class="title-glow"
+				style:animation-duration="3s"
+				style:box-shadow="5px -5px 25px #fffcd7"
+			/>
+			<div
+				class="title-glow"
+				style:animation-duration="5s"
+				style:box-shadow="-5px 5px 25px #fffcd7"
+			/>
+			<div
+				class="title-glow"
+				style:animation-duration="7s"
+				style:box-shadow="5px 5px 25px #fffcd7"
+			/>
 		{/if}
 		<div
 			class="title"
@@ -227,6 +247,23 @@
 		margin-left: 24px;
 		width: 194px;
 		padding: 7px 0 4px;
+	}
+
+	.title-glow {
+		position: absolute;
+		top: 22px;
+		left: 35px;
+		width: 194px;
+		height: 114px;
+		border-radius: 20px;
+		opacity: 0.6;
+		animation: 2s ease-in-out infinite title-glowing;
+	}
+
+	@keyframes title-glowing {
+		50% {
+			opacity: 0.2;
+		}
 	}
 
 	.hype h1 {
