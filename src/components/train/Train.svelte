@@ -210,7 +210,12 @@
 		{#each graceCarsDisplayed as color, c (c)}
 			<div class="train-car-container">
 				{#if c === 0}
-					<Engine {reverse} {color} bind:this={carComponents[c]} />
+					<Engine
+						{reverse}
+						{color}
+						frog={train.grace.frog}
+						bind:this={carComponents[c]}
+					/>
 				{:else}
 					<Car {reverse} {color} bind:this={carComponents[c]} />
 				{/if}

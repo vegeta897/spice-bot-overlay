@@ -101,7 +101,7 @@ export type HypeTrainData = HypeEventBaseData & { contributions: HypeProgress[] 
 export type HypeProgress = { type: 'bits' | 'subs'; amount: number; color: string }
 export type TrainStartData = ID &
 	RequireAtLeastOne<{
-		grace: GraceEventBaseData & { colors: string[] }
+		grace: GraceEventBaseData & { colors: string[]; frog?: boolean }
 		hype: HypeTrainData
 	}>
 export type TrainAddData = ID &

@@ -24,6 +24,7 @@ type GraceStats = {
 	combo: number
 	score: number
 	endUser?: string
+	frog?: boolean
 }
 
 // A train must have a grace or hype property, or both
