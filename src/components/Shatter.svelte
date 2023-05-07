@@ -14,13 +14,13 @@
 		})
 		underglowElement?.animate(
 			[
-				{ easing: 'ease-in' },
-				{ opacity: 1, easing: 'ease-out', offset: 0.7 },
+				{ easing: 'ease-out' },
+				{ opacity: 1, easing: 'ease-out', offset: 0.87 },
 				{ opacity: 0 },
 			],
 			{
-				duration: 1000,
-				delay: 1300,
+				duration: 2000,
+				delay: 300,
 				fill: 'forwards',
 			}
 		)
