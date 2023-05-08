@@ -18,20 +18,23 @@
 	let titleElement: HTMLHeadingElement
 	let comboElement: HTMLDivElement
 	let scoreElement: HTMLDivElement
+	let bottomElement: HTMLDivElement
 
 	onMount(() => {
 		setTimeout(() => (readyToBounce = true), 1700)
 	})
 
-	$: graceCombo = !train.hype && train.grace?.combo
-	$: if (graceCombo) onGraceCombo()
+	$: if (train.grace?.combo) onGraceCombo()
 
 	let readyToBounce = false
 	function onGraceCombo() {
 		if (!readyToBounce) return
-		bounce(titleElement, 4)
-		bounce(comboElement, 10)
-		bounce(scoreElement, 3, 80)
+		if (train.hype) bounce(bottomElement, 4)
+		else {
+			bounce(titleElement, 4)
+			bounce(comboElement, 10)
+			bounce(scoreElement, 3, 80)
+		}
 	}
 </script>
 
@@ -105,6 +108,7 @@
 	</div>
 	{#if (train.hype && train.grace) || train.grace?.endUser}
 		<div
+			bind:this={bottomElement}
 			class="bottom"
 			class:ended-by={!train.hype}
 			in:fly={{
