@@ -43,19 +43,22 @@
 	let hypeCarsDisplayed: typeof hypeCars = []
 
 	// This is kinda lame but it works and I don't care right now
-	$: onCarAdd(
-		() => graceCars,
-		() => graceCarsDisplayed,
-		400,
-		() => (graceCarsDisplayed = graceCarsDisplayed)
-	)
-	$: onCarAdd(
-		() => hypeCars,
-		() => hypeCarsDisplayed,
-		500,
-		() => (hypeCarsDisplayed = hypeCarsDisplayed)
-	)
+	$: graceCars &&
+		onCarAdd(
+			() => graceCars,
+			() => graceCarsDisplayed,
+			400,
+			() => (graceCarsDisplayed = graceCarsDisplayed)
+		)
+	$: hypeCars &&
+		onCarAdd(
+			() => hypeCars,
+			() => hypeCarsDisplayed,
+			500,
+			() => (hypeCarsDisplayed = hypeCarsDisplayed)
+		)
 
+	let newTrain = true
 	let addingCars = false
 	async function onCarAdd<T extends unknown[]>(
 		getCars: () => T,
@@ -63,6 +66,13 @@
 		cooldown: number,
 		selfAssign: () => {}
 	) {
+		if (newTrain) {
+			// Add all cars instantly if the train was just created
+			newTrain = false
+			getDisplayedCars().push(...getCars())
+			selfAssign()
+			return
+		}
 		if (addingCars) return
 		addingCars = true
 		while (getDisplayedCars().length < getCars().length) {
