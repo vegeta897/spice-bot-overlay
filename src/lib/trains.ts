@@ -64,6 +64,7 @@ export function addToTrain({ id, grace, hype }: TrainAddData) {
 	const trainUpdate: Partial<Train> = { id }
 	if (grace) {
 		trainUpdate.grace = {
+			...existingTrain.grace,
 			combo: grace.combo,
 			score: grace.score,
 			colors: [...existingTrain.grace.colors, grace.color],
