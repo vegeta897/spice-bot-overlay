@@ -11,13 +11,12 @@
 
 	let progressElement: HTMLDivElement
 
-	$: if (train.hype?.progress > 0 || train.hype?.level > 0) onHypeProgress()
-	let prevLevel = 1
-	let prevProgress = -1
+	$: if (train.hype?.total) onHypeProgress()
 	let displayedLevel = 1
+	let displayedGoal = 1
 	let displayedProgress = 0
 	let levellingUp = false
-	$: percent = displayedProgress / train.hype.goal
+	$: displayedPercent = displayedProgress / displayedGoal
 
 	// onInterval(() => train.hype.level++, 3000)
 
@@ -26,22 +25,21 @@
 	})
 
 	async function onHypeProgress() {
-		const levelUp = train.hype.level > prevLevel
-		if (levelUp || train.hype.progress > prevProgress) {
-			prevLevel = train.hype.level
-			prevProgress = train.hype.progress
-			if (levelUp) {
-				levellingUp = true
-				grow(progressElement, 2000)
-				displayedProgress = train.hype.goal
-				await sleep(2000)
-				levellingUp = false
-			} else if (!levellingUp) {
-				bounce(progressElement, 5)
-			}
-			displayedLevel = train.hype.level
-			displayedProgress = train.hype.progress
+		if (levellingUp) return
+		const levelUp = train.hype.level > displayedLevel
+		if (!levelUp && train.hype.progress === displayedProgress) return
+		if (levelUp) {
+			levellingUp = true
+			grow(progressElement, 2000)
+			displayedProgress = displayedGoal
+			await sleep(2000)
+			levellingUp = false
+		} else {
+			bounce(progressElement, 5)
 		}
+		displayedLevel = train.hype.level
+		displayedGoal = train.hype.goal
+		displayedProgress = train.hype.progress
 	}
 </script>
 
@@ -67,12 +65,12 @@
 				<div class="progress-bar-inner-left-cap" />
 				<div
 					class="progress-bar-inner"
-					style:transform="scaleX({(percent * 170) / 178})"
+					style:transform="scaleX({(displayedPercent * 170) / 178})"
 					style:transition-duration={levellingUp ? '1000ms' : '700ms'}
 				/>
 				<div
 					class="progress-bar-inner-right-cap"
-					style:transform="translateX({4 + percent * 170}px)"
+					style:transform="translateX({4 + displayedPercent * 170}px)"
 					style:transition-duration={levellingUp ? '1000ms' : '700ms'}
 				/>
 			</div>
