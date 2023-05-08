@@ -16,7 +16,7 @@
 	let displayedGoal = 1
 	let displayedProgress = 0
 	let levellingUp = false
-	$: displayedPercent = displayedProgress / displayedGoal
+	$: displayedPercent = Math.min(1, displayedProgress / displayedGoal)
 
 	// onInterval(() => train.hype.level++, 3000)
 
