@@ -24,7 +24,8 @@
 		setTimeout(() => (readyToBounce = true), 1700)
 	})
 
-	$: if (train.grace?.combo) onGraceCombo()
+	$: graceCombo = train.grace?.combo
+	$: if (graceCombo) onGraceCombo()
 
 	let readyToBounce = false
 	function onGraceCombo() {
