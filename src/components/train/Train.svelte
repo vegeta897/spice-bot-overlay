@@ -80,16 +80,17 @@
 	let showSmoke = false
 	let reversalTimeout: number
 	$: if (train.endTime) clearTimeout(reversalTimeout)
-	let cabooseAdded = false
-	$: if (!cabooseAdded && train.hype && train.grace?.combo > 0) {
-		cabooseAdded = true
-		cabooseComponent?.hop()
-		doImpulse()
-	}
 	$: hypedGraceCombo = train.hype && train.grace?.combo
 	$: if (hypedGraceCombo) onHypedGrace()
 
+	let cabooseAdded = false
 	function onHypedGrace() {
+		if (!cabooseAdded) {
+			cabooseAdded = true
+			cabooseComponent?.hop()
+			doImpulse()
+			return
+		}
 		if (addingCars) return
 		cabooseComponent?.miniHop()
 		doImpulse(3, 0.5)
