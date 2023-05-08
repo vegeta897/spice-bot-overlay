@@ -81,14 +81,39 @@
 	let reversalTimeout: number
 	$: if (train.endTime) clearTimeout(reversalTimeout)
 	let cabooseAdded = false
-	$: if (!cabooseAdded && train.hype && train.grace?.combo === 1) {
+	$: if (!cabooseAdded && train.hype && train.grace?.combo > 0) {
 		cabooseAdded = true
+		cabooseComponent?.hop()
 		doImpulse()
+	}
+	$: hypedGraceCombo = train.hype && train.grace?.combo
+	$: if (hypedGraceCombo) onHypedGrace()
+
+	function onHypedGrace() {
+		if (addingCars) return
+		cabooseComponent?.miniHop()
+		doImpulse(3, 0.5)
 	}
 
 	function onCarComponentAdd() {
+		cabooseComponent?.hop()
 		doImpulse()
 		if (animation) scheduleReversal()
+	}
+
+	// Impulse test
+	// onInterval(() => doImpulse(), 2000)
+
+	function doImpulse(maxHopDistance = 8, force = 1) {
+		for (let i = carComponents.length - 1; i >= 0; i--) {
+			if (!carComponents[i]) continue
+			const fromEnd = carComponents.length - i - 1
+			if (fromEnd >= maxHopDistance) break
+			carComponents[i].hop(
+				fromEnd * 90,
+				(force * (maxHopDistance - fromEnd)) / maxHopDistance
+			)
+		}
 	}
 
 	function scheduleReversal() {
@@ -106,20 +131,6 @@
 		reversalTimeout = setTimeout(() => {
 			reversalEvents.dispatchEvent(new Event('reverse'))
 		}, timeUntilReversal)
-	}
-
-	// Impulse test
-	// onInterval(() => doImpulse(), 2000)
-
-	const maxHopDistance = 8
-	function doImpulse() {
-		cabooseComponent?.hop()
-		for (let i = carComponents.length - 1; i >= 0; i--) {
-			if (!carComponents[i]) continue
-			const fromEnd = carComponents.length - i - 1
-			if (fromEnd >= maxHopDistance) break
-			carComponents[i].hop(fromEnd * 90, (maxHopDistance - fromEnd) / maxHopDistance)
-		}
 	}
 
 	function slide(start: number, delta: number, easing = 'linear') {

@@ -8,10 +8,8 @@
 
 	onMount(hop)
 
-	$: if (containerelement && combo) miniHop()
-
 	export function hop() {
-		containerelement.animate(
+		containerelement?.animate(
 			[
 				{
 					transform: `translateX(${reverse ? '' : '-'}65px) scalex(0.8)`,
@@ -35,8 +33,8 @@
 		)
 	}
 
-	function miniHop() {
-		containerelement.animate(
+	export function miniHop() {
+		containerelement?.animate(
 			[
 				{ easing: 'ease-out' },
 				{ transform: `translateY(-10px)`, easing: 'ease-out' },

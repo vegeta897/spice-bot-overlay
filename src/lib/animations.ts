@@ -16,7 +16,7 @@ export function carHop(
 	delay *= timeScale
 	carSVG.animate(
 		[
-			delay === 0
+			force === 1
 				? {
 						transform: `translateX(${reverse ? '' : '-'}20px) scaleX(0.5)`,
 						easing: 'ease-out',
