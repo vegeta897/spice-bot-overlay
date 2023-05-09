@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { carHop } from '../../lib/animations'
+	import type { HexColor } from '../../lib/util'
 
 	export let reverse: boolean
-	export let color: string
+	export let color: HexColor | null
 
 	$: _color = color ? `${color}cc` : 'var(--train-pop-color)'
 

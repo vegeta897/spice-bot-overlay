@@ -2,7 +2,7 @@ import { get } from 'svelte/store'
 import { TRAIN } from './constants'
 import { normalizeContribution, normalizeHypeData } from './hype'
 import { addTrain, deleteTrain, getTrain, trains, updateTrain } from './store'
-import type { RequireAtLeastOne } from './util'
+import type { HexColor, RequireAtLeastOne } from './util'
 import type {
 	HypeTrainData,
 	TrainAddData,
@@ -20,7 +20,7 @@ type TrainBase = {
 }
 
 type GraceStats = {
-	colors: string[]
+	colors: (HexColor | null)[]
 	combo: number
 	score: number
 	endUser?: string

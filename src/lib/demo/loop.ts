@@ -1,7 +1,7 @@
 import { TRAIN } from '../constants'
 import { chat, getTrain, trains, updateTrain } from '../store'
 import { addToTrain, createTrain, endTrain } from '../trains'
-import { randomIntRange, sleep } from '../util'
+import { randomIntRange, sleep, type HexColor } from '../util'
 import type { HypeProgress } from '../websocket'
 import { planTrain } from './chat'
 import { fakeUsers } from './strings'
@@ -21,7 +21,7 @@ export async function runChatLoop(hypeMode = false) {
 	runTime = chatLoopStartTime
 	while (chatLoopStartTime === runTime) {
 		let trainID = Date.now()
-		const initialColors: string[] = []
+		const initialColors: (HexColor | null)[] = []
 		const initialContributions: HypeProgress[] = []
 		let combo = 0
 		let score = 0

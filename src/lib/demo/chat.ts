@@ -1,4 +1,4 @@
-import { randomElement, randomIntRange } from '../util'
+import { randomElement, randomIntRange, type HexColor } from '../util'
 import {
 	fakeUsers,
 	graceMessages,
@@ -11,7 +11,7 @@ import {
 type ChatMessage = {
 	text: string
 	username: string
-	color: string | null
+	color: HexColor | null
 	time: string
 	redeem?: boolean
 	highlight?: boolean
@@ -197,7 +197,7 @@ function createSpiceBotMessage(endingUser: string, trainLength: number): ChatMes
 	}
 }
 
-function createRegretMessage(username: string, color: string): ChatMessage {
+function createRegretMessage(username: string, color: HexColor | null): ChatMessage {
 	const text = randomElement(regretMessages)
 	return { username, color, text, time: getTimeString() }
 }
