@@ -62,15 +62,29 @@
 	{:else}
 		{#key displayedLevel}
 			<div class="progress-bar-outer" out:fade={{ duration: 500 }}>
+				<div
+					class="progress-bar-inner"
+					style:transform="scaleX({(displayedPercent * 170) / 178})"
+					style:transition-duration="300ms"
+					style:background="#ff538f"
+				/>
+				<div
+					class="progress-bar-inner-right-cap"
+					style:transform="translateX({4 + displayedPercent * 170}px)"
+					style:transition-duration="300ms"
+					style:background="#ff538f"
+				/>
 				<div class="progress-bar-inner-left-cap" />
 				<div
 					class="progress-bar-inner"
 					style:transform="scaleX({(displayedPercent * 170) / 178})"
+					style:transition-delay="400ms"
 					style:transition-duration={levellingUp ? '1000ms' : '700ms'}
 				/>
 				<div
 					class="progress-bar-inner-right-cap"
 					style:transform="translateX({4 + displayedPercent * 170}px)"
+					style:transition-delay="400ms"
 					style:transition-duration={levellingUp ? '1000ms' : '700ms'}
 				/>
 			</div>
