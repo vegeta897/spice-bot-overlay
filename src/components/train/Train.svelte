@@ -243,7 +243,7 @@
 				{/if}
 			</div>
 		{/each}
-		{#if train.endTime}
+		{#if train.endTime && train.grace.endUser}
 			<Caboose bind:this={cabooseComponent} combo={train.grace.combo} {reverse} />
 		{/if}
 	{/if}

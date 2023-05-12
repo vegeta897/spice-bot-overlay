@@ -82,7 +82,6 @@ export function addToTrain({ id, grace, hype }: TrainAddData) {
 }
 
 export function endTrain({ id, grace, hype }: TrainEndData, hideInfoNow = false) {
-	endAllTrains(id) // End all trains except this one
 	const existingTrain = getTrain({ id })
 	if (!existingTrain) {
 		console.log('Ignoring end event for unknown train')
@@ -121,7 +120,7 @@ export function endAllTrains(exceptID?: number) {
 		if (train.endTime || train.id === exceptID) return
 		const trainEnd: Partial<TrainEndData> = { id: train.id }
 		if (train.hype) trainEnd.hype = train.hype
-		else if (train.grace) trainEnd.grace = { ...train.grace, username: 'Somebody' }
+		else if (train.grace) trainEnd.grace = { ...train.grace, username: '' }
 		endTrain(trainEnd as TrainEndData, true)
 	})
 }
