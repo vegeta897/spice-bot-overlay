@@ -116,6 +116,7 @@
 				x: train.hype ? 0 : 300,
 				y: train.hype ? -50 : 0,
 				duration: train.hype ? 300 : 500,
+				delay: train.hype && !readyToBounce ? 1600 : 0,
 				easing: backOut,
 			}}
 			out:fade={{ duration: 200, easing: cubicIn }}
