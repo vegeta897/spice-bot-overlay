@@ -20,9 +20,15 @@
 	let durationPerScreen: number
 
 	function updateTrainSpeed() {
-		const speed = TRAIN.speed + getTrainSize(train) * TRAIN.speedAddPerCombo
-		pixelsPerMs = speed / 1000
+		const prevTrainSpeed = pixelsPerMs
+		let comboSpeedBoost = getTrainSize(train) * TRAIN.speedAddPerCombo
+		if (train.endTime && train.grace?.combo > 30) comboSpeedBoost *= 1.5
+		pixelsPerMs = (TRAIN.speed + comboSpeedBoost) / 1000
 		durationPerScreen = Math.round(SCREEN.width / pixelsPerMs)
+		const speedRatio = prevTrainSpeed / pixelsPerMs
+		const easing =
+			speedRatio === 1 ? 'linear' : `cubic-bezier(0.5, ${0.5 * speedRatio}, 0.7, 0.7)`
+		return easing
 	}
 	updateTrainSpeed()
 
@@ -159,13 +165,14 @@
 		})
 	}
 
-	async function finalSlide() {
+	async function finalSlide(easing = 'linear') {
 		const trainWidth = getTrainWidth(train)
-		const remainingScreens =
+		const remainingScreens = Math.ceil(
 			(translation * (reverse ? -1 : 1)) / 100 + trainWidth / SCREEN.width
+		)
 		if (remainingScreens > 0) {
 			translateDelta = Math.round(remainingScreens * (reverse ? 100 : -100))
-			await slide(translation, translateDelta)
+			await slide(translation, translateDelta, easing)
 		}
 		let updatedTrain = updateTrain({ id: train.id, offScreen: true })
 		if (!updatedTrain || updatedTrain.hideInfo) deleteTrain(train)
@@ -182,11 +189,7 @@
 		if (departWait > 0) await sleep(departWait)
 		showSmoke = true
 		while (trainContainer) {
-			const prevTrainSpeed = pixelsPerMs
-			updateTrainSpeed()
-			const speedRatio = prevTrainSpeed / pixelsPerMs
-			const easing =
-				speedRatio === 1 ? 'linear' : `cubic-bezier(0.5, ${0.5 * speedRatio}, 0.7, 0.7)`
+			const easing = updateTrainSpeed()
 			const slideComplete = slide(translation, translateDelta, easing)
 			scheduleReversal()
 			const nextAction = await Promise.race([
@@ -203,7 +206,8 @@
 			}
 			if (train.endTime) {
 				clearTimeout(reversalTimeout)
-				finalSlide()
+				const easing = updateTrainSpeed()
+				finalSlide(easing)
 				break
 			} else if (nextAction === 'reverse') {
 				showSmoke = true
