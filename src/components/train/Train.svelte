@@ -243,6 +243,9 @@
 				{/if}
 			</div>
 		{/each}
+		{#if train.endTime}
+			<Caboose bind:this={cabooseComponent} combo={train.grace.combo} {reverse} />
+		{/if}
 	{/if}
 	{#if !top}
 		{#if train.hype}

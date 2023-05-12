@@ -137,5 +137,9 @@ export const getTrainWidth = (train: Train) => {
 			TRAIN.carWidthGold * trainSize +
 			(train.grace ? TRAIN.cabooseWidth : 0)
 		)
-	return TRAIN.engineWidth + TRAIN.carWidth * (trainSize - 1)
+	return (
+		TRAIN.engineWidth +
+		TRAIN.carWidth * (trainSize - 1) +
+		(train.endTime ? TRAIN.cabooseWidth : 0)
+	)
 }
