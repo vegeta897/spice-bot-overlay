@@ -1,6 +1,6 @@
 import { TRAIN } from '../constants'
-import { chat, getTrain, trains, updateTrain } from '../store'
-import { addToTrain, createTrain, endTrain } from '../trains'
+import { chat, getStoreTrain, trains, updateStoreTrain } from '../store'
+import { updateTrain, createTrain, endTrain } from '../trains'
 import { randomIntRange, sleep } from '../util'
 import type { HypeProgress } from '../websocket'
 import { planTrain } from './chat'
@@ -34,17 +34,22 @@ export async function runChatLoop(hypeMode = false) {
 			if (chatLoopStartTime !== runTime) break
 			await sleep(delay)
 			chat.update((_chat) => [..._chat.slice(-MAX_MESSAGES), message])
-			const trainCreated = getTrain({ id: trainID })
+			const storeTrain = getStoreTrain({ id: trainID })
 			if (grace) {
 				combo++
 				score = grace.totalScore + grace.comboScore
-				if (!trainCreated?.hype && combo < TRAIN.minLength) {
+				if (storeTrain && 'hype' in storeTrain) {
+					updateTrain({
+						id: trainID,
+						hype: { level, progress, total, goal, graces: combo },
+					})
+				} else if (combo < TRAIN.minLength) {
 					initialColors.push(message.color)
-				} else if ((trainCreated?.hype && combo === 1) || combo === TRAIN.minLength) {
+				} else if (combo === TRAIN.minLength) {
 					initialColors.push(message.color)
 					createTrain({ id: trainID, grace: { colors: initialColors, combo, score } })
 				} else {
-					addToTrain({ id: trainID, grace: { combo, score, color: message.color } })
+					updateTrain({ id: trainID, grace: { combo, score, color: message.color } })
 				}
 			} else if (hype) {
 				level = hype.level
@@ -58,12 +63,10 @@ export async function runChatLoop(hypeMode = false) {
 				}
 				if (initialContributions.length < 3) initialContributions.push(contribution)
 				if (initialContributions.length === 3) {
-					if (trainCreated && !trainCreated.hype) {
+					if (storeTrain && !('hype' in storeTrain)) {
 						trainID = Date.now()
-						initialColors.length = 0
-						combo = 0
 					}
-					if (!getTrain({ id: trainID })) {
+					if (!getStoreTrain({ id: trainID })) {
 						createTrain({
 							id: trainID,
 							hype: {
@@ -71,24 +74,25 @@ export async function runChatLoop(hypeMode = false) {
 								progress,
 								total,
 								goal,
+								graces: combo,
 								contributions: [...initialContributions],
 							},
 						})
-					} else if (getTrain({ id: trainID })) {
-						addToTrain({
+					} else if (getStoreTrain({ id: trainID })) {
+						updateTrain({
 							id: trainID,
-							hype: { level, progress, total, goal, contribution },
+							hype: { level, progress, total, goal, contribution, graces: combo },
 						})
 					}
 				}
 			}
 			if (end) {
-				const train = getTrain({ id: trainID })
-				endTrain({
-					id: trainID,
-					grace: train.grace && { combo, score, username: message.username },
-					hype: train.hype && { level, total },
-				})
+				const endingTrain = getStoreTrain({ id: trainID })
+				if ('grace' in endingTrain) {
+					endTrain({ id: trainID, grace: { combo, score, username: message.username } })
+				} else {
+					endTrain({ id: trainID, hype: { level, total, graces: combo } })
+				}
 			}
 		}
 		await sleep((hypeMode ? randomIntRange(10, 15) : randomIntRange(2, 7)) * 1000)
@@ -134,7 +138,7 @@ export function createStaticTrain(hype: boolean) {
 		createTrain({ id, grace })
 	}
 
-	updateTrain({
+	updateStoreTrain({
 		id,
 		static: true,
 		grace: { ...grace },

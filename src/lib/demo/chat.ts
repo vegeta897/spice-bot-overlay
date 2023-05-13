@@ -68,7 +68,7 @@ export function planTrain(hypeMode = false) {
 		(hypeMode && hypeContributions < trainSize) ||
 		(!hypeMode && graces < trainSize)
 	) {
-		if (hypeMode && (Math.random() < 0.4 || hypeContributions < 3) /*&& graces > 5*/) {
+		if (hypeMode && Math.random() < 0.4) {
 			hypeContributions++
 			const hypeMessage = createHypeMessage()
 			if (hypeContributions > 3) {
