@@ -1,6 +1,4 @@
-import type { HexColor } from '../util'
-
-export const fakeUsers: [string, HexColor | null][] = [
+export const fakeUsers: [string, string | null][] = [
 	['goku798', '#c365b0'],
 	['dazzle_razzle', '#9ffbe2'],
 	['reallysubverted', '#ff4a5f'],

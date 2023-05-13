@@ -22,7 +22,8 @@
 	function updateTrainSpeed() {
 		const prevTrainSpeed = pixelsPerMs
 		let comboSpeedBoost = getTrainSize(train) * TRAIN.speedAddPerCombo
-		if (train.endTime && train.grace?.combo > 30) comboSpeedBoost *= 1.5
+		if (train.endTime && 'grace' in train && train.grace.combo > 30)
+			comboSpeedBoost *= 1.5
 		pixelsPerMs = (TRAIN.speed + comboSpeedBoost) / 1000
 		durationPerScreen = Math.round(SCREEN.width / pixelsPerMs)
 		const speedRatio = prevTrainSpeed / pixelsPerMs
@@ -43,8 +44,8 @@
 
 	const reversalEvents = new EventTarget()
 
-	$: graceCars = !train.hype && train.grace.colors
-	$: hypeCars = train.hype?.contributions
+	$: graceCars = 'grace' in train && train.grace.colors
+	$: hypeCars = 'hype' in train && train.hype.contributions
 	let graceCarsDisplayed: typeof graceCars = []
 	let hypeCarsDisplayed: typeof hypeCars = []
 
@@ -96,8 +97,8 @@
 	let showSmoke = false
 	let reversalTimeout: number
 	$: if (train.endTime) clearTimeout(reversalTimeout)
-	$: hypedGraceCombo = train.hype && train.grace?.combo
-	$: if (hypedGraceCombo) onHypedGrace()
+	$: hypeGraces = 'hype' in train && train.hype.graces
+	$: if (hypeGraces) onHypedGrace()
 
 	let cabooseAdded = false
 	function onHypedGrace() {
@@ -220,7 +221,7 @@
 </script>
 
 <div class="container" bind:this={trainContainer} class:top class:reverse style:opacity>
-	{#if train.hype}
+	{#if 'hype' in train}
 		<div class="train-car-container">
 			<GoldEngine {reverse} bind:this={carComponents[0]} />
 		</div>
@@ -229,8 +230,8 @@
 				<GoldCar {reverse} {color} {type} {amount} bind:this={carComponents[c + 1]} />
 			</div>
 		{/each}
-		{#if train.grace}
-			<Caboose bind:this={cabooseComponent} combo={train.grace.combo} {reverse} />
+		{#if train.hype.graces}
+			<Caboose bind:this={cabooseComponent} combo={train.hype.graces} {reverse} />
 		{/if}
 	{:else}
 		{#each graceCarsDisplayed as color, c (c)}
@@ -247,12 +248,12 @@
 				{/if}
 			</div>
 		{/each}
-		{#if train.endTime && train.grace.endUser}
+		{#if train.endTime && train.endUser}
 			<Caboose bind:this={cabooseComponent} combo={train.grace.combo} {reverse} />
 		{/if}
 	{/if}
 	{#if !top}
-		{#if train.hype}
+		{#if 'hype' in train}
 			<CoinSpout {reverse} speed={pixelsPerMs} disable={!showSmoke} />
 		{:else}
 			<Smoke {reverse} speed={pixelsPerMs} disable={!showSmoke} />

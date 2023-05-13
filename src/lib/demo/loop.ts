@@ -1,7 +1,7 @@
 import { TRAIN } from '../constants'
 import { chat, getTrain, trains, updateTrain } from '../store'
 import { addToTrain, createTrain, endTrain } from '../trains'
-import { randomIntRange, sleep, type HexColor } from '../util'
+import { randomIntRange, sleep } from '../util'
 import type { HypeProgress } from '../websocket'
 import { planTrain } from './chat'
 import { fakeUsers } from './strings'
@@ -21,7 +21,7 @@ export async function runChatLoop(hypeMode = false) {
 	runTime = chatLoopStartTime
 	while (chatLoopStartTime === runTime) {
 		let trainID = Date.now()
-		const initialColors: (HexColor | null)[] = []
+		const initialColors: (string | null)[] = []
 		const initialContributions: HypeProgress[] = []
 		let combo = 0
 		let score = 0
@@ -102,37 +102,43 @@ export function createStaticTrain(hype: boolean) {
 		score: 1234567,
 		combo: 13,
 	}
-	createTrain({
-		id,
-		grace,
-		hype: hype && {
-			total: 4750,
-			level: 3,
-			progress: 1000,
-			goal: 2500,
-			contributions: [
-				{ type: 'bits', amount: 100, color: null },
-				{ type: 'bits', amount: 100, color: null },
-				{ type: 'bits', amount: 100, color: null },
-				{ type: 'bits', amount: 200, color: null },
-				{ type: 'bits', amount: 250, color: null },
-				{ type: 'bits', amount: 300, color: null },
-				{ type: 'bits', amount: 400, color: null },
-				{ type: 'bits', amount: 500, color: '#ffffff' },
-				{ type: 'bits', amount: 600, color: null },
-				{ type: 'bits', amount: 550, color: null },
-				{ type: 'bits', amount: 1000, color: null },
-				{ type: 'bits', amount: 1000, color: null },
-				{ type: 'subs', amount: 2, color: null },
-				{ type: 'subs', amount: 1, color: null },
-				{ type: 'subs', amount: 1, color: null },
-			].map((c, i) => ({ ...c, color: c.color || fakeUsers[i][1] })) as HypeProgress[],
-		},
-	})
+	if (hype) {
+		createTrain({
+			id,
+			hype: {
+				total: 4750,
+				level: 3,
+				progress: 1000,
+				goal: 2500,
+				graces: grace.combo,
+				contributions: [
+					{ type: 'bits', amount: 100, color: null },
+					{ type: 'bits', amount: 100, color: null },
+					{ type: 'bits', amount: 100, color: null },
+					{ type: 'bits', amount: 200, color: null },
+					{ type: 'bits', amount: 250, color: null },
+					{ type: 'bits', amount: 300, color: null },
+					{ type: 'bits', amount: 400, color: null },
+					{ type: 'bits', amount: 500, color: '#ffffff' },
+					{ type: 'bits', amount: 600, color: null },
+					{ type: 'bits', amount: 550, color: null },
+					{ type: 'bits', amount: 1000, color: null },
+					{ type: 'bits', amount: 1000, color: null },
+					{ type: 'subs', amount: 2, color: null },
+					{ type: 'subs', amount: 1, color: null },
+					{ type: 'subs', amount: 1, color: null },
+				].map((c, i) => ({ ...c, color: c.color || fakeUsers[i][1] })) as HypeProgress[],
+			},
+		})
+	} else {
+		createTrain({ id, grace })
+	}
+
 	updateTrain({
 		id,
 		static: true,
-		grace: { ...grace, endUser: 'General_Jackal' },
+		grace: { ...grace },
+		endUser: 'General_Jackal',
 		// endTime: 1,
 	})
 }

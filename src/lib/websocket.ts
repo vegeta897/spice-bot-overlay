@@ -5,7 +5,6 @@ import {
 	type OverlayPosition,
 } from './store'
 import { createTrain, addToTrain, endTrain, endAllTrains } from './trains'
-import type { HexColor, RequireAtLeastOne } from './util'
 
 const version = 3 // Should match version on server websocket.ts
 
@@ -96,28 +95,26 @@ type HypeEventBaseData = {
 	total: number
 	progress: number
 	goal: number
+	graces: number
 }
-export type HypeTrainData = HypeEventBaseData & { contributions: HypeProgress[] }
+export type GraceTrainData = {
+	grace: GraceEventBaseData & { colors: string[]; frog?: boolean }
+}
+type GraceTrainAddData = { grace: GraceEventBaseData & { color: string } }
+type GraceTrainEndData = { grace: GraceEventBaseData & { username: string } }
+export type HypeTrainData = {
+	hype: HypeEventBaseData & { contributions: HypeProgress[] }
+}
 export type HypeProgress = {
 	type: 'bits' | 'subs'
 	amount: number
-	color: HexColor | null
+	color: string | null
 }
-export type TrainStartData = ID &
-	RequireAtLeastOne<{
-		grace: GraceEventBaseData & { colors: (HexColor | null)[]; frog?: boolean }
-		hype: HypeTrainData
-	}>
-export type TrainAddData = ID &
-	RequireAtLeastOne<{
-		grace: GraceEventBaseData & { color: HexColor | null }
-		hype: HypeEventBaseData & { contribution?: HypeProgress }
-	}>
-export type TrainEndData = ID &
-	RequireAtLeastOne<{
-		grace: GraceEventBaseData & { username: string }
-		hype: Omit<HypeEventBaseData, 'progress' | 'goal'>
-	}>
+type HypeTrainAddData = { hype: HypeEventBaseData & { contribution?: HypeProgress } }
+type HypeTrainEndData = { hype: Omit<HypeEventBaseData, 'progress' | 'goal'> }
+export type TrainStartData = ID & (GraceTrainData | HypeTrainData)
+export type TrainAddData = ID & (GraceTrainAddData | HypeTrainAddData)
+export type TrainEndData = ID & (GraceTrainEndData | HypeTrainEndData)
 type Message =
 	| {
 			type: 'init'

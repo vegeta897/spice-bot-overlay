@@ -4,10 +4,9 @@
 	import CoinStacks from './CoinStacks.svelte'
 	import Sparkle from './Sparkle.svelte'
 	import { getGemColors } from '../../lib/colors'
-	import type { HexColor } from '../../lib/util'
 
 	export let reverse: boolean
-	export let color: HexColor | null
+	export let color: string | null
 	export let type: 'bits' | 'subs'
 	export let amount: number
 

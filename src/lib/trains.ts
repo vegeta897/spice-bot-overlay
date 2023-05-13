@@ -2,8 +2,8 @@ import { get } from 'svelte/store'
 import { TRAIN } from './constants'
 import { normalizeContribution, normalizeHypeData } from './hype'
 import { addTrain, deleteTrain, getTrain, trains, updateTrain } from './store'
-import type { HexColor, RequireAtLeastOne } from './util'
 import type {
+	GraceTrainData,
 	HypeTrainData,
 	TrainAddData,
 	TrainEndData,
@@ -17,96 +17,90 @@ type TrainBase = {
 	hideInfo?: boolean
 	offScreen?: boolean
 	static?: boolean // Use in demo mode only
-}
-
-type GraceStats = {
-	colors: (HexColor | null)[]
-	combo: number
-	score: number
 	endUser?: string
-	frog?: boolean
 }
 
-// A train must have a grace or hype property, or both
-export type Train = TrainBase &
-	RequireAtLeastOne<{ grace: GraceStats; hype: HypeTrainData }>
+type GraceTrain = TrainBase & GraceTrainData
+type HypeTrain = TrainBase & HypeTrainData
+export type Train = GraceTrain | HypeTrain
 
-export function createTrain({ id, grace, hype }: TrainStartData) {
+export function createTrain({ id, ...startData }: TrainStartData) {
 	endAllTrains(id) // End all trains except this one
 	const existingTrain = getTrain({ id })
 	if (existingTrain) {
 		// Update existing train if combo, bits, or subs are different
-		const trainUpdate: Partial<Train> = { id }
-		if (grace && grace.combo !== existingTrain.grace?.combo) {
-			trainUpdate.grace = grace
-		}
-		if (hype && hype.total !== existingTrain.hype?.total) {
-			trainUpdate.hype = normalizeHypeData(hype)
-		}
-		if (trainUpdate.grace || trainUpdate.hype) {
-			updateTrain(trainUpdate as Train)
+		if ('grace' in startData && 'grace' in existingTrain) {
+			if (startData.grace.combo !== existingTrain.grace.combo) {
+				updateTrain({ id, grace: startData.grace })
+			}
+		} else if ('hype' in startData && 'hype' in existingTrain) {
+			if (startData.hype.total !== existingTrain.hype.total) {
+				updateTrain({ id, hype: startData.hype })
+			}
 		}
 	} else {
 		// Add new train
-		const train: Partial<Train> = { id }
-		if (grace) train.grace = grace
-		if (hype) train.hype = normalizeHypeData(hype)
-		addTrain({ ...(train as Train), departTime: Date.now() + TRAIN.departDelay })
+		const departTime = Date.now() + TRAIN.departDelay
+		if ('grace' in startData) {
+			addTrain({ id, grace: startData.grace, departTime })
+		}
+		if ('hype' in startData) {
+			addTrain({ id, hype: normalizeHypeData(startData.hype), departTime })
+		}
 	}
 }
 
-export function addToTrain({ id, grace, hype }: TrainAddData) {
+export function addToTrain({ id, ...addData }: TrainAddData) {
 	const existingTrain = getTrain({ id }) // Guaranteed to exist in websocket.ts
 	if (existingTrain.endTime) {
 		console.log('Ignoring add event for ended train')
 		return
 	}
-	const trainUpdate: Partial<Train> = { id }
-	if (grace) {
-		trainUpdate.grace = {
-			...existingTrain.grace,
-			combo: grace.combo,
-			score: grace.score,
-			colors: [...existingTrain.grace.colors, grace.color],
-		}
-	}
-	if (hype) {
+	if ('grace' in addData && 'grace' in existingTrain) {
+		updateTrain({
+			id,
+			grace: {
+				...existingTrain.grace,
+				combo: addData.grace.combo,
+				score: addData.grace.score,
+				colors: [...existingTrain.grace.colors, addData.grace.color],
+			},
+		})
+	} else if ('hype' in addData && 'hype' in existingTrain) {
 		const contributions = [...existingTrain.hype.contributions]
-		const updatedHypeData = { ...hype }
-		if (hype.contribution) {
-			contributions.push(...normalizeContribution(hype.contribution))
-		} else delete updatedHypeData.contribution
-		trainUpdate.hype = { ...hype, contributions }
+		if (addData.hype.contribution) {
+			contributions.push(...normalizeContribution(addData.hype.contribution))
+		} else delete addData.hype.contribution
+		updateTrain({ id, hype: { ...addData.hype, contributions } })
 	}
-	updateTrain(trainUpdate as Train)
 }
 
-export function endTrain({ id, grace, hype }: TrainEndData, hideInfoNow = false) {
+export function endTrain({ id, ...endData }: TrainEndData, hideInfoNow = false) {
 	const existingTrain = getTrain({ id })
 	if (!existingTrain) {
 		console.log('Ignoring end event for unknown train')
 		return
 	}
-	const trainUpdate: Partial<Train> = { id, endTime: Date.now() }
-	if (grace) {
-		trainUpdate.grace = {
-			...existingTrain.grace,
-			combo: grace.combo,
-			score: grace.score,
-			endUser: grace.username,
-		}
+	let train: null | Train = null
+	let endDelay = 0
+	const endTime = Date.now()
+	if ('grace' in endData && 'grace' in existingTrain) {
+		train = updateTrain({
+			id,
+			endTime,
+			endUser: endData.grace.username,
+			grace: {
+				...existingTrain.grace,
+				combo: endData.grace.combo,
+				score: endData.grace.score,
+			},
+		})
+		endDelay = Math.floor(endData.grace.combo / TRAIN.endInfoLengthPerSecond) * 1000
+	} else if ('hype' in endData && 'hype' in existingTrain) {
+		train = updateTrain({ id, endTime, hype: { ...existingTrain.hype, ...endData.hype } })
+		endDelay = 10 * 1000
 	}
-	if (hype) {
-		trainUpdate.hype = { ...existingTrain.hype, ...hype }
-	}
-	let train = updateTrain(trainUpdate as Train)
-	if (!train) return
-	const graceEndTime =
-		!hype && grace ? Math.floor(grace.combo / TRAIN.endInfoLengthPerSecond) * 1000 : 0
-	const hypeEndTime = hype ? 10 * 1000 : 0
-	const endInfoDuration = hideInfoNow
-		? 0
-		: TRAIN.endInfoDuration + Math.max(graceEndTime, hypeEndTime)
+	const endInfoDuration = hideInfoNow ? 0 : TRAIN.endInfoDuration + endDelay
 	setTimeout(() => {
 		train = updateTrain({ id: train.id, hideInfo: true })
 		if (!train) return
@@ -118,23 +112,24 @@ export function endAllTrains(exceptID?: number) {
 	// End all trains that are still going
 	get(trains).forEach((train) => {
 		if (train.endTime || train.id === exceptID) return
-		const trainEnd: Partial<TrainEndData> = { id: train.id }
-		if (train.hype) trainEnd.hype = train.hype
-		else if (train.grace) trainEnd.grace = { ...train.grace, username: '' }
-		endTrain(trainEnd as TrainEndData, true)
+		if ('hype' in train) {
+			endTrain(train)
+		} else if ('grace' in train) {
+			endTrain({ ...train, grace: { ...train.grace, username: '' } })
+		}
 	})
 }
 
 export const getTrainSize = (train: Train) =>
-	train.hype ? train.hype.contributions.length : train.grace.combo
+	'hype' in train ? train.hype.contributions.length : train.grace.combo
 
 export const getTrainWidth = (train: Train) => {
 	const trainSize = getTrainSize(train)
-	if (train.hype)
+	if ('hype' in train)
 		return (
 			TRAIN.engineWidthGold +
 			TRAIN.carWidthGold * trainSize +
-			(train.grace ? TRAIN.cabooseWidth : 0)
+			(train.hype.graces ? TRAIN.cabooseWidth : 0)
 		)
 	return (
 		TRAIN.engineWidth +

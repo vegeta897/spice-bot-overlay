@@ -24,13 +24,13 @@
 		setTimeout(() => (readyToBounce = true), 1700)
 	})
 
-	$: graceCombo = train.grace?.combo
+	$: graceCombo = 'grace' in train && train.grace.combo
 	$: if (graceCombo) onGraceCombo()
 
 	let readyToBounce = false
 	function onGraceCombo() {
 		if (!readyToBounce) return
-		if (train.hype) bounce(bottomElement, 4)
+		if ('hype' in train) bounce(bottomElement, 4)
 		else {
 			bounce(titleElement, 4)
 			bounce(comboElement, 10)
@@ -39,17 +39,17 @@
 	}
 </script>
 
-<section class="nunito" class:top class:hype={train.hype}>
+<section class="nunito" class:top class:hype={'hype' in train}>
 	<TrainTrack />
 	<div class="rail-content">
-		{#if train.hype && train.endTime}<CoinWaterfall />{/if}
+		{#if 'hype' in train && train.endTime}<CoinWaterfall />{/if}
 		<div
 			bind:this={titleElement}
 			class="title-container"
 			in:fly={{ x: 500, duration: 800, delay: 1000, easing: cubicOut }}
 			out:fade={{ duration: 300, easing: cubicIn }}
 		>
-			{#if train.hype}
+			{#if 'hype' in train}
 				<div in:fade={{ duration: 2000, delay: 1800 }}>
 					<div
 						class="title-glow"
@@ -75,13 +75,14 @@
 			{/if}
 			<div class="title">
 				<h1>
-					{#if train.hype}<span style="font-size: 64px; line-height: 58px;">HYPE</span
+					{#if 'hype' in train}<span style="font-size: 64px; line-height: 58px;"
+							>HYPE</span
 						>{:else}GRACE{/if} TRAIN!
 				</h1>
 			</div>
 		</div>
 		<div class="stats">
-			{#if train.grace && !train.hype}
+			{#if 'grace' in train}
 				<div
 					class="combo"
 					in:fade={{ duration: 200, delay: 1200 }}
@@ -104,32 +105,32 @@
 					<Score score={train.grace.score} />
 				</div>
 			{/if}
-			{#if train.hype}<HypeProgress {train} />{/if}
+			{#if 'hype' in train}<HypeProgress {train} />{/if}
 		</div>
 	</div>
-	{#if (train.hype && train.grace) || train.grace?.endUser}
+	{#if ('hype' in train && train.hype.graces) || train.endUser}
 		<div
 			bind:this={bottomElement}
 			class="bottom"
-			class:ended-by={!train.hype}
+			class:ended-by={'grace' in train}
 			in:fly={{
-				x: train.hype ? 0 : 300,
-				y: train.hype ? -50 : 0,
-				duration: train.hype ? 300 : 500,
-				delay: train.hype && !readyToBounce ? 1600 : 0,
+				x: 'hype' in train ? 0 : 300,
+				y: 'hype' in train ? -50 : 0,
+				duration: 'hype' in train ? 300 : 500,
+				delay: 'hype' in train && !readyToBounce ? 1600 : 0,
 				easing: backOut,
 			}}
 			out:fade={{ duration: 200, easing: cubicIn }}
 		>
-			{#if !train.hype}
+			{#if !('hype' in train)}
 				<span>ENDED BY</span>
-				<span class="pulse">{train.grace.endUser} !</span>
-			{:else if train.grace}
+				<span class="pulse">{train.endUser} !</span>
+			{:else}
 				<div>
 					<span style="font-size: 40px; line-height: 20px; position:relative; top: 2px;"
 						>+</span
 					>
-					GRACE {train.grace.combo}<span style:margin-left="2px">x</span>
+					GRACE {train.hype.graces}<span style:margin-left="2px">x</span>
 				</div>
 			{/if}
 		</div>

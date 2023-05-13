@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { carHop } from '../../lib/animations'
-	import type { HexColor } from '../../lib/util'
 
 	export let reverse: boolean
-	export let color: HexColor | null
+	export let color: string | null
 
 	$: _color = color ? `${color}cc` : 'var(--train-pop-color)'
 
@@ -50,6 +49,18 @@
 		d="M366.143,99.934l-357.286,0l8.144,56.945l340.998,0l8.144,-56.945Z"
 		style="fill:{_color}"
 	/>
+	<!-- <foreignObject width="375" height="325" y="-25">
+		<div
+			class="nunito"
+			style:transform-origin="0 0"
+			style:font-size="175px"
+			style:line-height="175px"
+			style:transform="scale(0.65,1.52)"
+			style:color={_color.substring(0, 7)}
+		>
+			WHAT
+		</div>
+	</foreignObject> -->
 </svg>
 
 <style>

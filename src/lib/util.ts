@@ -29,5 +29,3 @@ export const clamp = (val: number, min: number, max: number) =>
 export type RequireAtLeastOne<T> = {
 	[K in keyof T]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<keyof T, K>>>
 }[keyof T]
-
-export type HexColor = `#${string}`

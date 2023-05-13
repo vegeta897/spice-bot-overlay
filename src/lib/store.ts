@@ -18,7 +18,7 @@ export function setOverlayPosition(position: OverlayPosition) {
 
 export const trains: Writable<Train[]> = writable([])
 
-export const getTrain = (train: Pick<Train, 'id'>) =>
+export const getTrain = (train: Pick<Train, 'id'>): Train | undefined =>
 	get(trains).find((t) => t.id === train.id)
 
 export function addTrain(train: Train) {
