@@ -6,7 +6,7 @@ import {
 } from './store'
 import { createTrain, updateTrain, endTrain, endAllTrains } from './trains'
 
-const version = 3 // Should match version on server websocket.ts
+const version = 4 // Should match version on server websocket.ts
 
 let ws: WebSocket
 let reloading = false
