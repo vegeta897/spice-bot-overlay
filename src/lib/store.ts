@@ -18,15 +18,15 @@ export function setOverlayPosition(position: OverlayPosition) {
 
 export const trains: Writable<Train[]> = writable([])
 
-export const getTrain = (train: Pick<Train, 'id'>): Train | undefined =>
+export const getStoreTrain = (train: Pick<Train, 'id'>): Train | undefined =>
 	get(trains).find((t) => t.id === train.id)
 
-export function addTrain(train: Train) {
+export function addStoreTrain(train: Train) {
 	trains.update((gt) => [...gt, train])
 }
 
-export function updateTrain(train: Pick<Train, 'id'> & Partial<Train>) {
-	const existingTrain = getTrain(train)
+export function updateStoreTrain(train: Pick<Train, 'id'> & Partial<Train>) {
+	const existingTrain = getStoreTrain(train)
 	if (!existingTrain) {
 		console.log('Tried to update unknown train ID', train.id)
 		return
@@ -43,8 +43,8 @@ export function updateTrain(train: Pick<Train, 'id'> & Partial<Train>) {
 	return updatedTrain
 }
 
-export function deleteTrain(train: Train) {
-	if (!getTrain(train)) return
+export function deleteStoreTrain(train: Train) {
+	if (!getStoreTrain(train)) return
 	trains.update((trains) => [...trains.filter((t) => t.id !== train.id)])
 }
 

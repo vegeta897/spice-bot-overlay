@@ -4,7 +4,7 @@
 	import { onInterval, sleep } from '../../lib/util'
 	import { getTrainSize, getTrainWidth, type Train } from '../../lib/trains'
 	import { onMount } from 'svelte'
-	import { deleteTrain, updateTrain } from '../../lib/store'
+	import { deleteStoreTrain, updateStoreTrain } from '../../lib/store'
 	import CoinSpout from './CoinSpout.svelte'
 	import Caboose from './Caboose.svelte'
 	import Engine from './Engine.svelte'
@@ -22,8 +22,7 @@
 	function updateTrainSpeed() {
 		const prevTrainSpeed = pixelsPerMs
 		let comboSpeedBoost = getTrainSize(train) * TRAIN.speedAddPerCombo
-		if (train.endTime && 'grace' in train && train.grace.combo > 30)
-			comboSpeedBoost *= 1.5
+		if (train.endTime && 'grace' in train) comboSpeedBoost *= 1.5
 		pixelsPerMs = (TRAIN.speed + comboSpeedBoost) / 1000
 		durationPerScreen = Math.round(SCREEN.width / pixelsPerMs)
 		const speedRatio = prevTrainSpeed / pixelsPerMs
@@ -175,8 +174,8 @@
 			translateDelta = Math.round(remainingScreens * (reverse ? 100 : -100))
 			await slide(translation, translateDelta, easing)
 		}
-		let updatedTrain = updateTrain({ id: train.id, offScreen: true })
-		if (!updatedTrain || updatedTrain.hideInfo) deleteTrain(train)
+		let updatedTrain = updateStoreTrain({ id: train.id, offScreen: true })
+		if (!updatedTrain || updatedTrain.hideInfo) deleteStoreTrain(train)
 	}
 
 	onMount(async () => {

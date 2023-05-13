@@ -1,10 +1,10 @@
 import {
-	getTrain,
+	getStoreTrain,
 	setOverlayError,
 	setOverlayPosition,
 	type OverlayPosition,
 } from './store'
-import { createTrain, addToTrain, endTrain, endAllTrains } from './trains'
+import { createTrain, updateTrain, endTrain, endAllTrains } from './trains'
 
 const version = 3 // Should match version on server websocket.ts
 
@@ -64,11 +64,11 @@ export function initWebsocket(key: string) {
 				createTrain(message.data)
 				break
 			case 'train-add':
-				if (!getTrain(message.data)) {
+				if (!getStoreTrain(message.data)) {
 					console.log('Requesting create event for unknown train')
 					ws.send(JSON.stringify({ type: 'train-query', data: { id: message.data.id } }))
 				} else {
-					addToTrain(message.data)
+					updateTrain(message.data)
 				}
 				break
 			case 'train-end':
