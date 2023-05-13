@@ -85,7 +85,6 @@ export function initWebsocket(key: string) {
 }
 
 // Should match types on server graceEvents.ts and websocket.ts
-type ID = { id: number }
 type GraceEventBaseData = {
 	combo: number
 	score: number
@@ -112,9 +111,12 @@ export type HypeProgress = {
 }
 type HypeTrainAddData = { hype: HypeEventBaseData & { contribution?: HypeProgress } }
 type HypeTrainEndData = { hype: Omit<HypeEventBaseData, 'progress' | 'goal'> }
+
+type ID = { id: number }
 export type TrainStartData = ID & (GraceTrainData | HypeTrainData)
 export type TrainAddData = ID & (GraceTrainAddData | HypeTrainAddData)
 export type TrainEndData = ID & (GraceTrainEndData | HypeTrainEndData)
+
 type Message =
 	| {
 			type: 'init'
