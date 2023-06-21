@@ -96,6 +96,7 @@
 	let showSmoke = false
 	let reversalTimeout: number
 	$: if (train.endTime) clearTimeout(reversalTimeout)
+	$: if (train.endTime && 'grace' in train && !cabooseAdded) endGraceTrain()
 	$: hypeGraces = 'hype' in train && train.hype.graces
 	$: if (hypeGraces) onHypedGrace()
 
@@ -103,7 +104,6 @@
 	function onHypedGrace() {
 		if (!cabooseAdded) {
 			cabooseAdded = true
-			cabooseComponent?.hop()
 			doImpulse()
 			return
 		}
@@ -116,6 +116,11 @@
 		cabooseComponent?.hop()
 		doImpulse()
 		if (animation) scheduleReversal()
+	}
+
+	function endGraceTrain() {
+		cabooseAdded = true
+		doImpulse()
 	}
 
 	// Impulse test
