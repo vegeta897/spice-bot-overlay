@@ -1,5 +1,5 @@
 export const TRAIN = {
-	engineWidth: 96, // Padding included
+	engineWidth: 96, // Padding included TODO: Increase size when depot site launches
 	engineWidthGold: 106,
 	carWidth: 81,
 	carWidthGold: 91,

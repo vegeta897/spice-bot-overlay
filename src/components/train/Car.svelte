@@ -13,6 +13,7 @@
 	}
 </script>
 
+<!-- TODO: Increase size when depot site launches -->
 <svg viewBox="0 0 375 300" width="75" height="60" bind:this={svgElement}>
 	<circle
 		cx="87.5"
