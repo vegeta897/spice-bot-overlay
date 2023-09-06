@@ -141,7 +141,8 @@
 	function scheduleReversal() {
 		if (train.endTime) return
 		const trainWidth = getTrainWidth(train)
-		const animationProgress = (animation?.currentTime || 0) / animationDuration
+		const animationProgress =
+			((animation?.currentTime as number) || 0) / animationDuration
 		let currentTranslation = translation + translateDelta * animationProgress
 		if (reverse) currentTranslation *= -1 // Trust me it works
 		const remainingScreens = currentTranslation / 100 + trainWidth / SCREEN.width
