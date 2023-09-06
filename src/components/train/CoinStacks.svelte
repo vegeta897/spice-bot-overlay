@@ -40,7 +40,7 @@
 			zIndex *= -1
 		}
 		stackPositions[0].zIndex = 2
-		stackPositions.at(-1).zIndex = 2
+		stackPositions.at(-1)!.zIndex = 2
 		stackPositions.sort((a, b) => b.zIndex - a.zIndex)
 		const stacks = stackPositions.map((p) => ({ ...p, coins: 3 }))
 		const nonFullStacks = [...stacks]

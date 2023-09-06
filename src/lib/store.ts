@@ -47,6 +47,3 @@ export function deleteStoreTrain(train: Train) {
 	if (!getStoreTrain(train)) return
 	trains.update((trains) => [...trains.filter((t) => t.id !== train.id)])
 }
-
-// Demo only
-export const chat = writable([])

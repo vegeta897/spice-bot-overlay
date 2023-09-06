@@ -10,11 +10,21 @@ import {
 } from './store'
 import type {
 	GraceTrainData,
+	HypeProgress,
 	HypeTrainData,
 	TrainAddData,
 	TrainEndData,
 	TrainStartData,
 } from './websocket'
+
+type Car =
+	| { type: 'grace'; color: string }
+	| {
+			type: 'hype'
+			color: string | null
+			bitsOrSubs: HypeProgress['type']
+			amount: number
+	  }
 
 type TrainBase = {
 	id: number
@@ -29,6 +39,8 @@ type TrainBase = {
 type GraceTrain = TrainBase & GraceTrainData
 type HypeTrain = TrainBase & HypeTrainData
 export type Train = GraceTrain | HypeTrain
+
+// TODO: Create a Car type that can be hype or grace
 
 export function createTrain({ id, ...startData }: TrainStartData) {
 	endAllTrains(id) // End all trains except this one
@@ -57,7 +69,7 @@ export function createTrain({ id, ...startData }: TrainStartData) {
 }
 
 export function updateTrain({ id, ...addData }: TrainAddData) {
-	const existingTrain = getStoreTrain({ id }) // Guaranteed to exist in websocket.ts
+	const existingTrain = getStoreTrain({ id })! // Guaranteed to exist in websocket.ts
 	if (existingTrain.endTime) {
 		console.log('Ignoring add event for ended train')
 		return
@@ -100,19 +112,19 @@ export function endTrain({ id, ...endData }: TrainEndData, hideInfoNow = false) 
 				combo: endData.grace.combo,
 				score: endData.grace.score,
 			},
-		})
+		})!
 		endDelay = Math.floor(endData.grace.combo / TRAIN.endInfoLengthPerSecond) * 1000
 	} else if ('hype' in endData && 'hype' in existingTrain) {
 		train = updateStoreTrain({
 			id,
 			endTime,
 			hype: { ...existingTrain.hype, ...endData.hype },
-		})
+		})!
 		endDelay = 10 * 1000
 	}
 	const endInfoDuration = hideInfoNow ? 0 : TRAIN.endInfoDuration + endDelay
 	setTimeout(() => {
-		train = updateStoreTrain({ id: train.id, hideInfo: true })
+		train = updateStoreTrain({ id: train!.id, hideInfo: true })!
 		if (!train) return
 		if (train.offScreen) deleteStoreTrain(train)
 	}, endInfoDuration)
@@ -146,4 +158,12 @@ export const getTrainWidth = (train: Train) => {
 		TRAIN.carWidth * (trainSize - 1) +
 		(train.endTime ? TRAIN.cabooseWidth : 0)
 	)
+}
+
+export function graceToCar(grace: GraceTrainData['grace']['colors'][number]): Car {
+	return { type: 'grace', color: grace }
+}
+
+export function hypeToCar(hype: HypeProgress): Car {
+	return { type: 'hype', color: hype.color, bitsOrSubs: hype.type, amount: hype.amount }
 }

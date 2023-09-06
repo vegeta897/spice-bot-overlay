@@ -46,11 +46,11 @@
 		<div
 			bind:this={titleElement}
 			class="title-container"
-			in:fly={{ x: 500, duration: 800, delay: 1000, easing: cubicOut }}
-			out:fade={{ duration: 300, easing: cubicIn }}
+			in:fly|global={{ x: 500, duration: 800, delay: 1000, easing: cubicOut }}
+			out:fade|global={{ duration: 300, easing: cubicIn }}
 		>
 			{#if 'hype' in train}
-				<div in:fade={{ duration: 2000, delay: 1800 }}>
+				<div in:fade|global={{ duration: 2000, delay: 1800 }}>
 					<div
 						class="title-glow"
 						style:animation-duration="2s"
@@ -85,8 +85,8 @@
 			{#if 'grace' in train}
 				<div
 					class="combo"
-					in:fade={{ duration: 200, delay: 1200 }}
-					out:fade={{ duration: 200, delay: 200, easing: cubicIn }}
+					in:fade|global={{ duration: 200, delay: 1200 }}
+					out:fade|global={{ duration: 200, delay: 200, easing: cubicIn }}
 					bind:this={comboElement}
 				>
 					<Ratchet number={train.grace.combo} digitWidth={28} />
@@ -98,8 +98,8 @@
 				</div>
 				<div
 					class="score-container"
-					in:fade={{ duration: 200, delay: 1300 }}
-					out:fade={{ duration: 150, delay: 250, easing: cubicIn }}
+					in:fade|global={{ duration: 200, delay: 1300 }}
+					out:fade|global={{ duration: 150, delay: 250, easing: cubicIn }}
 					bind:this={scoreElement}
 				>
 					<Score score={train.grace.score} />
@@ -113,14 +113,14 @@
 			bind:this={bottomElement}
 			class="bottom"
 			class:ended-by={'grace' in train}
-			in:fly={{
+			in:fly|global={{
 				x: 'hype' in train ? 0 : 300,
 				y: 'hype' in train ? -50 : 0,
 				duration: 'hype' in train ? 300 : 500,
 				delay: 'hype' in train && !readyToBounce ? 1600 : 0,
 				easing: backOut,
 			}}
-			out:fade={{ duration: 200, easing: cubicIn }}
+			out:fade|global={{ duration: 200, easing: cubicIn }}
 		>
 			{#if !('hype' in train)}
 				<span>ENDED BY</span>

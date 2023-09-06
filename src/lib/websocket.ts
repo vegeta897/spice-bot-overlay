@@ -45,6 +45,7 @@ export function initWebsocket(key: string) {
 			message = JSON.parse(event.data)
 		} catch (e) {
 			console.log('Websocket received non-JSON message:', event.data)
+			return
 		}
 		switch (message.type) {
 			case 'init':

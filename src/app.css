@@ -19,7 +19,7 @@ body {
 
 @supports (font-variation-settings: normal) {
 	.nunito {
-		font-family: 'NunitoVariable', sans-serif;
+		font-family: 'Nunito Variable', sans-serif;
 		font-variation-settings: 'wght' 900;
 	}
 }

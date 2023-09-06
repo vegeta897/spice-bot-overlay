@@ -46,22 +46,22 @@
 <div
 	bind:this={progressElement}
 	class="progress"
-	in:fade={{ duration: 300, delay: 1500, easing: cubicOut }}
-	out:fade={{ duration: 200, delay: 200, easing: cubicIn }}
+	in:fade|global={{ duration: 300, delay: 1500, easing: cubicOut }}
+	out:fade|global={{ duration: 200, delay: 200, easing: cubicIn }}
 >
 	<div class="level" class:level-2digit={displayedLevel.toString().length > 1}>
 		LEVEL {displayedLevel}
 	</div>
 	{#if train.endTime}
 		<div
-			in:fade={{ duration: 500 }}
+			in:fade|global={{ duration: 500 }}
 			style="white-space: nowrap; font-size: 28px; line-height: 40px;"
 		>
 			CHOO CHOO!
 		</div>
 	{:else}
 		{#key displayedLevel}
-			<div class="progress-bar-outer" out:fade={{ duration: 500 }}>
+			<div class="progress-bar-outer" out:fade|global={{ duration: 500 }}>
 				<div
 					class="progress-bar-inner"
 					style:transform="scaleX({(displayedPercent * 170) / 178})"

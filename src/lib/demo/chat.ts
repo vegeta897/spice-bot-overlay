@@ -1,3 +1,4 @@
+import { writable } from 'svelte/store'
 import { randomElement, randomIntRange } from '../util'
 import {
 	fakeUsers,
@@ -11,7 +12,7 @@ import {
 type ChatMessage = {
 	text: string
 	username: string
-	color: string | null
+	color: string
 	time: string
 	redeem?: boolean
 	highlight?: boolean
@@ -42,6 +43,8 @@ const POINTS = {
 	highlight: 5,
 	normal: 1,
 }
+
+export const chat = writable<ChatMessage[]>([])
 
 export function planTrain(hypeMode = false) {
 	const messages: {
@@ -102,7 +105,7 @@ export function planTrain(hypeMode = false) {
 				: graceMessage.highlight
 				? 'highlight'
 				: 'normal'
-			if (lastGraceType && graceType !== lastGraceType) {
+			if (lastGraceType! && graceType !== lastGraceType) {
 				totalScore += comboScore
 				comboPoints = 0
 				comboSize = 0
@@ -177,8 +180,10 @@ function createHypeMessage(): ChatMessage {
 		color,
 		text: '',
 		time: getTimeString(),
-		bits: cheer && randomElement([100, 100, 200, 250, 500, 1000, 2000]),
-		subs: !cheer && randomElement([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5, 5, 10]),
+		bits: (cheer && randomElement([100, 100, 200, 250, 500, 1000, 2000])) || undefined,
+		subs:
+			(!cheer && randomElement([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5, 5, 10])) ||
+			undefined,
 	}
 }
 
@@ -197,7 +202,7 @@ function createSpiceBotMessage(endingUser: string, trainLength: number): ChatMes
 	}
 }
 
-function createRegretMessage(username: string, color: string | null): ChatMessage {
+function createRegretMessage(username: string, color: string): ChatMessage {
 	const text = randomElement(regretMessages)
 	return { username, color, text, time: getTimeString() }
 }

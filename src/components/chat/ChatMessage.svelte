@@ -2,7 +2,7 @@
 	import { randomElement } from '../../lib/util'
 	import Redeem from './Redeem.svelte'
 	export let username: string
-	export let color: string | null
+	export let color: string
 	export let text: string
 	export let time: string
 	export let highlight = false

@@ -32,7 +32,7 @@
 	}
 </script>
 
-<div out:fade={{ duration: 200 }} class="coin-container" bind:this={containerElement} />
+<div out:fade|global={{ duration: 200 }} class="coin-container" bind:this={containerElement} />
 
 <style>
 	.coin-container {

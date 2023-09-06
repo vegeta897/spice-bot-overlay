@@ -10,7 +10,7 @@
 	viewBox="0 0 540 160"
 	width="540"
 	height="160"
-	out:fly={{ x: 400, duration: 500, easing: backIn }}
+	out:fly|global={{ x: 400, duration: 500, easing: backIn }}
 >
 	<defs>
 		<linearGradient id="rainbowGradient" y2="-5%">

@@ -2,7 +2,13 @@
 	import Smoke from './Smoke.svelte'
 	import { SCREEN, TRAIN } from '../../lib/constants'
 	import { onInterval, sleep } from '../../lib/util'
-	import { getTrainSize, getTrainWidth, type Train } from '../../lib/trains'
+	import {
+		getTrainSize,
+		getTrainWidth,
+		graceToCar,
+		hypeToCar,
+		type Train,
+	} from '../../lib/trains'
 	import { onMount } from 'svelte'
 	import { deleteStoreTrain, updateStoreTrain } from '../../lib/store'
 	import CoinSpout from './CoinSpout.svelte'
@@ -11,6 +17,7 @@
 	import Car from './Car.svelte'
 	import GoldEngine from './GoldEngine.svelte'
 	import GoldCar from './GoldCar.svelte'
+	import type { HypeProgress } from '../../lib/websocket'
 
 	export let train: Train
 	export let top = false
@@ -36,56 +43,37 @@
 	let animation: Animation
 	let translation = 100 // Percent of screen width
 	let translateDelta = -100
-	let animationDuration = durationPerScreen
+	let animationDuration = 0 // Will be updated on first slide
 	let reverse = false
 
 	let cabooseComponent: Caboose
 
 	const reversalEvents = new EventTarget()
 
-	$: graceCars = 'grace' in train && train.grace.colors
-	$: hypeCars = 'hype' in train && train.hype.contributions
-	let graceCarsDisplayed: typeof graceCars = []
-	let hypeCarsDisplayed: typeof hypeCars = []
+	$: trainCars =
+		'grace' in train
+			? train.grace.colors.map(graceToCar)
+			: train.hype.contributions.map(hypeToCar)
+	let carsDisplayed: typeof trainCars = []
 
-	// This is kinda lame but it works and I don't care right now
-	$: graceCars &&
-		onCarAdd(
-			() => graceCars,
-			() => graceCarsDisplayed,
-			400,
-			() => (graceCarsDisplayed = graceCarsDisplayed)
-		)
-	$: hypeCars &&
-		onCarAdd(
-			() => hypeCars,
-			() => hypeCarsDisplayed,
-			500,
-			() => (hypeCarsDisplayed = hypeCarsDisplayed)
-		)
+	$: trainCars && onCarAdd()
+	$: carAddDelay = 'grace' in train ? 400 : 500
 
 	let newTrain = true
 	let addingCars = false
-	async function onCarAdd<T extends unknown[]>(
-		getCars: () => T,
-		getDisplayedCars: () => T,
-		cooldown: number,
-		selfAssign: () => {}
-	) {
+	async function onCarAdd() {
 		if (newTrain) {
 			// Add all cars instantly if the train was just created
 			newTrain = false
-			getDisplayedCars().push(...getCars())
-			selfAssign()
+			carsDisplayed = [...trainCars]
 			return
 		}
 		if (addingCars) return
 		addingCars = true
-		while (getDisplayedCars().length < getCars().length) {
-			const displayedCars = getDisplayedCars()
-			displayedCars.push(getCars()[displayedCars.length])
-			selfAssign() // Call for svelte reactivity
-			await sleep(cooldown)
+		while (carsDisplayed.length < trainCars.length) {
+			carsDisplayed.push(trainCars[carsDisplayed.length])
+			carsDisplayed = carsDisplayed
+			await sleep(carAddDelay)
 		}
 		addingCars = false
 	}
@@ -226,36 +214,37 @@
 </script>
 
 <div class="container" bind:this={trainContainer} class:top class:reverse style:opacity>
-	{#if 'hype' in train}
-		<div class="train-car-container">
+	<div class="train-car-container">
+		{#if 'hype' in train}
 			<GoldEngine {reverse} bind:this={carComponents[0]} />
+		{:else}
+			<Engine
+				{reverse}
+				frog={train.grace.frog}
+				color={null}
+				bind:this={carComponents[0]}
+			/>
+		{/if}
+	</div>
+	{#each carsDisplayed as car, c (c)}
+		<div class="train-car-container">
+			{#if car.type === 'grace'}
+				<Car {reverse} color={car.color} bind:this={carComponents[c + 1]} />
+			{:else}
+				<GoldCar
+					{reverse}
+					color={car.color}
+					type={car.bitsOrSubs}
+					amount={car.amount}
+					bind:this={carComponents[c + 1]}
+				/>
+			{/if}
 		</div>
-		{#each hypeCarsDisplayed as { color, type, amount }, c (c)}
-			<div class="train-car-container">
-				<GoldCar {reverse} {color} {type} {amount} bind:this={carComponents[c + 1]} />
-			</div>
-		{/each}
-		{#if train.hype.graces}
-			<Caboose bind:this={cabooseComponent} combo={train.hype.graces} {reverse} />
-		{/if}
-	{:else}
-		{#each graceCarsDisplayed as color, c (c)}
-			<div class="train-car-container">
-				{#if c === 0}
-					<Engine
-						{reverse}
-						{color}
-						frog={train.grace.frog}
-						bind:this={carComponents[c]}
-					/>
-				{:else}
-					<Car {reverse} {color} bind:this={carComponents[c]} />
-				{/if}
-			</div>
-		{/each}
-		{#if train.endTime && train.endUser}
-			<Caboose bind:this={cabooseComponent} combo={train.grace.combo} {reverse} />
-		{/if}
+	{/each}
+	{#if 'hype' in train && train.hype.graces}
+		<Caboose bind:this={cabooseComponent} combo={train.hype.graces} {reverse} />
+	{:else if 'grace' in train && train.endTime && train.endUser}
+		<Caboose bind:this={cabooseComponent} combo={train.grace.combo} {reverse} />
 	{/if}
 	{#if !top}
 		{#if 'hype' in train}

@@ -13,8 +13,8 @@
 	const urlParams = new URLSearchParams(window.location.search)
 	const demoMode = urlParams.has('demo')
 	const fullDemoMode = urlParams.has('fulldemo')
-	const widthOverride = parseInt(urlParams.get('w'))
-	const heightOverride = parseInt(urlParams.get('h'))
+	const widthOverride = parseInt(urlParams.get('w') || '0')
+	const heightOverride = parseInt(urlParams.get('h') || '0')
 	if (widthOverride > 0) SCREEN.width = widthOverride
 	if (heightOverride > 0) SCREEN.height = heightOverride
 	const planMode = urlParams.has('plan')
@@ -22,7 +22,7 @@
 	if (demoMode) {
 		initDemo(urlParams.has('hype'), urlParams.has('static'))
 	} else {
-		initWebsocket(urlParams.get('key'))
+		initWebsocket(urlParams.get('key') || '')
 	}
 
 	let background = 1

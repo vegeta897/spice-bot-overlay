@@ -1,9 +1,9 @@
 import { TRAIN } from '../constants'
-import { chat, getStoreTrain, trains, updateStoreTrain } from '../store'
+import { getStoreTrain, trains, updateStoreTrain } from '../store'
 import { updateTrain, createTrain, endTrain } from '../trains'
 import { randomIntRange, sleep } from '../util'
 import type { HypeProgress } from '../websocket'
-import { planTrain } from './chat'
+import { chat, planTrain } from './chat'
 import { fakeUsers } from './strings'
 
 const MAX_MESSAGES = 18
@@ -21,7 +21,7 @@ export async function runChatLoop(hypeMode = false) {
 	runTime = chatLoopStartTime
 	while (chatLoopStartTime === runTime) {
 		let trainID = Date.now()
-		const initialColors: (string | null)[] = []
+		const initialColors: string[] = []
 		const initialContributions: HypeProgress[] = []
 		let combo = 0
 		let score = 0
@@ -58,7 +58,7 @@ export async function runChatLoop(hypeMode = false) {
 				goal = hype.goal
 				const contribution: HypeProgress = {
 					type: hype.bits ? 'bits' : 'subs',
-					amount: hype.bits || hype.subs,
+					amount: (hype.bits || hype.subs)!,
 					color: message.color,
 				}
 				if (initialContributions.length < 3) initialContributions.push(contribution)
@@ -87,7 +87,7 @@ export async function runChatLoop(hypeMode = false) {
 				}
 			}
 			if (end) {
-				const endingTrain = getStoreTrain({ id: trainID })
+				const endingTrain = getStoreTrain({ id: trainID })!
 				if ('grace' in endingTrain) {
 					endTrain({ id: trainID, grace: { combo, score, username: message.username } })
 				} else {

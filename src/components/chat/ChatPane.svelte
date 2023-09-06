@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { afterUpdate } from 'svelte'
 	import ChatMessage from './ChatMessage.svelte'
-	import { chat } from '../../lib/store'
+	import { chat } from '../../lib/demo/chat'
 
 	let messagesElement: HTMLDivElement
 

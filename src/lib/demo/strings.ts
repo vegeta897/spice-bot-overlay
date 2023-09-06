@@ -1,4 +1,4 @@
-export const fakeUsers: [string, string | null][] = [
+export const fakeUsers: [string, string][] = [
 	['goku798', '#c365b0'],
 	['dazzle_razzle', '#9ffbe2'],
 	['reallysubverted', '#ff4a5f'],

@@ -12,8 +12,8 @@
 		<div class="digit" style:width="{digitWidth}px">
 			{#key digit}
 				<span
-					in:fly={{ y: 40, duration: 250, easing: backOut }}
-					out:fly|local={{ y: -40, duration: 250 }}
+					in:fly|global={{ y: 40, duration: 250, easing: backOut }}
+					out:fly={{ y: -40, duration: 250 }}
 				>
 					{digit}
 				</span>
