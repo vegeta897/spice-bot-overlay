@@ -53,7 +53,7 @@
 		'grace' in train
 			? train.grace.colors.map(graceToCar)
 			: train.hype.contributions.map(hypeToCar)
-	let carsDisplayed: typeof trainCars = []
+	let carsDisplayed = 0
 
 	$: trainCars && onCarAdd()
 	$: carAddDelay = 'grace' in train ? 400 : 500
@@ -64,16 +64,15 @@
 	let addingCars = false
 	async function onCarAdd() {
 		if (newTrain) {
-			// Add all cars instantly if the train was just created
+			// Display all cars if the train was just created
 			newTrain = false
-			carsDisplayed = [...trainCars]
+			carsDisplayed = trainCars.length
 			return
 		}
 		if (addingCars) return
 		addingCars = true
-		while (carsDisplayed.length < trainCars.length) {
-			carsDisplayed.push(trainCars[carsDisplayed.length])
-			carsDisplayed = carsDisplayed
+		while (carsDisplayed < trainCars.length) {
+			carsDisplayed++
 			await sleep(carAddDelay)
 		}
 		addingCars = false
@@ -227,20 +226,22 @@
 			/>
 		{/if}
 	</div>
-	{#each carsDisplayed as car, c (c)}
-		<div class="train-car-container">
-			{#if car.type === 'grace'}
-				<Car {reverse} color={car.color} bind:this={carComponents[c + 1]} />
-			{:else}
-				<GoldCar
-					{reverse}
-					color={car.color}
-					type={car.bitsOrSubs}
-					amount={car.amount}
-					bind:this={carComponents[c + 1]}
-				/>
-			{/if}
-		</div>
+	{#each trainCars as car, c (c)}
+		{#if c < carsDisplayed}
+			<div class="train-car-container">
+				{#if car.type === 'grace'}
+					<Car {reverse} color={car.color} bind:this={carComponents[c + 1]} />
+				{:else}
+					<GoldCar
+						{reverse}
+						color={car.color}
+						type={car.bitsOrSubs}
+						amount={car.amount}
+						bind:this={carComponents[c + 1]}
+					/>
+				{/if}
+			</div>
+		{/if}
 	{/each}
 	{#if 'hype' in train && train.hype.graces}
 		<Caboose bind:this={cabooseComponent} combo={train.hype.graces} {reverse} />
