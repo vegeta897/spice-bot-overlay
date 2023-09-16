@@ -1,18 +1,19 @@
 import { get, writable, type Writable } from 'svelte/store'
 import type { Train } from './trains'
+import type { OverlayOptions } from 'grace-train-lib/trains'
 
 export type OverlayError = null | 'need-reload' | 'missing-key' | 'invalid-key'
-export type OverlayPosition = 'top' | 'bottom'
 
-export const overlayStatus: Writable<{
-	error: OverlayError
-	position: OverlayPosition
-}> = writable({ auth: 'init', error: null, position: 'bottom' })
+export const overlayStatus: Writable<
+	{
+		error: OverlayError
+	} & OverlayOptions
+> = writable({ auth: 'init', error: null, position: 'bottom' })
 
 export function setOverlayError(error: OverlayError) {
 	overlayStatus.update((status) => ({ ...status, error }))
 }
-export function setOverlayPosition(position: OverlayPosition) {
+export function setOverlayPosition(position: OverlayOptions['position']) {
 	overlayStatus.update((status) => ({ ...status, position }))
 }
 

@@ -15,7 +15,7 @@ import type {
 	TrainAddData,
 	TrainEndData,
 	TrainStartData,
-} from './websocket'
+} from 'grace-train-lib/trains'
 
 type Car =
 	| { type: 'grace'; color: string }
@@ -39,8 +39,6 @@ type TrainBase = {
 type GraceTrain = TrainBase & GraceTrainData
 type HypeTrain = TrainBase & HypeTrainData
 export type Train = GraceTrain | HypeTrain
-
-// TODO: Create a Car type that can be hype or grace
 
 export function createTrain({ id, ...startData }: TrainStartData) {
 	endAllTrains(id) // End all trains except this one

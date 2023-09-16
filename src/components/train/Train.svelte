@@ -17,7 +17,6 @@
 	import Car from './Car.svelte'
 	import GoldEngine from './GoldEngine.svelte'
 	import GoldCar from './GoldCar.svelte'
-	import type { HypeProgress } from '../../lib/websocket'
 
 	export let train: Train
 	export let top = false
@@ -58,6 +57,8 @@
 
 	$: trainCars && onCarAdd()
 	$: carAddDelay = 'grace' in train ? 400 : 500
+
+	// TODO: Use a simple number for displayed cars instead of a cloned array?
 
 	let newTrain = true
 	let addingCars = false

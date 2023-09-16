@@ -1,10 +1,6 @@
-import {
-	getStoreTrain,
-	setOverlayError,
-	setOverlayPosition,
-	type OverlayPosition,
-} from './store'
+import { getStoreTrain, setOverlayError, setOverlayPosition } from './store'
 import { createTrain, updateTrain, endTrain, endAllTrains } from './trains'
+import type { TrainWSMessage } from 'grace-train-lib/trains'
 
 const version = 4 // Should match version on server websocket.ts
 
@@ -40,7 +36,7 @@ export function initWebsocket(key: string) {
 			setOverlayError('invalid-key')
 			return
 		}
-		let message: Message
+		let message: TrainWSMessage
 		try {
 			message = JSON.parse(event.data)
 		} catch (e) {
@@ -84,49 +80,6 @@ export function initWebsocket(key: string) {
 		}
 	})
 }
-
-// Should match types on server graceEvents.ts and websocket.ts
-type GraceEventBaseData = {
-	combo: number
-	score: number
-}
-type HypeEventBaseData = {
-	level: number
-	total: number
-	progress: number
-	goal: number
-	graces: number
-}
-export type GraceTrainData = {
-	grace: GraceEventBaseData & { colors: string[]; frog?: boolean }
-}
-type GraceTrainAddData = { grace: GraceEventBaseData & { color: string } }
-type GraceTrainEndData = { grace: GraceEventBaseData & { username: string } }
-export type HypeTrainData = {
-	hype: HypeEventBaseData & { contributions: HypeProgress[] }
-}
-export type HypeProgress = {
-	type: 'bits' | 'subs'
-	amount: number
-	color: string | null
-}
-type HypeTrainAddData = { hype: HypeEventBaseData & { contribution?: HypeProgress } }
-type HypeTrainEndData = { hype: Omit<HypeEventBaseData, 'progress' | 'goal'> }
-
-type ID = { id: number }
-export type TrainStartData = ID & (GraceTrainData | HypeTrainData)
-export type TrainAddData = ID & (GraceTrainAddData | HypeTrainAddData)
-export type TrainEndData = ID & (GraceTrainEndData | HypeTrainEndData)
-
-type Message =
-	| {
-			type: 'init'
-			data: { version: number; train: TrainStartData | false; position: OverlayPosition }
-	  }
-	| { type: 'train-start'; data: TrainStartData }
-	| { type: 'train-add'; data: TrainAddData }
-	| { type: 'train-end'; data: TrainEndData }
-	| { type: 'overlay'; data: { position: OverlayPosition } }
 
 if (import.meta.hot) {
 	import.meta.hot.on('vite:beforeUpdate', (payload) => {
