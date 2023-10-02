@@ -12,6 +12,7 @@
 
 	const urlParams = new URLSearchParams(window.location.search)
 	const demoMode = urlParams.has('demo')
+	const streamUI = demoMode || urlParams.has('ui')
 	const fullDemoMode = urlParams.has('fulldemo')
 	const widthOverride = parseInt(urlParams.get('w') || '0')
 	const heightOverride = parseInt(urlParams.get('h') || '0')
@@ -40,12 +41,12 @@
 <Status />
 <main
 	style="--screen-width: {SCREEN.width}px; --screen-height: {SCREEN.height}px;"
-	class:demo={demoMode && !fullDemoMode}
+	class:stream-ui={streamUI}
 	class:top
 >
 	<div class="stream-container">
 		<div class="stream">
-			{#if demoMode && !fullDemoMode}
+			{#if streamUI}
 				<div
 					class="stream-background"
 					style="background: url('sample-stream-{background}.jpg')"
@@ -72,11 +73,11 @@
 			{/if}
 		</div>
 	</div>
-	{#if demoMode && !fullDemoMode}
+	{#if streamUI}
 		<ChatPane />
 	{/if}
 </main>
-{#if demoMode && !fullDemoMode}
+{#if streamUI}
 	<section>
 		<button on:click={changeBackground}>Change Stream BG</button>
 	</section>
@@ -92,7 +93,7 @@
 	main {
 		display: flex;
 	}
-	main.demo {
+	main.stream-ui {
 		margin-left: 0.25rem;
 		margin-top: 0.25rem;
 		height: calc(var(--screen-height) / 2 + 2px);
@@ -104,7 +105,7 @@
 		overflow: hidden;
 		position: relative;
 	}
-	.demo .stream-container {
+	.stream-ui .stream-container {
 		width: calc(var(--screen-width) / 2);
 		height: calc(var(--screen-height) / 2);
 		border: 1px solid #0008;
@@ -113,7 +114,7 @@
 		width: var(--screen-width);
 		height: var(--screen-height);
 	}
-	.demo .stream {
+	.stream-ui .stream {
 		transform-origin: top left;
 		transform: scale(0.5);
 	}
