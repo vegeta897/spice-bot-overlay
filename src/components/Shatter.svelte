@@ -32,7 +32,7 @@
 		node.style.transform = 'scale(113%)'
 		const shards = [...shardGelement.children]
 		for (const shard of shards) {
-			const shardData = shard.getAttribute('data-shard').split(',')
+			const shardData = shard.getAttribute('data-shard')!.split(',')
 			const shardAngle = +shardData[0] * (Math.PI / 180)
 			const shardDistance = +shardData[1]
 			const x = Math.round(Math.cos(shardAngle) * shardDistance * randomRange(40, 100))
@@ -47,7 +47,13 @@
 </script>
 
 <div class="underglow" bind:this={underglowElement} />
-<svg viewBox="0 0 214 97" width="100%" height="100%" bind:this={svgElement} out:shatter|global>
+<svg
+	viewBox="0 0 214 97"
+	width="100%"
+	height="100%"
+	bind:this={svgElement}
+	out:shatter|global
+>
 	<g bind:this={shardGelement}>
 		<path data-shard="20,2" d="M214,36l0,-17c0,-10 -8,-19 -18,-19l-8,0l5,16l21,19Z" />
 		<path data-shard="204,2" d="M4,90c3,3 8,6 13,6l8,0l20,-26l-28,5l-14,14Z" />
