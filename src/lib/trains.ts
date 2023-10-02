@@ -9,6 +9,7 @@ import {
 	updateStoreTrain,
 } from './store'
 import type {
+	GraceTrainCar,
 	GraceTrainData,
 	HypeProgress,
 	HypeTrainData,
@@ -16,15 +17,6 @@ import type {
 	TrainEndData,
 	TrainStartData,
 } from 'grace-train-lib/trains'
-
-type Car =
-	| { type: 'grace'; color: string }
-	| {
-			type: 'hype'
-			color: string | null
-			bitsOrSubs: HypeProgress['type']
-			amount: number
-	  }
 
 type TrainBase = {
 	id: number
@@ -79,7 +71,7 @@ export function updateTrain({ id, ...addData }: TrainAddData) {
 				...existingTrain.grace,
 				combo: addData.grace.combo,
 				score: addData.grace.score,
-				colors: [...existingTrain.grace.colors, addData.grace.color],
+				cars: [...existingTrain.grace.cars, addData.grace.car],
 			},
 		})
 	} else if ('hype' in addData && 'hype' in existingTrain) {
@@ -158,8 +150,18 @@ export const getTrainWidth = (train: Train) => {
 	)
 }
 
-export function graceToCar(grace: GraceTrainData['grace']['colors'][number]): Car {
-	return { type: 'grace', color: grace }
+type Car =
+	| { type: 'grace'; color: string }
+	| ({ type: 'grace' } & GraceTrainCar)
+	| {
+			type: 'hype'
+			color: string | null
+			bitsOrSubs: HypeProgress['type']
+			amount: number
+	  }
+
+export function graceToCar(grace: GraceTrainData['grace']['cars'][number]): Car {
+	return { type: 'grace', ...(typeof grace === 'string' ? { color: grace } : grace) }
 }
 
 export function hypeToCar(hype: HypeProgress): Car {

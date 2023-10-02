@@ -51,7 +51,7 @@
 
 	$: trainCars =
 		'grace' in train
-			? train.grace.colors.map(graceToCar)
+			? train.grace.cars.map(graceToCar)
 			: train.hype.contributions.map(hypeToCar)
 	let carsDisplayed = 0
 
@@ -230,7 +230,8 @@
 		{#if c < carsDisplayed}
 			<div class="train-car-container">
 				{#if car.type === 'grace'}
-					<Car {reverse} color={car.color} bind:this={carComponents[c + 1]} />
+					{@const graceCar = 'color' in car ? car.color : car}
+					<Car {reverse} car={graceCar} bind:this={carComponents[c + 1]} />
 				{:else}
 					<GoldCar
 						{reverse}

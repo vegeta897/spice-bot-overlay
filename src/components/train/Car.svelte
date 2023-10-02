@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { carHop } from '../../lib/animations'
+	import { Body, ContainerSvg, Decal, Topper, Wheels } from 'grace-train-lib/components'
+	import { COLORS } from 'grace-train-lib'
+	import type { GraceTrainCar } from 'grace-train-lib/trains'
 
+	export let car: GraceTrainCar
 	export let reverse: boolean
-	export let color: string | null
-
-	$: _color = color ? `${color}cc` : 'var(--train-pop-color)'
 
 	let svgElement: SVGElement
 
@@ -14,60 +15,45 @@
 </script>
 
 <!-- TODO: Increase size when depot site launches -->
-<svg viewBox="0 0 375 300" width="75" height="60" bind:this={svgElement}>
-	<circle
-		cx="87.5"
-		cy="262.5"
-		r="25"
-		style="fill:var(--train-base-color);stroke:var(--train-pop-color);"
-	/>
-	<circle
-		cx="287.5"
-		cy="262.5"
-		r="25"
-		style="fill:var(--train-base-color);stroke:var(--train-pop-color);"
-	/>
-	<rect
-		x="162.5"
-		y="12.5"
-		width="50"
-		height="25"
-		style="fill:none;stroke:var(--train-pop-color);"
-	/>
-	<rect
-		x="37.5"
-		y="212.5"
-		width="300"
-		height="25"
-		style="fill:var(--train-pop-color);stroke:var(--train-pop-color);"
-	/>
-	<path
-		d="M37.5,212.5l-25,-175l350,0l-25,175l-300,0Z"
-		style="fill:var(--train-base-color);stroke:var(--train-base-color);"
-	/>
-	<path d="M12.5,212.5l350,0" style="fill:none;stroke:var(--train-base-color);" />
-	<path
-		d="M366.143,99.934l-357.286,0l8.144,56.945l340.998,0l8.144,-56.945Z"
-		style="fill:{_color}"
-	/>
-	<!-- <foreignObject width="375" height="325" y="-25">
-		<div
-			class="nunito"
-			style:transform-origin="0 0"
-			style:font-size="175px"
-			style:line-height="175px"
-			style:transform="scale(0.65,1.52)"
-			style:color={_color.substring(0, 7)}
-		>
-			WHAT
-		</div>
-	</foreignObject> -->
-</svg>
-
-<style>
-	svg {
-		stroke-linecap: round;
-		stroke-linejoin: round;
-		stroke-width: 25px;
-	}
-</style>
+<ContainerSvg width="75" viewBox="0 0 375 300" bind:svgElement>
+	{#if typeof car === 'string'}
+		<Body name="boxy" stripeColor={car}></Body>
+	{:else}
+		<Body name={car.body} baseColor={car.bodyColor} popColor={car.bodyPopColor}>
+			<svelte:fragment slot="decals">
+				{#each car.decals as decal, d}
+					<Decal
+						name={decal.name}
+						fill={decal.fill}
+						transform={{
+							x: decal.x,
+							y: decal.y,
+							scale: decal.scale,
+							rotate: decal.rotate,
+						}}
+						params={decal.params}
+					/>
+				{/each}
+			</svelte:fragment>
+			<svelte:fragment slot="toppers" let:topLine>
+				{#each car.toppers as topper}
+					<Topper
+						{topLine}
+						name={topper.name}
+						colors={topper.colors}
+						position={topper.position}
+						offset={topper.offset}
+						scale={topper.scale}
+						rotate={topper.rotate}
+					/>
+				{/each}
+			</svelte:fragment>
+			<Wheels
+				rimColor={car.wheelColor}
+				capColor={car.bodyColor || COLORS.BASE[3]}
+				fromCenter={car.wheelFromCenter}
+				slot="wheels"
+			/>
+		</Body>
+	{/if}
+</ContainerSvg>
