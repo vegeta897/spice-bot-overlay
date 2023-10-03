@@ -1,8 +1,8 @@
+import type { HypeProgress } from 'grace-train-lib/trains'
 import { TRAIN } from '../constants'
 import { getStoreTrain, trains, updateStoreTrain } from '../store'
 import { updateTrain, createTrain, endTrain } from '../trains'
 import { randomIntRange, sleep } from '../util'
-import type { HypeProgress } from '../websocket'
 import { chat, planTrain } from './chat'
 import { fakeUsers } from './strings'
 
@@ -47,9 +47,9 @@ export async function runChatLoop(hypeMode = false) {
 					initialColors.push(message.color)
 				} else if (combo === TRAIN.minLength) {
 					initialColors.push(message.color)
-					createTrain({ id: trainID, grace: { colors: initialColors, combo, score } })
+					createTrain({ id: trainID, grace: { cars: initialColors, combo, score } })
 				} else {
-					updateTrain({ id: trainID, grace: { combo, score, color: message.color } })
+					updateTrain({ id: trainID, grace: { combo, score, car: message.color } })
 				}
 			} else if (hype) {
 				level = hype.level
@@ -102,7 +102,7 @@ export async function runChatLoop(hypeMode = false) {
 export function createStaticTrain(hype: boolean) {
 	const id = Date.now()
 	const grace = {
-		colors: fakeUsers.slice(0, 12).map((u) => u[1]),
+		cars: fakeUsers.slice(0, 12).map((u) => u[1]),
 		score: 1234567,
 		combo: 13,
 	}
