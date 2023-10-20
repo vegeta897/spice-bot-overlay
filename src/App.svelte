@@ -13,7 +13,6 @@
 	const urlParams = new URLSearchParams(window.location.search)
 	const demoMode = urlParams.has('demo')
 	const streamUI = demoMode || urlParams.has('ui')
-	const fullDemoMode = urlParams.has('fulldemo')
 	const widthOverride = parseInt(urlParams.get('w') || '0')
 	const heightOverride = parseInt(urlParams.get('h') || '0')
 	if (widthOverride > 0) SCREEN.width = widthOverride
@@ -96,8 +95,8 @@
 	main.stream-ui {
 		margin-left: 0.25rem;
 		margin-top: 0.25rem;
-		height: calc(var(--screen-height) / 2 + 2px);
-		width: calc(var(--screen-width) / 2 + 290px + 4px);
+		height: calc(var(--screen-height) / 1.333333 + 2px);
+		width: calc(var(--screen-width) / 1.333333 + 290px + 4px);
 	}
 	.stream-container {
 		width: var(--screen-width);
@@ -106,8 +105,8 @@
 		position: relative;
 	}
 	.stream-ui .stream-container {
-		width: calc(var(--screen-width) / 2);
-		height: calc(var(--screen-height) / 2);
+		width: calc(var(--screen-width) / 1.333333);
+		height: calc(var(--screen-height) / 1.333333);
 		border: 1px solid #0008;
 	}
 	.stream {
@@ -116,7 +115,7 @@
 	}
 	.stream-ui .stream {
 		transform-origin: top left;
-		transform: scale(0.5);
+		transform: scale(0.75);
 	}
 	.stream-background {
 		width: 100%;
