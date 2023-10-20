@@ -7,6 +7,8 @@
 
 	$: _color = color ? `${color}cc` : 'var(--train-pop-color)'
 
+	// TODO: Animate piston attached to big wheel
+
 	let svgElement: SVGElement
 
 	export function hop(delay: number, force: number) {
