@@ -12,7 +12,7 @@
 
 	const urlParams = new URLSearchParams(window.location.search)
 	const demoMode = urlParams.has('demo')
-	const streamUI = demoMode || urlParams.has('ui')
+	const streamUI = (demoMode || urlParams.has('ui')) && !urlParams.has('hide-ui')
 	const widthOverride = parseInt(urlParams.get('w') || '0')
 	const heightOverride = parseInt(urlParams.get('h') || '0')
 	if (widthOverride > 0) SCREEN.width = widthOverride
