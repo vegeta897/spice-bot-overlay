@@ -7,7 +7,7 @@ export const TRAIN = {
 	speed: 80, // Pixels per second
 	speedAddPerCombo: 1.2, // Pixels per second added per train length
 	minLength: 5,
-	departDelay: 3 * 1000, // Milliseconds before train departs
+	departDelay: 2 * 1000, // Milliseconds before train departs
 	endInfoDuration: 5 * 1000, // Milliseconds until info panel disappears
 	endInfoLengthPerSecond: 30, // 1 second added to end info panel per this train length
 }
