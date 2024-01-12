@@ -39,8 +39,8 @@
 <style>
 	.coin-container {
 		position: absolute;
-		left: 8px;
-		bottom: 98px;
+		left: 15px;
+		bottom: 122px;
 	}
 	.coin-container.reverse {
 		left: auto;

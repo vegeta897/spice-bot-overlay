@@ -12,7 +12,7 @@
 	// Pre-compute toss durations because these are expensive calculations (I guess)
 	for (let i = minYforce; i <= maxYforce; i++) {
 		upDurations[i] = Math.round(Math.sqrt((i * 1) / gravity) * 1000)
-		downDurations[i] = Math.round(Math.sqrt((i * 1 + 100) / gravity) * 1000)
+		downDurations[i] = Math.round(Math.sqrt((i * 1 + 125) / gravity) * 1000)
 	}
 
 	const easeIn = 'cubic-bezier(0.12, 0, 0.39, 0)'
@@ -107,7 +107,7 @@
 					easing: easeInCirc,
 					offset: upDuration / duration,
 				},
-				{ transform: 'translateY(100px)' },
+				{ transform: 'translateY(125px)' },
 			],
 			{ duration, delay, fill: 'forwards' }
 		)
