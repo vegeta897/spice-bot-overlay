@@ -145,7 +145,7 @@
 		box-sizing: border-box;
 		position: absolute;
 		right: 0;
-		bottom: 80px;
+		bottom: 90px;
 		text-align: center;
 		display: flex;
 		flex-direction: column;
@@ -153,7 +153,7 @@
 	}
 
 	section.top {
-		bottom: calc(var(--screen-height) - 320px);
+		bottom: calc(var(--screen-height) - 350px);
 	}
 
 	.rail-content {

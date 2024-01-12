@@ -2,6 +2,7 @@
 	import { carHop } from '../../lib/animations'
 	import type { GraceTrainCar } from 'grace-train-lib/trains'
 	import { Car } from 'grace-train-lib/components'
+	import { TRAIN } from '../../lib/constants'
 
 	export let car: GraceTrainCar
 	export let reverse: boolean
@@ -13,5 +14,4 @@
 	}
 </script>
 
-<!-- TODO: Increase size when depot site launches -->
-<Car {car} width="75" bind:svgElement />
+<Car {car} width="{TRAIN.carWidth}px" bind:svgElement />

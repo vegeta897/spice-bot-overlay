@@ -1,6 +1,7 @@
 <script lang="ts">
+	import { ContainerSvg } from 'grace-train-lib/components'
 	import { carHop } from '../../lib/animations'
-	import { GRADIENTS } from '../../lib/constants'
+	import { GRADIENTS, TRAIN } from '../../lib/constants'
 
 	export let reverse: boolean
 
@@ -11,7 +12,7 @@
 	}
 </script>
 
-<svg viewBox="0 0 500 367" width="100" height="73" bind:this={svgElement}>
+<ContainerSvg viewBox="0 0 500 367" width="{TRAIN.engineWidthGold}px" bind:svgElement>
 	<g class:reverse>
 		<path
 			id="Underside"
@@ -124,14 +125,9 @@
 			{@html GRADIENTS.gold}
 		</linearGradient>
 	</defs>
-</svg>
+</ContainerSvg>
 
 <style>
-	svg {
-		stroke-linecap: round;
-		stroke-linejoin: round;
-		stroke-width: 25px;
-	}
 	g.reverse {
 		transform: scaleX(-1);
 		transform-origin: center;

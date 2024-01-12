@@ -21,7 +21,7 @@ export async function runChatLoop(hypeMode = false) {
 	runTime = chatLoopStartTime
 	while (chatLoopStartTime === runTime) {
 		let trainID = Date.now()
-		const initialColors: string[] = []
+		const initialGraces: { color: string; userId: string }[] = []
 		const initialContributions: HypeProgress[] = []
 		let combo = 0
 		let score = 0
@@ -44,12 +44,15 @@ export async function runChatLoop(hypeMode = false) {
 						hype: { level, progress, total, goal, graces: combo },
 					})
 				} else if (combo < TRAIN.minLength) {
-					initialColors.push(message.color)
+					initialGraces.push({ color: message.color, userId: '' })
 				} else if (combo === TRAIN.minLength) {
-					initialColors.push(message.color)
-					createTrain({ id: trainID, grace: { cars: initialColors, combo, score } })
+					initialGraces.push({ color: message.color, userId: '' })
+					createTrain({ id: trainID, grace: { graces: initialGraces, combo, score } })
 				} else {
-					updateTrain({ id: trainID, grace: { combo, score, car: message.color } })
+					updateTrain({
+						id: trainID,
+						grace: { combo, score, grace: { color: message.color, userId: '' } },
+					})
 				}
 			} else if (hype) {
 				level = hype.level
@@ -102,7 +105,7 @@ export async function runChatLoop(hypeMode = false) {
 export function createStaticTrain(hype: boolean) {
 	const id = Date.now()
 	const grace = {
-		cars: fakeUsers.slice(0, 12).map((u) => u[1]),
+		graces: fakeUsers.slice(0, 12).map((u) => ({ color: u[1], userId: '' })),
 		score: 1234567,
 		combo: 13,
 	}
@@ -117,12 +120,12 @@ export function createStaticTrain(hype: boolean) {
 				graces: grace.combo,
 				contributions: [
 					{ type: 'bits', amount: 100, color: null },
-					{ type: 'bits', amount: 100, color: null },
-					{ type: 'bits', amount: 100, color: null },
-					{ type: 'bits', amount: 200, color: null },
+					// { type: 'bits', amount: 100, color: null },
+					// { type: 'bits', amount: 100, color: null },
+					// { type: 'bits', amount: 200, color: null },
 					{ type: 'bits', amount: 250, color: null },
-					{ type: 'bits', amount: 300, color: null },
-					{ type: 'bits', amount: 400, color: null },
+					// { type: 'bits', amount: 300, color: null },
+					// { type: 'bits', amount: 400, color: null },
 					{ type: 'bits', amount: 500, color: '#ffffff' },
 					{ type: 'bits', amount: 600, color: null },
 					{ type: 'bits', amount: 550, color: null },
@@ -130,7 +133,7 @@ export function createStaticTrain(hype: boolean) {
 					{ type: 'bits', amount: 1000, color: null },
 					{ type: 'subs', amount: 2, color: null },
 					{ type: 'subs', amount: 1, color: null },
-					{ type: 'subs', amount: 1, color: null },
+					// { type: 'subs', amount: 1, color: null },
 				].map((c, i) => ({ ...c, color: c.color || fakeUsers[i][1] })) as HypeProgress[],
 			},
 		})
@@ -141,8 +144,8 @@ export function createStaticTrain(hype: boolean) {
 	updateStoreTrain({
 		id,
 		static: true,
-		grace: { ...grace },
+		// grace: { ...grace },
 		endUser: 'General_Jackal',
-		// endTime: 1,
+		endTime: 1,
 	})
 }

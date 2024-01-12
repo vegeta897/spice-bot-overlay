@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { TRAIN } from '../../lib/constants'
 	import { clamp, randomElement, randomIntRange, randomRange } from '../../lib/util'
 
 	export let reverse: boolean
@@ -21,7 +22,7 @@
 
 	const coinDiameter = 25
 	const coinThick = 7
-	const padding = 8
+	const padding = 5
 	const xLimit = 100 - coinDiameter - padding
 	const xRange = xLimit - padding
 
@@ -140,7 +141,7 @@
 	}
 </script>
 
-<svg viewBox="0 0 100 100" width="91" height="91" class:reverse>
+<svg viewBox="0 0 100 100" width={TRAIN.carWidthGold} class:reverse>
 	{#each coinStacks as { x, baseY, coinXs }, s}
 		<g bind:this={stackGroupElements[s]}>
 			{#each coinXs as coinX, c}
@@ -198,8 +199,7 @@
 <style>
 	svg {
 		position: absolute;
-		bottom: 50px;
-		left: -3px;
+		bottom: 67px;
 		overflow: visible;
 	}
 	.reverse {

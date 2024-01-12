@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { ContainerSvg } from 'grace-train-lib/components'
 	import { onMount } from 'svelte'
+	import { TRAIN } from '../../lib/constants'
 
 	export let combo: number
 	export let reverse: boolean
@@ -46,7 +48,7 @@
 </script>
 
 <div class="container" bind:this={containerelement}>
-	<svg viewBox="0 0 425 385" width="85" height="77">
+	<ContainerSvg viewBox="0 0 425 385" width="{TRAIN.cabooseWidth}px">
 		<rect
 			x="37.5"
 			y="296.7"
@@ -79,27 +81,19 @@
 			style="fill:#ff538f;stroke:#ff538f;"
 		/>
 		<path d="M12.518,296.712l400,0" style="fill:none;stroke:#605de9;" />
-	</svg>
+	</ContainerSvg>
 	<div class="combo nunito" class:four-digit={combo.toString().length > 3}>{combo}</div>
 </div>
 
 <style>
 	.container {
-		margin: 0 3px;
-		flex-shrink: 0;
-		position: relative;
 		transform-origin: center;
-	}
-	svg {
-		stroke-linecap: round;
-		stroke-linejoin: round;
-		stroke-width: 25px;
 	}
 	.combo {
 		position: absolute;
 		width: 100%;
 		text-align: center;
-		top: 23px;
+		top: 37px;
 		font-size: 32px;
 	}
 	.combo.four-digit {

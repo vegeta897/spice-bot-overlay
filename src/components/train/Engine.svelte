@@ -1,11 +1,10 @@
 <script lang="ts">
+	import { ContainerSvg } from 'grace-train-lib/components'
 	import { carHop } from '../../lib/animations'
+	import { TRAIN } from '../../lib/constants'
 
 	export let reverse: boolean
-	export let color: string | null
 	export let frog = false
-
-	$: _color = color ? `${color}cc` : 'var(--train-pop-color)'
 
 	// TODO: Animate piston attached to big wheel
 
@@ -16,7 +15,7 @@
 	}
 </script>
 
-<svg viewBox="0 0 450 325" width="90" height="65" bind:this={svgElement}>
+<ContainerSvg viewBox="0 0 450 325" width="{TRAIN.engineWidth}px" bind:svgElement>
 	<g class:reverse>
 		<path
 			d="M86.933,287.5l-0,-50l325,0l-0,25l-100,0l-75,25l-150,0Z"
@@ -46,7 +45,7 @@
 			d="M286.933,137.5l-0,100l125,0l-0,-100l-125,0Zm125,100l25,0"
 			style="fill:var(--train-base-color);stroke:var(--train-base-color);"
 		/>
-		<rect x="49.438" y="124.934" width="374.98" height="89.345" style="fill:{_color}" />
+		<!-- <rect x="49.438" y="124.934" width="374.98" height="89.345" style="fill:{_color}" /> -->
 		<path
 			d="M249.451,100.323l0,62.177"
 			style="fill:none;stroke:var(--train-pop-color);"
@@ -138,15 +137,9 @@
 				</g>
 			</g>{/if}
 	</g>
-</svg>
+</ContainerSvg>
 
 <style>
-	svg {
-		stroke-linecap: round;
-		stroke-linejoin: round;
-		stroke-width: 25px;
-		overflow: visible;
-	}
 	g.reverse {
 		transform: scaleX(-1);
 		transform-origin: center;

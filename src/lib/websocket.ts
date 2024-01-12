@@ -1,5 +1,5 @@
 import { getStoreTrain, setOverlayError, setOverlayPosition } from './store'
-import { createTrain, updateTrain, endTrain, endAllTrains } from './trains'
+import { createTrain, updateTrain, endTrain, endAllTrains, blockUser } from './trains'
 import type { TrainWSMessage } from 'grace-train-lib/trains'
 
 const version = 4 // Should match version on server websocket.ts
@@ -73,6 +73,9 @@ export function initWebsocket(key: string) {
 				break
 			case 'overlay':
 				setOverlayPosition(message.data.position)
+				break
+			case 'block-user':
+				blockUser(message.data.userId)
 				break
 			default:
 				console.log('Websocket received unrecognized message:', message)

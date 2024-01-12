@@ -16,7 +16,7 @@
 		box-sizing: border-box;
 		position: absolute;
 		right: 0;
-		bottom: 80px;
+		bottom: 90px;
 		text-align: center;
 		opacity: 0.8;
 		color: #fff;

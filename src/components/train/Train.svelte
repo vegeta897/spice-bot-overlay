@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Smoke from './Smoke.svelte'
 	import { SCREEN, TRAIN } from '../../lib/constants'
-	import { onInterval, sleep } from '../../lib/util'
+	import { sleep } from '../../lib/util'
 	import {
 		getTrainSize,
 		getTrainWidth,
@@ -51,7 +51,7 @@
 
 	$: trainCars =
 		'grace' in train
-			? train.grace.cars.map(graceToCar)
+			? train.grace.graces.map(graceToCar)
 			: train.hype.contributions.map(hypeToCar)
 	let carsDisplayed = 0
 
@@ -110,9 +110,6 @@
 		cabooseAdded = true
 		doImpulse()
 	}
-
-	// Impulse test
-	// onInterval(() => doImpulse(), 2000)
 
 	function doImpulse(maxHopDistance = 8, force = 1) {
 		for (let i = carComponents.length - 1; i >= 0; i--) {
@@ -213,25 +210,26 @@
 	})
 </script>
 
-<div class="container" bind:this={trainContainer} class:top class:reverse style:opacity>
+<div
+	style:--carMargin="{TRAIN.carMargin}px"
+	class="container"
+	bind:this={trainContainer}
+	class:top
+	class:reverse
+	style:opacity
+>
 	<div class="train-car-container">
 		{#if 'hype' in train}
 			<GoldEngine {reverse} bind:this={carComponents[0]} />
 		{:else}
-			<Engine
-				{reverse}
-				frog={train.grace.frog}
-				color={null}
-				bind:this={carComponents[0]}
-			/>
+			<Engine {reverse} frog={train.grace.frog} bind:this={carComponents[0]} />
 		{/if}
 	</div>
 	{#each trainCars as car, c (c)}
 		{#if c < carsDisplayed}
 			<div class="train-car-container">
 				{#if car.type === 'grace'}
-					{@const graceCar = 'color' in car ? car.color : car}
-					<Car {reverse} car={graceCar} bind:this={carComponents[c + 1]} />
+					<Car {reverse} {car} bind:this={carComponents[c + 1]} />
 				{:else}
 					<GoldCar
 						{reverse}
@@ -244,11 +242,13 @@
 			</div>
 		{/if}
 	{/each}
-	{#if 'hype' in train && train.hype.graces}
-		<Caboose bind:this={cabooseComponent} combo={train.hype.graces} {reverse} />
-	{:else if 'grace' in train && train.endTime && train.endUser}
-		<Caboose bind:this={cabooseComponent} combo={train.grace.combo} {reverse} />
-	{/if}
+	<div class="train-car-container">
+		{#if 'hype' in train && train.hype.graces}
+			<Caboose bind:this={cabooseComponent} combo={train.hype.graces} {reverse} />
+		{:else if 'grace' in train && train.endTime && train.endUser}
+			<Caboose bind:this={cabooseComponent} combo={train.grace.combo} {reverse} />
+		{/if}
+	</div>
 	{#if !top}
 		{#if 'hype' in train}
 			<CoinSpout {reverse} speed={pixelsPerMs} disable={!showSmoke} />
@@ -279,7 +279,7 @@
 		flex-direction: row-reverse;
 	}
 	.train-car-container {
-		margin: 0 3px;
+		margin: 0 var(--carMargin);
 		flex-shrink: 0;
 		position: relative;
 	}

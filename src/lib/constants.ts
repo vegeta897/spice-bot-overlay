@@ -1,9 +1,23 @@
+const carMargin = 4
+const doubleMargin = carMargin * 2
+const engineWidth = 120 // from 450
+const engineWidthGold = 133 // from 500
+const carWidth = 100 // from 375
+const carWidthGold = 113 // from 425
+const cabooseWidth = 113 // from 425
+
 export const TRAIN = {
-	engineWidth: 96, // Padding included TODO: Increase size when depot site launches
-	engineWidthGold: 106,
-	carWidth: 81,
-	carWidthGold: 91,
-	cabooseWidth: 91,
+	carMargin,
+	engineWidth,
+	engineWidthGold,
+	carWidth,
+	carWidthGold,
+	cabooseWidth,
+	engineWidthPlusMargin: engineWidth + doubleMargin,
+	engineWidthGoldPlusMargin: engineWidthGold + doubleMargin,
+	carWidthPlusMargin: carWidth + doubleMargin,
+	carWidthGoldPlusMargin: carWidthGold + doubleMargin,
+	cabooseWidthPlusMargin: cabooseWidth + doubleMargin,
 	speed: 80, // Pixels per second
 	speedAddPerCombo: 1.2, // Pixels per second added per train length
 	minLength: 5,

@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { carHop } from '../../lib/animations'
-	import { GRADIENTS, SPARKLE_COORDS } from '../../lib/constants'
+	import { GRADIENTS, SPARKLE_COORDS, TRAIN } from '../../lib/constants'
 	import CoinStacks from './CoinStacks.svelte'
 	import Sparkle from './Sparkle.svelte'
 	import { getGemColors } from '../../lib/colors'
+	import { ContainerSvg } from 'grace-train-lib/components'
 
 	export let reverse: boolean
 	export let color: string | null
@@ -27,7 +28,12 @@
 </script>
 
 <CoinStacks bind:this={coinStacksComponent} {type} {amount} {reverse} />
-<svg viewBox="0 0 425 276" width="85" height="55" bind:this={svgElement}>
+<ContainerSvg
+	viewBox="0 0 425 276"
+	width="{TRAIN.carWidthGold}px"
+	bind:svgElement
+	position="relative"
+>
 	<rect
 		id="Underside"
 		x="37.5"
@@ -138,15 +144,9 @@
 			{@html GRADIENTS.gold}
 		</linearGradient>
 	</defs>
-</svg>
+</ContainerSvg>
 
 <style>
-	svg {
-		stroke-linecap: round;
-		stroke-linejoin: round;
-		stroke-width: 25px;
-		position: relative;
-	}
 	.gold-wheel {
 		width: 100%;
 		height: 100%;

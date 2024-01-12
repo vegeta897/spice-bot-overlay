@@ -17,6 +17,7 @@ import type {
 	TrainEndData,
 	TrainStartData,
 } from 'grace-train-lib/trains'
+import { COLOR_NAMES } from 'grace-train-lib'
 
 type TrainBase = {
 	id: number
@@ -71,7 +72,7 @@ export function updateTrain({ id, ...addData }: TrainAddData) {
 				...existingTrain.grace,
 				combo: addData.grace.combo,
 				score: addData.grace.score,
-				cars: [...existingTrain.grace.cars, addData.grace.car],
+				graces: [...existingTrain.grace.graces, addData.grace.grace],
 			},
 		})
 	} else if ('hype' in addData && 'hype' in existingTrain) {
@@ -132,6 +133,25 @@ export function endAllTrains(exceptID?: number) {
 	})
 }
 
+export function blockUser(userId: string) {
+	// Change user's depot car to a default color stripe
+	get(trains).forEach((train) => {
+		if (!('grace' in train)) return // Not a grace train
+		if (!train.grace.graces.some((g) => g.userId === userId)) return // User not in train
+		updateStoreTrain({
+			id: train.id,
+			grace: {
+				...train.grace,
+				graces: train.grace.graces.map((grace) => {
+					if ('depotCar' in grace && grace.userId === userId)
+						return { userId, color: COLOR_NAMES.POP.POP }
+					return grace
+				}),
+			},
+		})
+	})
+}
+
 export const getTrainSize = (train: Train) =>
 	'hype' in train ? train.hype.contributions.length : train.grace.combo
 
@@ -139,19 +159,18 @@ export const getTrainWidth = (train: Train) => {
 	const trainSize = getTrainSize(train)
 	if ('hype' in train)
 		return (
-			TRAIN.engineWidthGold +
-			TRAIN.carWidthGold * trainSize +
-			(train.hype.graces ? TRAIN.cabooseWidth : 0)
+			TRAIN.engineWidthGoldPlusMargin +
+			TRAIN.carWidthGoldPlusMargin * trainSize +
+			(train.hype.graces ? TRAIN.cabooseWidthPlusMargin : 0)
 		)
 	return (
-		TRAIN.engineWidth +
-		TRAIN.carWidth * (trainSize - 1) +
-		(train.endTime ? TRAIN.cabooseWidth : 0)
+		TRAIN.engineWidthPlusMargin +
+		TRAIN.carWidthPlusMargin * (trainSize - 1) +
+		(train.endTime ? TRAIN.cabooseWidthPlusMargin : 0)
 	)
 }
 
 type Car =
-	| { type: 'grace'; color: string }
 	| ({ type: 'grace' } & GraceTrainCar)
 	| {
 			type: 'hype'
@@ -160,8 +179,8 @@ type Car =
 			amount: number
 	  }
 
-export function graceToCar(grace: GraceTrainData['grace']['cars'][number]): Car {
-	return { type: 'grace', ...(typeof grace === 'string' ? { color: grace } : grace) }
+export function graceToCar(grace: GraceTrainData['grace']['graces'][number]): Car {
+	return { type: 'grace', ...grace }
 }
 
 export function hypeToCar(hype: HypeProgress): Car {
