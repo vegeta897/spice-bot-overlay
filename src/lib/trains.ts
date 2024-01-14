@@ -133,7 +133,7 @@ export function endAllTrains(exceptID?: number) {
 	})
 }
 
-export function blockUser(userId: string) {
+export function hideUser(userId: string) {
 	// Change user's depot car to a default color stripe
 	get(trains).forEach((train) => {
 		if (!('grace' in train)) return // Not a grace train
