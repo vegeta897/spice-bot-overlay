@@ -48,11 +48,11 @@
 			{#if streamUI}
 				<div
 					class="stream-background"
-					style="background: url('sample-stream-{background}.jpg')"
+					style="background: url('overlay/sample-stream-{background}.jpg')"
 				/>
 			{/if}
 			<!-- <video autoplay muted loop style="position: absolute">
-				<source src="/sample-stream.mp4" type="video/mp4" />
+				<source src="overlay/sample-stream.mp4" type="video/mp4" />
 			</video> -->
 			{#if latestInfoTrain}
 				{#key latestInfoTrain.id}
