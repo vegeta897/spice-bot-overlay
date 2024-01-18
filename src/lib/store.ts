@@ -1,6 +1,6 @@
 import { get, writable, type Writable } from 'svelte/store'
 import type { Train } from './trains'
-import type { OverlayOptions } from 'grace-train-lib/trains'
+import type { OverlayOptions } from 'grace-train-lib/data'
 
 export type OverlayError = null | 'need-reload' | 'missing-key' | 'invalid-key'
 

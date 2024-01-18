@@ -16,7 +16,7 @@ import type {
 	TrainAddData,
 	TrainEndData,
 	TrainStartData,
-} from 'grace-train-lib/trains'
+} from 'grace-train-lib/data'
 import { COLOR_NAMES } from 'grace-train-lib'
 
 type TrainBase = {

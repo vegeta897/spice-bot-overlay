@@ -1,6 +1,6 @@
 import { getStoreTrain, setOverlayError, setOverlayPosition } from './store'
 import { createTrain, updateTrain, endTrain, endAllTrains, hideUser } from './trains'
-import type { TrainWSMessage } from 'grace-train-lib/trains'
+import type { TrainWSMessage } from 'grace-train-lib/data'
 
 const version = 4 // Should match version on server websocket.ts
 

@@ -1,4 +1,4 @@
-import type { HypeProgress } from 'grace-train-lib/trains'
+import type { HypeProgress } from 'grace-train-lib/data'
 import { TRAIN } from '../constants'
 import { getStoreTrain, trains, updateStoreTrain } from '../store'
 import { updateTrain, createTrain, endTrain } from '../trains'

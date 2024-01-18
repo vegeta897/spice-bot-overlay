@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { carHop } from '../../lib/animations'
-	import type { GraceTrainCar } from 'grace-train-lib/trains'
+	import type { GraceTrainCar } from 'grace-train-lib/data'
 	import { Car } from 'grace-train-lib/components'
 	import { TRAIN } from '../../lib/constants'
 
