@@ -1,17 +1,17 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import type { Train } from '../lib/trains'
+	import type { HypeTrain } from '../lib/trains'
 	import { cubicOut, cubicIn } from 'svelte/easing'
 	import { fade } from 'svelte/transition'
 	import { grow, bounce } from '../lib/animations'
 	import { onInterval, sleep } from '../lib/util'
 	import Shatter from './Shatter.svelte'
 
-	export let train: Train
+	export let train: HypeTrain
 
 	let progressElement: HTMLDivElement
 
-	$: if (train.hype?.total) onHypeProgress()
+	$: if (train.hype.total) onHypeProgress()
 	let displayedLevel = 1
 	let displayedGoal = 1
 	let displayedProgress = 0
@@ -61,6 +61,7 @@
 		</div>
 	{:else}
 		{#key displayedLevel}
+			<!-- TODO: Replace with SVG -->
 			<div class="progress-bar-outer" out:fade|global={{ duration: 500 }}>
 				<div
 					class="progress-bar-inner"
@@ -89,7 +90,9 @@
 				/>
 			</div>
 		{/key}
-		{#if levellingUp} <Shatter /> {/if}
+		{#if levellingUp}
+			<Shatter />
+		{/if}
 	{/if}
 </div>
 

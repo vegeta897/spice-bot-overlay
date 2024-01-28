@@ -58,8 +58,6 @@
 	$: trainCars && onCarAdd()
 	$: carAddDelay = 'grace' in train ? 400 : 500
 
-	// TODO: Use a simple number for displayed cars instead of a cloned array?
-
 	let newTrain = true
 	let addingCars = false
 	async function onCarAdd() {

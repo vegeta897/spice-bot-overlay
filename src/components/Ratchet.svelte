@@ -4,7 +4,6 @@
 
 	export let number: number
 	export let digitWidth: number
-	//
 </script>
 
 <div class="digits">

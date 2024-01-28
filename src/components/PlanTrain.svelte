@@ -1,6 +1,4 @@
-<div class="nunito">
-	&lt;--- &lt;--- &lt;--- GRACE TRAINS &lt;--- &lt;--- &lt;---
-</div>
+<div class="nunito">&lt;--- &lt;--- &lt;--- GRACE TRAINS ---&gt; ---&gt; ---&gt;</div>
 
 <style>
 	div {

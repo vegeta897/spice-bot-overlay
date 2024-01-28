@@ -30,7 +30,7 @@ type TrainBase = {
 }
 
 type GraceTrain = TrainBase & GraceTrainData
-type HypeTrain = TrainBase & HypeTrainData
+export type HypeTrain = TrainBase & HypeTrainData
 export type Train = GraceTrain | HypeTrain
 
 export function createTrain({ id, ...startData }: TrainStartData) {
