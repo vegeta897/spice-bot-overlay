@@ -1,10 +1,10 @@
 const carMargin = 4
 const doubleMargin = carMargin * 2
-const engineWidth = 120 // from 450
-const engineWidthGold = 133 // from 500
-const carWidth = 100 // from 375
-const carWidthGold = 113 // from 425
-const cabooseWidth = 113 // from 425
+const engineWidth = 120 // source: 450
+const engineWidthGold = 133 // source: 500
+const carWidth = 100 // source: 375
+const carWidthGold = 113 // source: 425
+const cabooseWidth = 113 // source: 425
 
 export const TRAIN = {
 	carMargin,

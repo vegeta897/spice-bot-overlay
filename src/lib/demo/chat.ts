@@ -103,8 +103,8 @@ export function planTrain(hypeMode = false) {
 			const graceType = graceMessage.grace
 				? 'redeem'
 				: graceMessage.highlight
-				? 'highlight'
-				: 'normal'
+					? 'highlight'
+					: 'normal'
 			if (lastGraceType! && graceType !== lastGraceType) {
 				totalScore += comboScore
 				comboPoints = 0
@@ -122,7 +122,7 @@ export function planTrain(hypeMode = false) {
 			}
 			messages.push({
 				message: graceMessage,
-				delay: randomIntRange(1, 100) * 30,
+				delay: randomIntRange(1, 200) * 30,
 				grace: graceInfo,
 			})
 			lastGraceType = graceType

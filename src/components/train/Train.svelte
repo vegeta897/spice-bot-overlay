@@ -220,7 +220,12 @@
 		{#if 'hype' in train}
 			<GoldEngine {reverse} bind:this={carComponents[0]} />
 		{:else}
-			<Engine {reverse} frog={train.grace.frog} bind:this={carComponents[0]} />
+			<Engine
+				{reverse}
+				speed={pixelsPerMs}
+				frog={train.grace.frog}
+				bind:this={carComponents[0]}
+			/>
 		{/if}
 	</div>
 	{#each trainCars as car, c (c)}

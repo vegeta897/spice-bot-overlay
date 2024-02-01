@@ -1,4 +1,4 @@
-import type { HypeProgress } from './websocket'
+import type { HypeProgress } from 'grace-train-lib/data'
 
 export function normalizeContribution({ type, amount, color }: HypeProgress) {
 	const normalized: HypeProgress[] = []
