@@ -92,7 +92,7 @@
 	.cloud-container {
 		position: absolute;
 		left: 24px;
-		top: -20px;
+		top: -18px;
 	}
 	.cloud-container.reverse {
 		left: auto;
