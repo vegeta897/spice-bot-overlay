@@ -92,11 +92,11 @@
 	.cloud-container {
 		position: absolute;
 		left: 24px;
-		top: -6px;
+		top: -20px;
 	}
 	.cloud-container.reverse {
 		left: auto;
-		right: 16px;
+		right: 20px;
 		transform: scaleX(-1);
 	}
 </style>
