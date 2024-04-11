@@ -131,7 +131,8 @@
 		const remainingScreens = currentTranslation / 100 + trainWidth / SCREEN.width
 		const timeUntilReversal = Math.max(
 			0,
-			remainingScreens * durationPerScreen + TRAIN.departDelay
+			remainingScreens * durationPerScreen +
+				TRAIN.departDelay / Math.max(1, Math.log10(getTrainSize(train)))
 		)
 		if (reversalTimeout) clearTimeout(reversalTimeout)
 		reversalTimeout = setTimeout(() => {
