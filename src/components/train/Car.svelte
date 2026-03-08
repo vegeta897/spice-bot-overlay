@@ -9,6 +9,9 @@
 
 	let svgElement: SVGElement
 
+	// TODO: Animate subtle horizontal sway/jostle
+	// Maybe small vertical bumps too
+
 	export function hop(delay: number, force: number) {
 		carHop(svgElement, delay, force, reverse)
 	}

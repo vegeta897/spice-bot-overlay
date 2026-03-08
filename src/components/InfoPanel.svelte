@@ -12,6 +12,11 @@
 
 	// TODO: Show high scores after end
 
+	// TODO: Show speedometer (pixels/sec)
+	// Put train speed and easing in store
+	// Use easing for when speed changes
+	// See train-speeds.xlsx in /scratch to determine speedometer bounds/curve
+
 	export let train: Train
 	export let top = false
 
